@@ -10,7 +10,7 @@
 	http://www.springframework.org/schema/aop 
 	http://www.springframework.org/schema/aop/spring-aop.xsd" >
 
-	<!-- <import resource="spring-mongodb-config.xml"/> -->
+	<import resource="spring-mongodb-config.xml"/>
 
 	<!-- Bean -->
 	<!-- NEED TO BE MODIFIED -->
@@ -44,12 +44,21 @@
 	<bean id="userDao" class="dao.Impl.UserDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	
+	<bean id="questionnaireDao" class="dao.Impl.QuestionnaireDaoImpl">
+		<property name="mongoTemplate" ref="mongoTemplate"/>
+	</bean>
 
 
 	<!-- Service -->
 	<bean id="userService" class="service.Impl.UserServiceImpl">
 		<!-- DAO -->
 		<property name="userDao" ref="userDao"></property>
+	</bean>
+	
+	<bean id="questionnaireService" class="service.Impl.QuestionnaireServiceImpl">
+		<!-- DAO -->
+		<property name="questionnaireDao" ref="questionnaireDao"></property>
 	</bean>
 	
 

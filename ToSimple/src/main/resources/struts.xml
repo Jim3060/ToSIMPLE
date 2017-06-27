@@ -32,9 +32,19 @@
 		
 		<action name="allUsers" class="action.UserAction" method="getAllUsers">
 			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
-			
 		</action>
-
+		
+		<!-- Questionnaire -->
+		
+		<action name="addQuestionnaire" class="action.QuestionnaireAction" method="addQuestionnaire">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
+		<action name="findAQuestionnaire" class="action.QuestionnaireAction" method="findAQuestionnaire">
+			<result name="success">/questionnaire/jsp/testMongo.jsp</result>
+		</action>
+		
+		
 		<action name="*">
 			<result>/{1}.jsp</result>
 		</action>

@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>sjtu.se</groupId>
-  <artifactId>ToSimple</artifactId>
-  <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>ToSimple Maven Webapp</name>
-  <url>http://maven.apache.org</url>
-  
-	 <properties>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.sjtu.se</groupId>
+	<artifactId>ToSimple</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>ToSimple</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
 
 		<antlr.version>2.7.6</antlr.version>
 		<aspectjweaver.version>1.7.4</aspectjweaver.version>
@@ -47,9 +47,11 @@
 		<port>8080</port>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-	</properties> 
-  
-  <dependencies>
+	</properties>
+	
+	
+	
+	<dependencies>
 		<dependency>
 			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>
@@ -255,20 +257,14 @@
 		    <version>2.4</version>
 		    <classifier>jdk15</classifier>
 		</dependency>
-		
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-	    </dependency>
 
+		
 
 	</dependencies>
+	<build>
+		<finalName>BookStore</finalName>
 
-  <build>
-    <finalName>ToSimple</finalName>
-	<plugins>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -292,6 +288,5 @@
 			</plugin>
 
 		</plugins>
-
-  </build>
+	</build>
 </project>
