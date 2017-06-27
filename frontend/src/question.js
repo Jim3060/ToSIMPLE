@@ -19,8 +19,9 @@ export default{
             questionTitle: "Multiple Choice",
             type: 1,
             choices:[
-                "111", "222", "333"
+                "111", "222", "333", "444"
             ],
+            limit: 2,
             showAfter:[]
         },
         {

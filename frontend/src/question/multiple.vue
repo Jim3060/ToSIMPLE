@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="question list-group">
-            <li class="list-group-item question-title">[多选, 最多能选{{limit}}项] {{title}}</li>
+            <li class="list-group-item">[多选, 最多能选{{limit}}项] <span class="question-title">{{title}}</span></li>
             <li class="list-group-item" v-for="(option, index) in options" :key="option" @click="addOrRemove(index)">
                 <input type="checkbox" v-model="select" :value="index" :disabled="select.length>=limit&&select.indexOf(index)==-1"></input>
                 <label>{{option}}</label>
@@ -27,6 +27,9 @@
                     this.select.splice(i, 1);
                 }
             }
+        },
+        watch:{
+            select:function(){this.$emit("update", this.select);}
         }
     }
 </script>

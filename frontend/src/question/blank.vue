@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="question list-group">
-            <li class="list-group-item question-title">[填空] {{title}}</li>
+            <li class="list-group-item">[填空] <span class="question-title">{{title}}</span></li>
             <li class="list-group-item">
                 <input v-model="value"></input> 
             </li>
@@ -15,7 +15,12 @@
         props:{title:{required: true}},
         data(){return {
             value:""
-        }}
+        }},
+        watch:{
+            value:function(){
+                this.$emit("update", this.value);
+            }
+        }
     }
 </script>
 
