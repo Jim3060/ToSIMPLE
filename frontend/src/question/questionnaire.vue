@@ -42,10 +42,10 @@ export default {
             postBody.answerTime = new Date();
             var self = this;
             $.ajax({
-                url: "TODO",
+                url: "SaveAnAnswerPaper",
                 type: "POST",
-                data: JSON.stringify(postBody),
-                contentType:"application/json; charset=utf-8",
+                data: { answerPaper : JSON.stringify(postBody)},
+                
                 success:(data)=>{
                     console.log(data);
                 }
