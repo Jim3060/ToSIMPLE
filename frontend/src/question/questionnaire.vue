@@ -18,12 +18,13 @@
 import single from "./single.vue"
 import multiple from "./multiple.vue"
 import blank from "./blank.vue"
+import bus from "../bus.js"
 
 export default {
     name:"questionnaire",
     components:{single, multiple, blank},
     props:{
-        questionnaire:{required:true},
+        questionnaire:{default(){return {}}},
         edit:{default:false}
     },
     data(){return {
@@ -56,7 +57,24 @@ export default {
             var self = this;
             $.post("SaveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
                 console.log(data);
+            }).fail(()=>{
+                bus.$emit("showMsg", "danger", "错误: 网络异常");
             });
+        }
+    },
+    created(){
+        if(Object.keys(this.questionnaire) == 0){
+            var id = this.$route.params.id;
+            var self = this;
+            $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
+                if(data.valid == 1){
+                    self.questionnaire = JSON.parse(data.questionnaire);
+                }else{
+                    bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
+                }
+            }).fail(()=>{
+                bus.$emit("showMsg", "danger", "错误: 网络异常!");
+            })
         }
     }
 }
