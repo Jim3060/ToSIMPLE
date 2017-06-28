@@ -1,18 +1,25 @@
 <template>
     <div>
-        <div>url: <input v-model="url"></input></div>
-        <div>content: <input v-model="content"></input></div>
-        <p v-show="responseMsg != ''">response: {{responseMsg}}</p>
-        <button class="btn btn-primary" @click="submit()">submit</button>
+        <questionnaire :questionnaire="data"></questionnaire>
     </div>
 </template>
 
 <script>
+import Vue from "vue"
+
+import questionnaire from "./question/questionnaire.vue"
+import data from "./question.js"
+
+
+
+
 export default {
+    components:{questionnaire},
     data(){return {
         url: "",
         content: "",
-        responseMsg: ""
+        responseMsg: "",
+        data:data
     }},
     methods:{
         submit(){
@@ -28,5 +35,5 @@ export default {
 </script>
 
 <style>
-    div, p{margin: 20px;}
+    
 </style>
