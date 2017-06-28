@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="question list-group">
-            <li class="list-group-item">[填空] <span class="question-title">{{title}}</span></li>
+            <li class="list-group-item">[填空] <span class="question-title">{{index+1}}. {{title}}</span></li>
             <li class="list-group-item">
                 <input v-model="value"></input> 
             </li>
@@ -12,7 +12,7 @@
 <script>
     export default{
         name: "blank",
-        props:{title:{required: true}},
+        props:{title:{required: true}, index:{}},
         data(){return {
             value:""
         }},

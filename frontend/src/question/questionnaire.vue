@@ -3,10 +3,11 @@
         <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
         <div>
             <div v-for="(question, index) in questionnaire.questions" :key="question">
-                <button v-if="edit" class="btn btn-danger" @click="del(index)">删除该问题</button>
-                <single v-if="question.type==0" :title="question.questionTitle" :options="question.choices" @update="update(index, $event)"></single>
-                <multiple v-if="question.type==1" :title="question.questionTitle" :options="question.choices" :limit="question.limit" @update="update(index, $event)"></multiple>
-                <blank v-if="question.type==2" :title="question.questionTitle" @update="update(index, $event)"></blank>
+                <button v-if="edit" class="btn btn-success" @click="change(index)">修改</button>
+                <button v-if="edit" class="btn btn-danger" @click="del(index)">删除</button>
+                <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" @update="update(index, $event)"></single>
+                <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" @update="update(index, $event)"></multiple>
+                <blank v-if="question.type==2" :index="index" :title="question.questionTitle" @update="update(index, $event)"></blank>
             </div>
         </div>
         <button v-if="!edit" class="btn btn-success" @click="submit()">submit</button>
@@ -23,31 +24,43 @@ export default {
     components:{single, multiple, blank},
     props:{
         questionnaire:{required:true},
-        edit:{required:true, default:false}
+        edit:{default:false}
     },
     data(){return {
         answer:{}
     }},
     methods:{
         update(index, data){
-            console.log("catch", data, index);
             this.answer[index] = data;
         },
         del(index){
             this.$emit("delete", index);
         },
+        change(index){
+            this.$emit("edit", index);
+        },
         submit(){
-            var postBody = {answer: this.answer};
+            var postBody = {answer: {}};
+            for(var key in Object.keys(this.answer)){
+                var temp = this.answer[key];
+                if(typeof temp === "number"){
+                    postBody.answer[key] = [[temp],""];
+                }else if(typeof temp === "object"){
+                    postBody.answer[key] = [temp, ""];
+                }else{
+                    postBody.answer[key] = [[], temp];
+                }
+            }
             postBody.objectId = this.questionnaire.objectId;
             postBody.answerTime = new Date();
             var self = this;
             $.ajax({
                 url: "TODO",
                 type: "POST",
-                data: JSON.stringify(postBody),
+                data: JSON.stringify({answerPaper: postBody}),
                 contentType:"application/json; charset=utf-8",
                 success:(data)=>{
-                    console.log(data);
+                    console.log(data);//TODO
                 }
             });
         }

@@ -20,13 +20,13 @@
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
                     <div v-show="edit==index">
                         <input class="option" v-model="buffer"></input>
-                        <button class="btn btn-success" @click="save(index)">保存</button>
-                        <button class="btn btn-warning" @click="can(index)">取消</button>
+                        <button class="btn btn-success btn-sm" @click="save(index)">保存</button>
+                        <button class="btn btn-warning btn-sm" @click="can(index)">取消</button>
                     </div>
                     <div v-show="edit!=index">
                         <label class="option">{{option}}</label>
-                        <button class="btn btn-success" @click="change(index)">修改</button>
-                        <button class="btn btn-danger" @click="del(index)">删除</button>
+                        <button class="btn btn-success btn-sm" @click="change(index)">修改</button>
+                        <button class="btn btn-danger btn-sm" @click="del(index)">删除</button>
                     </div>
                 </li>
                 <li v-if="edit==-1" class="list-group-item" @click="add()">新增选项</li>
@@ -41,6 +41,9 @@
 
 <script>
 export default {
+    props:{
+        question:{default:{}}
+    },
     data(){return {
         type:"",
         types:["单选", "多选", "填空"],
@@ -76,6 +79,8 @@ export default {
             this.$emit("cancel");
         },
         submit(){
+            if(this.edit != -1)
+                this.save(this.edit);
             var result = {};
             result.questionTitle = this.title;
             result.type = this.types.indexOf(this.type);
@@ -85,7 +90,18 @@ export default {
                 result.limit = this.limit;
             this.$emit("submit", result);
         }
+    },
+    created(){ 
+        console.log(JSON.stringify(this.question));
+        if( Object.keys(this.question).length > 0){
+            console.log("call");
+            this.title = this.question.questionTitle;
+            this.type = this.types[this.question.type];
+            this.limit = this.question.limit==undefined?0:this.question.limit;
+            this.options = this.question.choices == undefined?{}:this.question.choices;
+        }
     }
+    
 }
 </script>
 
