@@ -44,6 +44,10 @@
 			<result name="success">/questionnaire/jsp/testMongo.jsp</result>
 		</action>
 		
+		<action name="SaveAnAnswerPaper" class="action.QuestionnaireAction" method="saveAnAnswerPaper">
+			<result name="success">/out/index.html</result>
+		</action>
+		
 		
 		<action name="*">
 			<result>/{1}.jsp</result>

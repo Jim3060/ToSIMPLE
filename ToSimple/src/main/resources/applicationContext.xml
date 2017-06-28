@@ -48,6 +48,10 @@
 	<bean id="questionnaireDao" class="dao.Impl.QuestionnaireDaoImpl">
 		<property name="mongoTemplate" ref="mongoTemplate"/>
 	</bean>
+	
+	<bean id="questionnaireResultDao" class="dao.Impl.QuestionnaireResultDaoImpl">
+		<property name="mongoTemplate" ref="mongoTemplate"/>
+	</bean>
 
 
 	<!-- Service -->
@@ -59,7 +63,9 @@
 	<bean id="questionnaireService" class="service.Impl.QuestionnaireServiceImpl">
 		<!-- DAO -->
 		<property name="questionnaireDao" ref="questionnaireDao"></property>
+		<property name="questionnaireResultDao" ref="questionnaireResultDao"></property>
 	</bean>
+	
 	
 
 	<!-- HibernateTransactionManager -->

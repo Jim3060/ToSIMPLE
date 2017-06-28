@@ -29,7 +29,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         return this.mongoTemplate;
     }
     
-	public Integer save(String questionnaireJSON) {
+	public Integer save(DBObject questionnaireJSON) {
 		
 		//forge a input json
 		Date d = new Date();  
