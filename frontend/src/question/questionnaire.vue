@@ -54,7 +54,7 @@ export default {
             postBody.objectId = this.questionnaire.objectId;
             postBody.answerTime = new Date();
             var self = this;
-            $.post("TODO", {answerPaper:JSON.stringify(postBody)}, (data)=>{
+            $.post("SaveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
                 console.log(data);
             });
         }
