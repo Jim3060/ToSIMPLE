@@ -2,7 +2,13 @@ package service.Impl;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import com.mongodb.DBObject;
+import com.mongodb.util.JSON;
+
 import dao.QuestionnaireDao;
+import dao.QuestionnaireResultDao;
 import net.sf.json.JSONObject;
 import service.QuestionnaireService;
 
@@ -13,10 +19,17 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 		this.questionnaireDao = questionnaireDao;
 	}
 	
+	private QuestionnaireResultDao questionnaireResultDao;
+	
+	public void setQuestionnaireResultDao(QuestionnaireResultDao questionnaireResultDao) {
+		this.questionnaireResultDao = questionnaireResultDao;
+	}
+	
 
 	@Override
 	public Integer addQuestionnaire(String questionnaireJSON) {
-		questionnaireDao.save(questionnaireJSON);
+		DBObject questionnaireDB= (DBObject)JSON.parse(questionnaireJSON); 
+		questionnaireDao.save(questionnaireDB);
 		return null;
 	}
 
@@ -37,6 +50,18 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	public String findQuestionnaireById(String id) {
 		// TODO Auto-generated method stub
 		return questionnaireDao.findQuestionnaireById(id);
+	}
+
+
+	@Override
+	public Integer addQuestionnaireResult(String questionnaireResultJSON, HttpServletRequest request) {
+		JSONObject questionnaireResult= JSONObject.fromObject(questionnaireResultJSON);
+		String userIP = request.getHeader("x-forwarded-for");
+		questionnaireResult.put("userIP", userIP);
+		DBObject questionnaireResultDB= (DBObject)JSON.parse(questionnaireResult.toString()); 
+		questionnaireResultDao.save(questionnaireResultDB);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

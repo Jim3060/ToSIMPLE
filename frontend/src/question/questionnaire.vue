@@ -54,8 +54,16 @@ export default {
             postBody.objectId = this.questionnaire.objectId;
             postBody.answerTime = new Date();
             var self = this;
-            $.post("SaveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
-                console.log(data);
+
+            $.ajax({
+                url: "SaveAnAnswerPaper",
+                type: "POST",
+                data: { answerPaper : JSON.stringify(postBody)},
+                
+                success:(data)=>{
+                    console.log(data);
+                }
+
             });
         }
     }
