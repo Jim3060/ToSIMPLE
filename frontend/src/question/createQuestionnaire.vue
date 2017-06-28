@@ -54,15 +54,9 @@ export default {
         submit(){
             var self = this;
             this.questionnaire["questionTitle"] = this.title;
-            $.ajax({
-                url: "TODO",
-                type: "POST",
-                data: JSON.stringify({questionnaire: this.questionnaire}),
-                contentType:"application/json; charset=utf-8",
-                success:(data)=>{
-                    console.log(data);//TODO
-                }
-            });
+            $.post("TODO",{questionnaire: JSON.stringify(this.questionnaire)}, (data)=>{
+                console.log(data);
+            })
         }
     }
 }

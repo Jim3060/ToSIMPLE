@@ -54,14 +54,8 @@ export default {
             postBody.objectId = this.questionnaire.objectId;
             postBody.answerTime = new Date();
             var self = this;
-            $.ajax({
-                url: "TODO",
-                type: "POST",
-                data: JSON.stringify({answerPaper: postBody}),
-                contentType:"application/json; charset=utf-8",
-                success:(data)=>{
-                    console.log(data);//TODO
-                }
+            $.post("TODO", {answerPaper:JSON.stringify(postBody)}, (data)=>{
+                console.log(data);
             });
         }
     }
