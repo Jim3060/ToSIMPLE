@@ -59,15 +59,14 @@ export default {
             this.questionnaire["paperTitle"] = this.title;
             this.questionnaire["createDate"] = new Date();
             this.questionnaire["status"] = 0;
-            this.questionnaire["questionnaireId"] = document.getElementById("questionnaireId").value;
+
             $.ajax({
                 type: 'POST',
                 url: "addQuestionnaire",
                 data: {questionnaire: JSON.stringify(this.questionnaire)},
                 dataType: "json",
                 success: function(data){
-                    console.log(data);
-                    document.getElementById("questionnaireId").value=data.questionnaireId;
+                    self.questionnaire["questionnaireId"] = data.questionnaireId;
                 }
             });
            
