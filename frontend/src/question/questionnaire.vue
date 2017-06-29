@@ -68,8 +68,8 @@ export default {
             var id = this.$route.params.id;
             var self = this;
             $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
-                if(data.valid == 1){
-                    self.questionnaire = JSON.parse(data.questionnaire);
+                if(data.valid == '1'){
+                    self.questionnaire = data.questionnaire;
                 }else{
                     bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
                 }

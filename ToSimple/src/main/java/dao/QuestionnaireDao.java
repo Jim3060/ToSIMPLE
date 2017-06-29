@@ -9,7 +9,7 @@ public interface QuestionnaireDao {
 
 	public void delete();
 
-	public Integer update(String id, DBObject questionnaireDB);
+	public String update(String id, DBObject questionnaireDB);
 	
 	public DBObject findQuestionnaireById(String id);
 
