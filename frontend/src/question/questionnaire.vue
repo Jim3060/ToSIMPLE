@@ -69,7 +69,6 @@ export default {
             var id = this.$route.params.id;
             var self = this;
             $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
-
                 if(data.valid == "1"){
                     self.questionnaire = data.questionnaire;
                 }else{
