@@ -10,7 +10,7 @@
                 <blank v-if="question.type==2" :index="index" :title="question.questionTitle" @update="update(index, $event)"></blank>
             </div>
         </div>
-        <button v-if="!edit" class="btn btn-success" @click="submit()">submit</button>
+        <button v-if="!edit" class="btn btn-success" @click="submit()">提交</button>
     </div>
 </template>
 
@@ -52,12 +52,13 @@ export default {
                     postBody.answer[key] = [[], temp];
                 }
             }
-            postBody.objectId = this.questionnaire.objectId;
+            postBody.objectId = this.questionnaire["_id"]["$oid"];
             postBody.answerTime = new Date();
             var self = this;
-
             $.post("SaveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
-                console.log(data);
+                if(data == "1" || data == 1){
+                    bus.$emit("showMsg", "success", "提交成功");
+                }
             }).fail(()=>{
                 bus.$emit("showMsg", "danger", "错误: 网络异常")
             });
@@ -68,12 +69,12 @@ export default {
             var id = this.$route.params.id;
             var self = this;
             $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
-                if(data.valid == 1){
-                    self.questionnaire = JSON.parse(data.questionnaire);
+                if(data.valid == "1"){
+                    self.questionnaire = data.questionnaire;
                 }else{
                     bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
                 }
-            }).fail(()=>{
+            }, "json").fail(()=>{
                 bus.$emit("showMsg", "danger", "错误: 网络异常!");
             })
         }
