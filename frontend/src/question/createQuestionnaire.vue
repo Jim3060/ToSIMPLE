@@ -54,7 +54,7 @@ export default {
         submit(){
             var self = this;
             this.questionnaire["questionTitle"] = this.title;
-            $.post("TODO",{questionnaire: JSON.stringify(this.questionnaire)}, (data)=>{
+            $.post("addQuestionnaire",{questionnaire: JSON.stringify(this.questionnaire)}, (data)=>{
                 console.log(data);
             })
         }

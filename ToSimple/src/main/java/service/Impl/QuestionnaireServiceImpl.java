@@ -40,7 +40,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	}
 
 	@Override
-	public void updateQuestionnaire() {
+	public Integer updateQuestionnaire(String id, String questionnaireJSON) {
+		DBObject questionnaireDB=(DBObject)JSON.parse(questionnaireJSON); 
+		return questionnaireDao.update(id, questionnaireDB);
 		// TODO Auto-generated method stub
 		
 	}
@@ -49,7 +51,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	@Override
 	public String findQuestionnaireById(String id) {
 		// TODO Auto-generated method stub
-		return questionnaireDao.findQuestionnaireById(id);
+		DBObject questionnaireDB=questionnaireDao.findQuestionnaireById(id);
+		if (questionnaireDB==null){return null;}
+		return questionnaireDB.toString();
 	}
 
 

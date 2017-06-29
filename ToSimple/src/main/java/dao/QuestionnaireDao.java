@@ -9,9 +9,9 @@ public interface QuestionnaireDao {
 
 	public void delete();
 
-	public void update();
+	public Integer update(String id, DBObject questionnaireDB);
 	
-	public String findQuestionnaireById(String id);
+	public DBObject findQuestionnaireById(String id);
 
 //	public User getQuestionnaireById(int id);
 //

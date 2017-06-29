@@ -29,7 +29,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         return this.mongoTemplate;
     }
     
-	public Integer save(DBObject questionnaireJSON) {
+	public Integer save(DBObject questionnaireDB) {
 		
 		//forge a input json
 		Date d = new Date();  
@@ -44,7 +44,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 		//insert the json
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
-		questionnaires.insert(questionnaireMongo);
+		questionnaires.insert(questionnaireDB);
 		return 1;
 	}
 
@@ -55,21 +55,27 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 	}
 
 	@Override
-	public void update() {
+	public Integer update(String id, DBObject questionnaireDB) {
+		BasicDBObject query = new BasicDBObject();
+	    query.put("_id", new ObjectId(id));   
+		DB db = mongoTemplate.getDb();
+		DBCollection questionnaires = db.getCollection("Questionnaires");
+		if (questionnaires.findOne(query)==null){return 0;}
+		questionnaires.update(query, questionnaireDB);
 		// TODO Auto-generated method stub
-		
+		return  1;
 	}
 
 	@Override
-	public String findQuestionnaireById(String id) {
+	public DBObject findQuestionnaireById(String id) {
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
 		BasicDBObject query = new BasicDBObject();
 	    query.put("_id", new ObjectId(id));
 	    DBObject dbObj = questionnaires.findOne(query);
-	   
+	    if (dbObj==null){return null;}
 		// TODO Auto-generated method stub
-		return dbObj.toString();
+		return dbObj;
 	}
 
 }
