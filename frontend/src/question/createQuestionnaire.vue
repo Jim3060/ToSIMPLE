@@ -1,6 +1,7 @@
 <template>
     <div class="creator">
         <span class="edit-title">问卷标题: </span><input v-model="title"></input>
+        <p id="questionnaireId" type="hidden"> </p>
         <questionnaire :questionnaire="questionnaire" :edit="true" @delete="del($event)" @edit="edit($event)"></questionnaire>
         <button class="btn btn-primary" @click="showModal=true">添加问题</button>
         <button class="btn btn-success" @click="submit()">提交问卷</button>
@@ -20,8 +21,10 @@ import questionnaire from "./questionnaire.vue"
 import {modal} from "vue-strap"
 
 export default {
+    props:{
+        questionnaire:{default:{questions:[]}}
+    },
     data(){return {
-        questionnaire:{questions:[]},
         showModal:false,
         question:{},
         idx: -1,
@@ -53,10 +56,21 @@ export default {
         },
         submit(){
             var self = this;
-            this.questionnaire["questionTitle"] = this.title;
-            $.post("addQuestionnaire",{questionnaire: JSON.stringify(this.questionnaire)}, (data)=>{
-                console.log(data);
-            })
+            this.questionnaire["paperTitle"] = this.title;
+            this.questionnaire["createDate"] = new Date();
+            this.questionnaire["status"] = 0;
+            this.questionnaire["objectId"] = document.getElementById("questionnaireId").value;
+            $.ajax({
+                type: 'POST',
+                url: "addQuestionnaire",
+                data: {questionnaire: JSON.stringify(this.questionnaire)},
+                dataType: "json",
+                success: function(data){
+                    console.log(data);
+                    document.getElementById("questionnaireId").value=data.questionnaireId;
+                }
+            });
+           
         }
     }
 }

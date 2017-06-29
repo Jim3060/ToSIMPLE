@@ -27,10 +27,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	
 
 	@Override
-	public Integer addQuestionnaire(String questionnaireJSON) {
+	public String addQuestionnaire(String questionnaireJSON) {
 		DBObject questionnaireDB= (DBObject)JSON.parse(questionnaireJSON); 
-		questionnaireDao.save(questionnaireDB);
-		return null;
+		return questionnaireDao.save(questionnaireDB);
 	}
 
 	@Override

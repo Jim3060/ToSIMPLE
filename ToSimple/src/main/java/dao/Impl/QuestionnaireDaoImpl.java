@@ -29,7 +29,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         return this.mongoTemplate;
     }
     
-	public Integer save(DBObject questionnaireDB) {
+	public String save(DBObject questionnaireDB) {
 		
 		//forge a input json
 		Date d = new Date();  
@@ -45,7 +45,8 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
 		questionnaires.insert(questionnaireDB);
-		return 1;
+		ObjectId id = (ObjectId)questionnaireDB.get( "_id" );
+		return id.toString();
 	}
 
 	@Override

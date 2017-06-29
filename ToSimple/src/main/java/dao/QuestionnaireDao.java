@@ -5,7 +5,7 @@ import com.mongodb.DBObject;
 import net.sf.json.JSONObject;
 
 public interface QuestionnaireDao {
-	public Integer save(DBObject questionnaireJSON);
+	public String save(DBObject questionnaireJSON);
 
 	public void delete();
 
