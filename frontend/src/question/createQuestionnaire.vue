@@ -20,8 +20,10 @@ import questionnaire from "./questionnaire.vue"
 import {modal} from "vue-strap"
 
 export default {
+    props:{
+        questionnaire:{default:{questions:[]}}
+    },
     data(){return {
-        questionnaire:{questions:[]},
         showModal:false,
         question:{},
         idx: -1,
@@ -53,7 +55,9 @@ export default {
         },
         submit(){
             var self = this;
-            this.questionnaire["questionTitle"] = this.title;
+            this.questionnaire["paperTitle"] = this.title;
+            this.questionnaire["createDate"] = new Date();
+            this.questionnaire["status"] = 0;
             $.post("TODO",{questionnaire: JSON.stringify(this.questionnaire)}, (data)=>{
                 console.log(data);
             })

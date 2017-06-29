@@ -2,7 +2,7 @@
     <div>
         <ul class="question list-group">
             <li class="list-group-item">[单选] <span class="question-title">{{index+1}}. {{title}}</span></li>
-            <li class="list-group-item" v-for="(option, index) in options" :key="option" @click="select=index">
+            <li class="list-group-item" v-for="(option, index) in options" :key="option">
                 <input type="radio" v-model="select" :value="index"></input>
                 <label>{{option}}</label>
             </li>

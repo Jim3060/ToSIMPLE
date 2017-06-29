@@ -1,9 +1,11 @@
 package dao;
 
+import com.mongodb.DBObject;
+
 import net.sf.json.JSONObject;
 
 public interface QuestionnaireDao {
-	public Integer save(String questionnaireJSON);
+	public Integer save(DBObject questionnaireJSON);
 
 	public void delete();
 
