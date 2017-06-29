@@ -8,11 +8,11 @@ import model.User;
 import net.sf.json.JSONObject;
 
 public interface QuestionnaireService {
-	public Integer addQuestionnaire(String questionnaireJSON);
+	public String addQuestionnaire(String questionnaireJSON);
 
 	public void deleteQuestionnaire();
 
-	public void updateQuestionnaire();
+	public Integer updateQuestionnaire(String id, String questionnaireJSON);
 	
 	public String findQuestionnaireById(String id);
 

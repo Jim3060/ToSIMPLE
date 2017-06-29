@@ -36,7 +36,7 @@
 		
 		<!-- Questionnaire -->
 		
-		<action name="addQuestionnaire" class="action.QuestionnaireAction" method="addQuestionnaire">
+		<action name="addQuestionnaire" class="action.QuestionnaireAction" method="addOrUpdateQuestionnaire">
 			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
 		</action>
 		

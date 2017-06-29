@@ -55,23 +55,11 @@ export default {
             postBody.objectId = this.questionnaire.objectId;
             postBody.answerTime = new Date();
             var self = this;
-<<<<<<< HEAD
 
-            $.ajax({
-                url: "SaveAnAnswerPaper",
-                type: "POST",
-                data: { answerPaper : JSON.stringify(postBody)},
-                
-                success:(data)=>{
-                    console.log(data);
-                }
-
-=======
             $.post("SaveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
                 console.log(data);
             }).fail(()=>{
-                bus.$emit("showMsg", "danger", "错误: 网络异常");
->>>>>>> JimmyWang
+                bus.$emit("showMsg", "danger", "错误: 网络异常")
             });
         }
     },
