@@ -24,23 +24,29 @@ public class QuestionnaireAction extends BaseAction{
 	
 
 	public String addOrUpdateQuestionnaire() throws Exception{
-		JSONObject questionnaireJSON=JSONObject.fromObject(questionnaire);
-		if (questionnaireJSON.get("objectId")!=null&&(questionnaireJSON.get("objectId"))!=""){
-			questionnaireId=questionnaireJSON.get("objectId").toString();
-			updateQuestionnaire();
-		}
-		else {questionnaireId=addQuestionnaire();}
+		questionnaireId=questionnaireService.addOrUpdateQuestionnaire(questionnaire);
 		JSONObject result = new JSONObject();
 		result.put("questionnaireId", questionnaireId);
 		ServletActionContext.getResponse().getWriter().print(result);
 		return null;
 	}
 
+	
+	
 	public String addQuestionnaire() throws Exception {
 		return questionnaireService.addQuestionnaire(questionnaire);//objectId
 	}
 	
+	
+	
 	public String findAQuestionnaire() throws IOException{
+		questionnaireId="5954b29d37fac38fdc65727c";
+		if (questionnaireId==null){
+			JSONObject result = new JSONObject();
+			result.put("valid", '0');
+			ServletActionContext.getResponse().getWriter().print(result);
+			return null;
+		}
 		String questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
 		String valid="1";
 		if (questionnaire==null){valid="0";}

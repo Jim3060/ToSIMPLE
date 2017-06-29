@@ -30,17 +30,6 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
     
 	public String save(DBObject questionnaireDB) {
-		
-		//forge a input json
-		Date d = new Date();  
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-        String dateNowStr = sdf.format(d);  
-		String json ="{'paperTitle':'Questionnnaire test','authorId':0,'createDate':'"+dateNowStr+"' ,'questions':[{'questionTitle':'q1','type':'0','choices':['a','b']}]}";
-		DBObject questionnaireMongo= (DBObject)JSON.parse(json.toString()); 
-		
-		
-		
-		
 		//insert the json
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
@@ -56,15 +45,17 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 	}
 
 	@Override
-	public Integer update(String id, DBObject questionnaireDB) {
+	public String update(String id, DBObject questionnaireDB) {
+		DBObject dbObj;
 		BasicDBObject query = new BasicDBObject();
 	    query.put("_id", new ObjectId(id));   
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
-		if (questionnaires.findOne(query)==null){return 0;}
+		if ((dbObj=questionnaires.findOne(query))==null){return null;}
 		questionnaires.update(query, questionnaireDB);
 		// TODO Auto-generated method stub
-		return  1;
+		ObjectId newid = (ObjectId)dbObj.get( "_id" );
+		return newid.toString();
 	}
 
 	@Override

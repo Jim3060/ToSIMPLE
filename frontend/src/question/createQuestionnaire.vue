@@ -59,7 +59,7 @@ export default {
             this.questionnaire["paperTitle"] = this.title;
             this.questionnaire["createDate"] = new Date();
             this.questionnaire["status"] = 0;
-            this.questionnaire["objectId"] = document.getElementById("questionnaireId").value;
+            this.questionnaire["questionnaireId"] = document.getElementById("questionnaireId").value;
             $.ajax({
                 type: 'POST',
                 url: "addQuestionnaire",

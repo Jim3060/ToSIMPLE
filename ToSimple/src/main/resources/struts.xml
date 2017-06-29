@@ -42,6 +42,7 @@
 		
 		<action name="findAQuestionnaire" class="action.QuestionnaireAction" method="findAQuestionnaire">
 			<result name="success">/questionnaire/jsp/testMongo.jsp</result>
+			<result name="error">/questionnaire/jsp/testMongo.jsp</result>
 		</action>
 		
 		<action name="SaveAnAnswerPaper" class="action.QuestionnaireAction" method="saveAnAnswerPaper">
