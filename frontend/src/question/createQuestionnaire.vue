@@ -1,6 +1,7 @@
 <template>
     <div class="creator">
         <span class="edit-title">问卷标题: </span><input v-model="title"></input>
+        <p id="questionnaireId" type="hidden"> </p>
         <questionnaire :questionnaire="questionnaire" :edit="true" @delete="del($event)" @edit="edit($event)"></questionnaire>
         <button class="btn btn-primary" @click="showModal=true">添加问题</button>
         <button class="btn btn-success" @click="submit()">提交问卷</button>
@@ -58,9 +59,17 @@ export default {
             this.questionnaire["paperTitle"] = this.title;
             this.questionnaire["createDate"] = new Date();
             this.questionnaire["status"] = 0;
-            $.post("TODO",{questionnaire: JSON.stringify(this.questionnaire)}, (data)=>{
-                console.log(data);
-            })
+
+            $.ajax({
+                type: 'POST',
+                url: "addQuestionnaire",
+                data: {questionnaire: JSON.stringify(this.questionnaire)},
+                dataType: "json",
+                success: function(data){
+                    self.questionnaire["questionnaireId"] = data.questionnaireId;
+                }
+            });
+           
         }
     }
 }

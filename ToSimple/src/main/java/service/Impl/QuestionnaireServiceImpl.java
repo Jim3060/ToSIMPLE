@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
@@ -27,10 +29,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	
 
 	@Override
-	public Integer addQuestionnaire(String questionnaireJSON) {
+	public String addQuestionnaire(String questionnaireJSON) {
 		DBObject questionnaireDB= (DBObject)JSON.parse(questionnaireJSON); 
-		questionnaireDao.save(questionnaireDB);
-		return null;
+		return questionnaireDao.save(questionnaireDB);
 	}
 
 	@Override
@@ -40,7 +41,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	}
 
 	@Override
-	public void updateQuestionnaire() {
+	public Integer updateQuestionnaire(String id, String questionnaireJSON) {
+		DBObject questionnaireDB=(DBObject)JSON.parse(questionnaireJSON); 
+		if (questionnaireDao.update(id, questionnaireDB)==null){return 0;}
+		return 1;
 		// TODO Auto-generated method stub
 		
 	}
@@ -49,7 +53,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	@Override
 	public String findQuestionnaireById(String id) {
 		// TODO Auto-generated method stub
-		return questionnaireDao.findQuestionnaireById(id);
+		DBObject questionnaireDB=questionnaireDao.findQuestionnaireById(id);
+		if (questionnaireDB==null){return null;}
+		questionnaireDB.put("questionnaireId", questionnaireDB.get("_id").toString());
+		return questionnaireDB.toString();
 	}
 
 
@@ -62,6 +69,28 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 		questionnaireResultDao.save(questionnaireResultDB);
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public String addOrUpdateQuestionnaire(String questionnaire) {
+		String questionnaireId;
+		JSONObject questionnaireJSON=JSONObject.fromObject(questionnaire);
+		//update
+		if (questionnaireJSON.get("questionnaireId")!=null&&(questionnaireJSON.get("questionnaireId"))!=""){
+			questionnaireId=questionnaireJSON.get("questionnaireId").toString();
+			DBObject questionnaireDB=(DBObject)JSON.parse(questionnaire); 
+			questionnaireId = questionnaireDao.update(questionnaireId, questionnaireDB);
+			
+			
+		}
+		//add
+		else {
+			DBObject questionnaireDB= (DBObject)JSON.parse(questionnaire); 
+			questionnaireId = questionnaireDao.save(questionnaireDB);
+		}
+		
+		return questionnaireId;
 	}
 
 

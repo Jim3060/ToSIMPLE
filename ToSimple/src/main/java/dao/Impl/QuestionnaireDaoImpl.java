@@ -29,23 +29,13 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         return this.mongoTemplate;
     }
     
-	public Integer save(DBObject questionnaireJSON) {
-		
-		//forge a input json
-		Date d = new Date();  
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-        String dateNowStr = sdf.format(d);  
-		String json ="{'paperTitle':'Questionnnaire test','authorId':0,'createDate':'"+dateNowStr+"' ,'questions':[{'questionTitle':'q1','type':'0','choices':['a','b']}]}";
-		DBObject questionnaireMongo= (DBObject)JSON.parse(json.toString()); 
-		
-		
-		
-		
+	public String save(DBObject questionnaireDB) {
 		//insert the json
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
-		questionnaires.insert(questionnaireMongo);
-		return 1;
+		questionnaires.insert(questionnaireDB);
+		ObjectId id = (ObjectId)questionnaireDB.get( "_id" );
+		return id.toString();
 	}
 
 	@Override
@@ -55,21 +45,29 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 	}
 
 	@Override
-	public void update() {
+	public String update(String id, DBObject questionnaireDB) {
+		DBObject dbObj;
+		BasicDBObject query = new BasicDBObject();
+	    query.put("_id", new ObjectId(id));   
+		DB db = mongoTemplate.getDb();
+		DBCollection questionnaires = db.getCollection("Questionnaires");
+		if ((dbObj=questionnaires.findOne(query))==null){return null;}
+		questionnaires.update(query, questionnaireDB);
 		// TODO Auto-generated method stub
-		
+		ObjectId newid = (ObjectId)dbObj.get( "_id" );
+		return newid.toString();
 	}
 
 	@Override
-	public String findQuestionnaireById(String id) {
+	public DBObject findQuestionnaireById(String id) {
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
 		BasicDBObject query = new BasicDBObject();
 	    query.put("_id", new ObjectId(id));
 	    DBObject dbObj = questionnaires.findOne(query);
-	   
+	    if (dbObj==null){return null;}
 		// TODO Auto-generated method stub
-		return dbObj.toString();
+		return dbObj;
 	}
 
 }
