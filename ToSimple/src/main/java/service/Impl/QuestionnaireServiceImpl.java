@@ -11,6 +11,8 @@ import com.mongodb.util.JSON;
 
 import dao.QuestionnaireDao;
 import dao.QuestionnaireResultDao;
+import model.Questionnaire;
+import model.QuestionnaireResult;
 import net.sf.json.JSONObject;
 import service.QuestionnaireService;
 
@@ -28,11 +30,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	}
 	
 
-	@Override
-	public String addQuestionnaire(String questionnaireJSON) {
-		DBObject questionnaireDB= (DBObject)JSON.parse(questionnaireJSON); 
-		return questionnaireDao.save(questionnaireDB);
-	}
+
 
 	@Override
 	public void deleteQuestionnaire() {
@@ -40,57 +38,51 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 		
 	}
 
+	
 	@Override
-	public Integer updateQuestionnaire(String id, String questionnaireJSON) {
-		DBObject questionnaireDB=(DBObject)JSON.parse(questionnaireJSON); 
-		if (questionnaireDao.update(id, questionnaireDB)==null){return 0;}
-		return 1;
+	public Questionnaire findQuestionnaireById(String id) {
 		// TODO Auto-generated method stub
+		return questionnaireDao.findQuestionnaireById(id);
 		
 	}
 
 
 	@Override
-	public String findQuestionnaireById(String id) {
-		// TODO Auto-generated method stub
-		DBObject questionnaireDB=questionnaireDao.findQuestionnaireById(id);
-		if (questionnaireDB==null){return null;}
-		questionnaireDB.put("questionnaireId", questionnaireDB.get("_id").toString());
-		return questionnaireDB.toString();
-	}
-
-
-	@Override
-	public Integer addQuestionnaireResult(String questionnaireResultJSON, HttpServletRequest request) {
-		JSONObject questionnaireResult= JSONObject.fromObject(questionnaireResultJSON);
-		String userIP = request.getHeader("x-forwarded-for");
-		questionnaireResult.put("userIP", userIP);
-		DBObject questionnaireResultDB= (DBObject)JSON.parse(questionnaireResult.toString()); 
-		questionnaireResultDao.save(questionnaireResultDB);
+	public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult) {
+		questionnaireResultDao.save(questionnaireResult);
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public String addOrUpdateQuestionnaire(String questionnaire) {
+	public String addOrUpdateQuestionnaire(Questionnaire questionnaire) {
 		String questionnaireId;
-		JSONObject questionnaireJSON=JSONObject.fromObject(questionnaire);
-		//update
-		if (questionnaireJSON.get("questionnaireId")!=null&&(questionnaireJSON.get("questionnaireId"))!=""){
-			questionnaireId=questionnaireJSON.get("questionnaireId").toString();
-			DBObject questionnaireDB=(DBObject)JSON.parse(questionnaire); 
-			questionnaireId = questionnaireDao.update(questionnaireId, questionnaireDB);
-			
-			
+		if (questionnaire.getQuestionnaireId().equals("")){//add
+			questionnaireId = questionnaireDao.save(questionnaire);
 		}
-		//add
-		else {
-			DBObject questionnaireDB= (DBObject)JSON.parse(questionnaire); 
-			questionnaireId = questionnaireDao.save(questionnaireDB);
+		else{//update
+			questionnaireId = questionnaireDao.update(questionnaire.getQuestionnaireId(),questionnaire);
 		}
-		
 		return questionnaireId;
+	}
+
+
+
+
+	@Override
+	public String addQuestionnaire(String questionnaireJSON) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+	@Override
+	public Integer updateQuestionnaire(String id, String questionnaireJSON) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
