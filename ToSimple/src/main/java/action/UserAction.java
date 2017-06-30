@@ -1,14 +1,12 @@
 package action;
 
-import java.security.NoSuchAlgorithmException;
+import java.security.KeyPair;
+
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 import javax.servlet.http.HttpSession;
-
 import org.apache.struts2.ServletActionContext;
 
 import model.RSAUtils;
@@ -39,29 +37,26 @@ public class UserAction extends BaseAction{
 	}
 	
 	public String fetchRSA() throws Exception{
-		HashMap<String, Object> map = RSAUtils.getKeys();
-        RSAPublicKey publicKey = (RSAPublicKey) map.get("public");
-        RSAPrivateKey privateKey = (RSAPrivateKey) map.get("private");
+		KeyPair keyPair = RSAUtils.initKey();
+		RSAPublicKey publicKey = RSAUtils.getPublicKey(keyPair);
+		RSAPrivateKey privateKey = RSAUtils.getPrivateKey(keyPair);
+		
         HttpSession session =session();
         session.setAttribute("privateKey", privateKey);
-        
-        String modulus = publicKey.getModulus().toString();
-        String publicExponent = publicKey.getPublicExponent().toString();
-        String privateExponent = privateKey.getPrivateExponent().toString();
-        //明文
-        
+
         JSONObject result = new JSONObject();
-		result.put("modulus", modulus);
-		result.put("publicExponent", publicExponent);
+		result.put("publicKey",RSAUtils.generateBase64PublicKey(publicKey));
 		ServletActionContext.getResponse().getWriter().print(result);
 		return null;
 		
 	}
 	
+	
 	public String login() throws Exception{
 		HttpSession session =session();
 		RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
-		String passwordInput=RSAUtils.decryptByPrivateKey(passwordSECURE, privateKey);
+		String passwordInput=RSAUtils.decryptBase64(passwordSECURE, privateKey);
+		System.out.println(passwordInput);
 		return null;
 	}
 	
@@ -107,5 +102,14 @@ public class UserAction extends BaseAction{
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getPasswordSECURE() {
+		return passwordSECURE;
+	}
+
+	public void setPasswordSECURE(String passwordSECURE) {
+		this.passwordSECURE = passwordSECURE;
+	}
+
 	
 }
