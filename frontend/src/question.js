@@ -11,9 +11,9 @@ export default{
             choices:[
                 "111", "222", "333"
             ],
-            showAfter:[
+            showAfter:{
 
-            ]
+            }
         },
         {
             questionTitle: "Multiple Choice",
@@ -22,11 +22,17 @@ export default{
                 "111", "222", "333", "444"
             ],
             limit: 2,
-            showAfter:[]
+            showAfter:{
+                0:[1]
+            }
         },
         {
             questionTitle:"Blank",
-            type: 2
+            type: 2,
+            showAfter:{
+                0:[2],
+                1:[2, 3]
+            }
         }
     ]
 }
