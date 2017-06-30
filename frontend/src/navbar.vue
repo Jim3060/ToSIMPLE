@@ -9,7 +9,7 @@
         <ul class="nav navbar-nav" style="width:80%;">
             <li :class="{active:$route.path=='/index'}"><a href="#">首页</a></li>
             <li :class="{active:($route.path=='/q'||$route.name=='q')}"><a href="#/q">问卷</a></li>
-            <li :class="{active:($route.path=='/n')}"><a href="#/n">新建</a></li>
+            <li :class="{active:($route.path=='/n'||$route.name=='n')}"><a href="#/n">新建</a></li>
 
             <form class="navbar-form navbar-right" role="search">
                 <div class="form-group">

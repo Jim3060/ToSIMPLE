@@ -2,7 +2,7 @@
     <div class="questionnaire">
         <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
         <div>
-            <div v-for="(question, index) in questionnaire.questions" :key="question">
+            <div v-for="(question, index) in questionnaire.questions" v-if="!hidden[index]" :key="question">
                 <button v-if="edit" class="btn btn-success" @click="change(index)">修改</button>
                 <button v-if="edit" class="btn btn-danger" @click="del(index)">删除</button>
                 <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" @update="update(index, $event)"></single>
@@ -19,6 +19,7 @@ import single from "./single.vue"
 import multiple from "./multiple.vue"
 import blank from "./blank.vue"
 import bus from "../bus.js"
+import Vue from "vue"
 
 export default {
     name:"questionnaire",
@@ -28,11 +29,14 @@ export default {
         edit:{default:false}
     },
     data(){return {
-        answer:{}
+        answer:{},
+        hidden:[],
+        dirty: false
     }},
     methods:{
         update(index, data){
             this.answer[index] = data;
+            this.dirty = true;
         },
         del(index){
             this.$emit("delete", index);
@@ -62,6 +66,41 @@ export default {
             }).fail(()=>{
                 bus.$emit("showMsg", "danger", "错误: 网络异常")
             });
+        },
+        ifShow(index){
+            var showAfter = this.questionnaire.questions[index].showAfter;
+            if(typeof showAfter == "undefined" || Object.keys(showAfter).length == 0)
+                return true;
+
+            for(var k in showAfter){
+                if(typeof showAfter[k] == "undefined")
+                    break;
+                if(typeof this.answer[k] == "undefined")
+                    break;
+                var ans = this.answer[k];
+                if(this.hidden[k])
+                    break;
+                if(typeof ans == "number" && showAfter[k].indexOf(ans) > -1)
+                    return true;
+                if(typeof ans == "object"){
+                    for(var v in ans){
+                        console.log(v);
+                        if(showAfter[k].indexOf(ans[v]) > -1)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+    },
+    watch:{
+        dirty: function(){
+            if(this.dirty){
+                for(var k = 0; k < this.questionnaire.questions.length; k++){
+                    Vue.set(this.hidden, k, !this.ifShow(k));
+                }
+                this.dirty = false;
+            }
         }
     },
     created(){
@@ -77,6 +116,9 @@ export default {
             }, "json").fail(()=>{
                 bus.$emit("showMsg", "danger", "错误: 网络异常!");
             })
+        }
+        for(var i = 0; i < this.questionnaire.questions.length; i++){
+            this.hidden[i] = !this.ifShow(i);
         }
     }
 }
