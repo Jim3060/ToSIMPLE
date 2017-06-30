@@ -8,6 +8,7 @@ import model.QuestionnaireResult;
 import net.sf.json.JSONObject;
 
 public interface QuestionnaireResultDao {
+	
 	public Integer save(QuestionnaireResult questionnaireResult);
 	
 	public List<QuestionnaireResult> getAllQuestionnaireResultById(String id);
