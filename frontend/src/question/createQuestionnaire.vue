@@ -22,7 +22,7 @@ import {modal} from "vue-strap"
 
 export default {
     props:{
-        questionnaire:{default:{questions:[]}}
+        questionnaire:{default(){return {questions:[]}}}
     },
     data(){return {
         showModal:false,
@@ -70,6 +70,24 @@ export default {
                 }
             });
            
+        }
+    },
+    created(){
+        if(this.$route.name == "n"){
+            var id = this.$route.params.id;
+            var self = this;
+            $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
+                if(data.valid == "1"){
+                    self.questionnaire = data.questionnaire;
+                }else{
+                    bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
+                }
+            }, "json").fail(()=>{
+                bus.$emit("showMsg", "danger", "错误: 网络异常!");
+            })
+        }
+        else{
+            this.questionnaire = {questions:[]};
         }
     }
 }
