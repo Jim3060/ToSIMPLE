@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.apache.struts2.ServletActionContext;
 
+import model.Questionnaire;
+import model.QuestionnaireResult;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import service.QuestionnaireService;
@@ -20,11 +22,14 @@ public class QuestionnaireAction extends BaseAction{
 	private String questionnaireId;
 	private String questionnaire;
 	private String answerPaper;
-	
+	private int status;
 	
 
+	
+
+
 	public String addOrUpdateQuestionnaire() throws Exception{
-		questionnaireId=questionnaireService.addOrUpdateQuestionnaire(questionnaire);
+		questionnaireId=questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire));
 		JSONObject result = new JSONObject();
 		result.put("questionnaireId", questionnaireId);
 		ServletActionContext.getResponse().getWriter().print(result);
@@ -32,48 +37,46 @@ public class QuestionnaireAction extends BaseAction{
 	}
 
 	
-	
-	public String addQuestionnaire() throws Exception {
-		return questionnaireService.addQuestionnaire(questionnaire);//objectId
-	}
-	
-	
-	
 	public String findAQuestionnaire() throws IOException{
-		questionnaireId="5954b29d37fac38fdc65727c";
-		if (questionnaireId==null){
-			JSONObject result = new JSONObject();
-			result.put("valid", '0');
-			ServletActionContext.getResponse().getWriter().print(result);
-			return null;
+		//questionnaireId="5954b29d37fac38fdc65727c";
+		String valid="1";
+		String questionnairestr=null;
+		if (questionnaireId==null){valid="0";}
+		if (questionnaireService.findQuestionnaireById(questionnaireId)==null){
+			valid="0";
 		}
-		String questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
-		String valid="1";
-		if (questionnaire==null){valid="0";}
+		else {
+			questionnairestr=questionnaireService.findQuestionnaireById(questionnaireId).getQuestionnaire();
+		}
+		
 		JSONObject result = new JSONObject();
 		result.put("valid", valid);
-		result.put("questionnaire", questionnaire);
+		result.put("questionnaire", questionnairestr);
 		ServletActionContext.getResponse().getWriter().print(result);
 		return null;
 	}
 	
-	public String updateQuestionnaire() throws IOException{
-		//OBJtest=(questionnaireService.findQuestionnaireById("595215c837fac36943ff8f26")).toString();
-		int flag=questionnaireService.updateQuestionnaire(questionnaireId,questionnaire);
+	public String setQuestionnaireStatus() throws IOException{
 		String valid="1";
-		if (flag==1){valid="0";}
-		JSONObject result = new JSONObject();
-		result.put("valid", valid);
-		ServletActionContext.getResponse().getWriter().print(result);
+		if (questionnaireId==null){valid="0";}
+		Questionnaire questionnaireS=questionnaireService.findQuestionnaireById(questionnaireId);
+		if (questionnaireS==null){
+			valid="0";
+		}
+		else {
+			questionnaireS.setStatus(status);
+			questionnaireService.addOrUpdateQuestionnaire(questionnaireS);
+		}
+		ServletActionContext.getResponse().getWriter().print(valid);
 		return null;
 	}
 	
-	public String saveAnAnswerPaper() throws IOException{
+	public String addQuestionnaireResult() throws IOException{
 		if (answerPaper==null){//data not fetched, fail
 			ServletActionContext.getResponse().getWriter().print('0');
 			return null;
 		}
-		questionnaireService.addQuestionnaireResult(answerPaper, request());
+		questionnaireService.addQuestionnaireResult(new QuestionnaireResult(answerPaper, request()));
 		ServletActionContext.getResponse().getWriter().print('1');//success
 		return null;
 	}
@@ -115,7 +118,14 @@ public class QuestionnaireAction extends BaseAction{
 		this.questionnaireId = questionnaireId;
 	}
 
+	public int getStatus() {
+		return status;
+	}
 
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
 
 	
 

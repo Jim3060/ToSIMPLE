@@ -20,7 +20,6 @@ import multiple from "./multiple.vue"
 import blank from "./blank.vue"
 import bus from "../bus.js"
 import Vue from "vue"
-
 export default {
     name:"questionnaire",
     components:{single, multiple, blank},
