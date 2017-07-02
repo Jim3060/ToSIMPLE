@@ -39,11 +39,15 @@
                     <connectItem @update="update" @cancel="delCon($event)" :questionnaire="questionnaire" :index="index" :idx="key"></connectItem>
                 </li>
                 <li v-if="newItem" class="list-group-item">
-                    第<input v-model.number="newIdx" style="width:50px;"></input>题
+                    第
+                    <select v-model.number="newIdx">
+                        <option v-for="i in connectAccessable" :key="i">{{i}}</option>    
+                    </select>
+                    题
                     <button @click="addCon()" class="btn btn-success btn-sm">确定</button>
                     <button @click="newItem=false" class="btn btn-warning btn-sm">取消</button>
                 </li>
-                <li @click="newItem=true" class="list-group-item">新增关联</li>
+                <li v-show="connectAccessable.length > 0 && !newItem" @click="newItem=true" class="list-group-item">新增关联</li>
             </ul> 
         </div>
         <div>
@@ -76,7 +80,8 @@ export default {
         buffer:"",
         connect: false,
         newItem: false,
-        newIdx: 0
+        newIdx: 0,
+        connectAccessable:[]
     }},
     methods:{
         del(index){
@@ -105,17 +110,15 @@ export default {
         },
         delCon(idx){
             Vue.delete(this.showAfter, idx);
+            this.connectAccessable.push(parseInt(idx)+1);
         },
         addCon(){
             var idx = this.newIdx - 1;
             this.newItem = false;
             Vue.set(this.showAfter, idx, new Array());
+            Vue.delete(this.connectAccessable, this.connectAccessable.indexOf(idx+1)); 
         },
         update(idx, index, select){
-            console.log("update");
-            /*if(index >= 0){
-                this.questionnaire.questions[index].showAfter[idx] = select
-            }*/
             if(select.length > 0){
                 this.showAfter[idx] = select;
                 this.newItem = false;
@@ -141,13 +144,17 @@ export default {
     },
     created(){ 
         if( Object.keys(this.questionnaire).length > 0 && this.index > -1){
-            console.log("call");
             this.title = this.questionnaire.questions[this.index].questionTitle;
             this.type = this.types[this.questionnaire.questions[this.index].type];
             this.limit = this.questionnaire.questions[this.index].limit==undefined?0:this.questionnaire.questions[this.index].limit;
             this.options = this.questionnaire.questions[this.index].choices == undefined?{}:this.questionnaire.questions[this.index].choices;
             this.showAfter = this.questionnaire.questions[this.index].showAfter == undefined?{}:this.questionnaire.questions[this.index].showAfter;
             this.connect = Object.keys(this.showAfter).length > 0; 
+        }
+        var questions = this.questionnaire.questions;
+        for(var i in questions){
+            if((this.index == -1 || i < this.index) && questions[i].type < 2 && Object.keys(this.showAfter).indexOf(i) == -1)
+                this.connectAccessable.push(parseInt(i)+1);
         }
     }
     

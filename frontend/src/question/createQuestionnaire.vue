@@ -80,6 +80,16 @@ export default {
                 }
             });
            
+        },
+        publish(status){
+            $.post("setQuestionnaireStatus", {questionnaireId: this.questionnaire.objectId, status: status}, data=>{
+                if(data == '1' || data == 1)
+                    bus.$emit("showMsg", "success", "操作成功");
+                else
+                    bus.$emit("showMsg", "warning", "操作失败");
+            }).fail(()=>{
+                bus.$emit("showMsg", "danger", "网络异常");
+            })
         }
     },
     created(){

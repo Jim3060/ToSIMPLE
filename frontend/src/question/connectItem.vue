@@ -51,9 +51,6 @@ export default {
                 this.select = {};
             }
         },
-        idx_show(){
-            this.idx = this.idx_show - 1;
-        },
         select(){
             this.$emit("update", this.idx, this.index, this.select);
         }
