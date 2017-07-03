@@ -31,11 +31,11 @@ public class QuestionnaireResultDaoImpl implements QuestionnaireResultDao {
         return this.mongoTemplate;
     }
     
-	public Integer save(DBObject questionnaireResultDB) {
+	public Integer save(QuestionnaireResult questionnaireResult) {
 		//insert the json
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("QuestionnaireResults");
-		questionnaires.insert(questionnaireResultDB);
+		questionnaires.insert(questionnaireResult.getQuestionnaireResultDB());
 		return 1;
 	}
 

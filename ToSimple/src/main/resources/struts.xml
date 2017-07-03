@@ -34,6 +34,16 @@
 			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
 		</action>
 		
+		<action name="fetchRSA" class="action.UserAction" method="fetchRSA">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
+		<action name="login" class="action.UserAction" method="login">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
+		
+		
 		<!-- Questionnaire -->
 		
 		<action name="addQuestionnaire" class="action.QuestionnaireAction" method="addOrUpdateQuestionnaire">
@@ -45,8 +55,13 @@
 			<result name="error">/questionnaire/jsp/testMongo.jsp</result>
 		</action>
 		
-		<action name="SaveAnAnswerPaper" class="action.QuestionnaireAction" method="saveAnAnswerPaper">
+		<action name="SaveAnAnswerPaper" class="action.QuestionnaireAction" method="addQuestionnaireResult">
 			<result name="success">/out/index.html</result>
+		</action>
+		
+		<action name="setQuestionnaireStatus" class="action.QuestionnaireAction" method="setQuestionnaireStatus">
+			<result name="success">/questionnaire/jsp/testMongo.jsp</result>
+			<result name="error">/questionnaire/jsp/testMongo.jsp</result>
 		</action>
 		
 		

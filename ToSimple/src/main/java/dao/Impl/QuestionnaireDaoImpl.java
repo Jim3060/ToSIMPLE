@@ -15,6 +15,7 @@ import com.mongodb.util.JSON;
 import org.bson.types.ObjectId;
 
 import dao.QuestionnaireDao;
+import model.Questionnaire;
 import net.sf.json.JSONObject;
 
 
@@ -29,8 +30,9 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         return this.mongoTemplate;
     }
     
-	public String save(DBObject questionnaireDB) {
+	public String save(Questionnaire questionnaire) {
 		//insert the json
+		DBObject questionnaireDB=questionnaire.getQuestionnaireDB();
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
 		questionnaires.insert(questionnaireDB);
@@ -45,7 +47,8 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 	}
 
 	@Override
-	public String update(String id, DBObject questionnaireDB) {
+	public String update(String id, Questionnaire questionnaire) {
+		DBObject questionnaireDB=questionnaire.getQuestionnaireDB();
 		DBObject dbObj;
 		BasicDBObject query = new BasicDBObject();
 	    query.put("_id", new ObjectId(id));   
@@ -59,15 +62,25 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 	}
 
 	@Override
-	public DBObject findQuestionnaireById(String id) {
+	public Questionnaire findQuestionnaireById(String id) {
 		DB db = mongoTemplate.getDb();
 		DBCollection questionnaires = db.getCollection("Questionnaires");
 		BasicDBObject query = new BasicDBObject();
-	    query.put("_id", new ObjectId(id));
+		try{
+			query.put("_id", new ObjectId(id));
+		}catch(Exception e){
+			return null;
+		}
 	    DBObject dbObj = questionnaires.findOne(query);
 	    if (dbObj==null){return null;}
 		// TODO Auto-generated method stub
-		return dbObj;
+		return new Questionnaire(dbObj);
+	}
+
+	@Override
+	public Questionnaire findQuestionnaireByUser(int id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
