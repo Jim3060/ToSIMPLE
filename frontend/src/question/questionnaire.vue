@@ -2,7 +2,7 @@
     <div class="questionnaire">
         <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
         <div>
-            <div v-for="(question, index) in questionnaire.questions" v-if="!hidden[index]" :key="question">
+            <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
                 <button v-if="edit" class="btn btn-success" @click="change(index)">修改</button>
                 <button v-if="edit" class="btn btn-danger" @click="del(index)">删除</button>
                 <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" @update="update(index, $event)"></single>

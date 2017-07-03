@@ -38,6 +38,10 @@
 			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
 		</action>
 		
+		<action name="login" class="action.UserAction" method="login">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
 		
 		
 		<!-- Questionnaire -->

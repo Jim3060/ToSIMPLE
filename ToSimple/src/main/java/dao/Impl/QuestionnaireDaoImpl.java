@@ -77,4 +77,10 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 		return new Questionnaire(dbObj);
 	}
 
+	@Override
+	public Questionnaire findQuestionnaireByUser(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

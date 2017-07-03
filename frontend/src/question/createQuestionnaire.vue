@@ -1,6 +1,10 @@
 <template>
     <div class="creator">
         <span class="edit-title">问卷标题: </span><input v-model="title"></input>
+        <div>
+            <button @click="publish(1)" v-show="questionnaire.status == 0" class="btn btn-success">发布问卷</button>
+            <button @click="publish(0)" v-show="questionnaire.status == 1" class="btn btn-warning">取消发布</button>
+        </div>
         <p id="questionnaireId" type="hidden"> </p>
         <questionnaire :questionnaire="questionnaire" :edit="true" @delete="del($event)" @edit="edit($event)"></questionnaire>
         <button class="btn btn-primary" @click="showModal=true">添加问题</button>
@@ -8,7 +12,7 @@
         <modal :show="showModal" effect="zoom" :backdrop="false" >
             <div slot="modal-header" class="modal-header"><h4>编辑问题</h4></div>
             <div slot="modal-body" class="modal-body">
-                <create v-if="showModal" :question="question" @submit="add($event)" @cancel="showModal=false"></create>
+                <create v-if="showModal" :questionnaire="questionnaire" :index="idx" @submit="add($event)" @cancel="cancel($event)"></create>
             </div>
             <div slot="modal-footer"></div>
         </modal>
@@ -19,6 +23,7 @@
 import create from "./createQuestion.vue"
 import questionnaire from "./questionnaire.vue"
 import {modal} from "vue-strap"
+import bus from "../bus.js"
 
 export default {
     props:{
@@ -44,6 +49,10 @@ export default {
         del(index){
             this.questionnaire.questions.splice(index, 1);
         },
+        cancel(){
+            this.idx = -1;
+            this.showModal = false;
+        },
         create(){
             this.idx = -1;
             this.question = {};
@@ -67,6 +76,7 @@ export default {
                 dataType: "json",
                 success: function(data){
                     self.questionnaire["questionnaireId"] = data.questionnaireId;
+                    bus.$emit("showMsg","success","提交成功");
                 }
             });
            
@@ -87,7 +97,7 @@ export default {
             })
         }
         else{
-            this.questionnaire = {questions:[]};
+            //this.questionnaire = {questions:[]};
         }
     }
 }
@@ -95,5 +105,6 @@ export default {
 
 <style>
     .edit-title{font-size:20px;}
-    .creator>span, .creator>button{margin-left:20px;}
+    .creator>span, .creator>button {margin-left:20px;}
+    .creator>div>button{margin:20px;}
 </style>
