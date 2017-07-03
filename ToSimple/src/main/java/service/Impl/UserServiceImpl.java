@@ -1,7 +1,15 @@
 package service.Impl;
 
+import java.util.Date;
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
+import org.apache.struts2.ServletActionContext;
+
+import ToolUtils.MD5Utils;
+import ToolUtils.MailUtils;
 import dao.UserDao;
 import model.User;
 import service.UserService;
@@ -13,7 +21,7 @@ public class UserServiceImpl implements UserService{
 		this.userDao = userDao;
 	}
 	
-	public Integer addUser(User user) {
+	public Long addUser(User user) {
 		return userDao.save(user);
 	}
 
@@ -25,12 +33,49 @@ public class UserServiceImpl implements UserService{
 		userDao.update(user);
 	}
 
-	public User getUserById(int id) {
+	public User getUserById(long id) {
 		return userDao.getUserById(id);
 	}
 
 	public List<User> getAllUsers() {
 		return userDao.getAllUsers();
+	}
+
+	@Override
+	public Long registerRequest(User user) throws AddressException, MessagingException {
+		user.setValid(0);
+		return userDao.save(MailUtils.activateMail(user));
+	}
+	
+	public int validateEmail(String email){
+		return 0;
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		// TODO Auto-generated method stub
+		return userDao.getUserByEmail(email);
+		
+	}
+
+	@Override
+	public int registerValidate(String email, String token) {
+		
+		User userFetch=getUserByEmail(email);
+		if (userFetch.getToken().equals(token)){
+			Date now=new Date();
+			if (now.getTime()<=userFetch.getCreateTime().getTime()){
+				userFetch.setValid(1);
+				String to  = userFetch.getEmail();
+		        Long curTime = System.currentTimeMillis();
+		        String token2 = to+curTime;
+		        userFetch.setToken(MD5Utils.getEncoded(token2));
+				updateUser(userFetch);
+				return 1;
+			}
+			else {return -1;}
+		}
+		return -2;
 	}
 
 }

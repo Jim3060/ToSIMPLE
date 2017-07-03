@@ -14,8 +14,8 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import dao.UserDao;
 
 public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
-	public Integer save(User user) {
-		return (Integer) getHibernateTemplate().save(user);
+	public Long save(User user) {
+		return (Long) getHibernateTemplate().save(user);
 	}
 
 	public void delete(User user) {
@@ -26,10 +26,18 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 		getHibernateTemplate().merge(user);
 	}
 
-	public User getUserById(int id) {
+	public User getUserById(long id) {
 		@SuppressWarnings("unchecked")
 		List<User> users = (List<User>) getHibernateTemplate().find(
 				"from User as u where u.id=?", id);
+		User user = users.size() > 0 ? users.get(0) : null;
+		return user;
+	}
+	
+	public User getUserByEmail(String email) {
+		@SuppressWarnings("unchecked")
+		List<User> users = (List<User>) getHibernateTemplate().find(
+				"from User as u where u.email=?", email);
 		User user = users.size() > 0 ? users.get(0) : null;
 		return user;
 	}
