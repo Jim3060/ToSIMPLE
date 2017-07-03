@@ -13,6 +13,8 @@ public interface QuestionnaireResultDao {
 	
 	public List<QuestionnaireResult> getAllQuestionnaireResultById(String id);
 	
+	
+	
 
 //	public User getQuestionnaireById(int id);
 //

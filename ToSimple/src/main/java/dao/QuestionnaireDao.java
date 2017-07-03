@@ -13,6 +13,8 @@ public interface QuestionnaireDao {
 	public String update(String id, Questionnaire questionnaire);
 	
 	public Questionnaire findQuestionnaireById(String id);
+	
+	public Questionnaire findQuestionnaireByUser(int id);
 
 //	public User getQuestionnaireById(int id);
 //

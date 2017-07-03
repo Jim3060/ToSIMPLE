@@ -34,6 +34,16 @@
 			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
 		</action>
 		
+		<action name="fetchRSA" class="action.UserAction" method="fetchRSA">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
+		<action name="login" class="action.UserAction" method="login">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
+		
+		
 		<!-- Questionnaire -->
 		
 		<action name="addQuestionnaire" class="action.QuestionnaireAction" method="addOrUpdateQuestionnaire">

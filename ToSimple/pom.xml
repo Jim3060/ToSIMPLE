@@ -257,7 +257,24 @@
 		    <version>2.4</version>
 		    <classifier>jdk15</classifier>
 		</dependency>
+		
+		<!-- security -->
+	<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+		<dependency>
+		    <groupId>org.bouncycastle</groupId>
+		    <artifactId>bcprov-jdk15on</artifactId>
+		    <version>1.56</version>
+		</dependency>
+		
+		<dependency>
+	      <groupId>commons-codec</groupId>
+	      <artifactId>commons-codec</artifactId>
+	      <version>1.4</version>
+	      <scope>compile</scope>
+	    </dependency>
+	
 
+	
 		
 
 	</dependencies>
