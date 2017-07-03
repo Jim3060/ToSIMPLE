@@ -30,6 +30,7 @@ public class QuestionnaireAction extends BaseAction{
 
 	public String addOrUpdateQuestionnaire() throws Exception{
 		questionnaireId=questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire));
+		
 		JSONObject result = new JSONObject();
 		result.put("questionnaireId", questionnaireId);
 		ServletActionContext.getResponse().getWriter().print(result);
