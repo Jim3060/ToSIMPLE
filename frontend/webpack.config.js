@@ -20,7 +20,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader'
+        loader: 'style-loader!css-loader'
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
+        loader: 'file-loader'
       },
       {
         test: /\.less$/,

@@ -8,18 +8,39 @@ import com.mongodb.util.JSON;
 import net.sf.json.JSONObject;
 
 public class QuestionnaireResult {
-	private JSONObject questionnaireResultJSON;
+	public JSONObject questionnaireResultJSON;
 
 	public QuestionnaireResult(){;}
+	
+	public QuestionnaireResult(String questionnaireResult) {
+		this.questionnaireResultJSON = JSONObject.fromObject(questionnaireResult);
+		if (this.questionnaireResultJSON.get("questionnaireResultId")==null){
+			questionnaireResultJSON.put("questionnaireResultId", "");
+		}
+		
+	}
 	
 	public QuestionnaireResult(String questionnaireResult, HttpServletRequest request) {
 		this.questionnaireResultJSON = JSONObject.fromObject(questionnaireResult);
 		String userIP = request.getHeader("x-forwarded-for");
 		this.questionnaireResultJSON.put("userIP",userIP);
+		if (this.questionnaireResultJSON.get("questionnaireResultId")==null){
+			questionnaireResultJSON.put("questionnaireResultId", "");
+		}
+	}
+	
+	public QuestionnaireResult(DBObject questionnaireResultDB ) {
+		if (questionnaireResultDB==null){return;}
+		questionnaireResultDB.put("questionnaireId", questionnaireResultDB.get("_id").toString());
+		this.questionnaireResultJSON = JSONObject.fromObject(questionnaireResultDB.toString());
 	}
 	
 	public DBObject getQuestionnaireResultDB(){
 		return (DBObject)JSON.parse(this.questionnaireResultJSON.toString());
+	}
+	
+	public String getQuestionnaireResult(){
+		return this.questionnaireResultJSON.toString();
 	}
 	
 	

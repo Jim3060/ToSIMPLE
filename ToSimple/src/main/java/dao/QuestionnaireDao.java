@@ -8,7 +8,7 @@ import net.sf.json.JSONObject;
 public interface QuestionnaireDao {
 	public String save(Questionnaire questionnaire);
 
-	public void delete();
+	public String delete(String id);
 
 	public String update(String id, Questionnaire questionnaire);
 	

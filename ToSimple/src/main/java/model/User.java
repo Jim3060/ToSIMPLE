@@ -1,14 +1,42 @@
 package model;
 
+import java.util.Date;
+
 public class User {
-	private Integer id;
+	private Long id;
 	private String userName;
 	private String password;
 	private Integer role;
 	private String email;
+	private int valid;
+	private String token;
+	private Date createTime;
 
-	public User(Integer id, String userName, String password, Integer role, String email) {
+
+
+	public User(Long id, String userName, String password, Integer role, String email, int valid, String token,
+			Date createTime) {
 		this.id = id;
+		this.userName = userName;
+		this.password = password;
+		this.role = role;
+		this.email = email;
+		this.valid = valid;
+		this.token = token;
+		this.createTime = createTime;
+	}
+
+
+	public User(Long id, String userName, String password, Integer role, String email) {
+		this.id = id;
+		this.userName = userName;
+		this.password = password;
+		this.role = role;
+		this.email = email;
+	}
+	
+	public User( String userName, String password, Integer role, String email) {
+		
 		this.userName = userName;
 		this.password = password;
 		this.role = role;
@@ -20,11 +48,11 @@ public class User {
 	}
 	
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -58,5 +86,34 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public int getValid() {
+		return valid;
+	}
+
+
+	public void setValid(int valid) {
+		this.valid = valid;
+	}
+
+
+	public String getToken() {
+		return token;
+	}
+
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

@@ -6,7 +6,7 @@
         </select>-->
         {{idx_show}}
         <span>题</span>
-        <button @click="cancel()" class="btn btn-danger btn-sm">删除</button>
+        <el-button type="danger" size="small" @click="cancel()" >删除</el-button>
         <div v-for="i in num" :key="i" class="options">
             <input type="checkbox" v-model="select" :value="i-1" :disabled="!edit"></input>
             <label>{{questionnaire.questions[idx].choices[i-1]}}</label>
@@ -50,9 +50,6 @@ export default {
             catch(err){
                 this.select = {};
             }
-        },
-        idx_show(){
-            this.idx = this.idx_show - 1;
         },
         select(){
             this.$emit("update", this.idx, this.index, this.select);

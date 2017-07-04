@@ -1,14 +1,20 @@
 package action;
 
+import java.io.IOException;
 import java.security.KeyPair;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.servlet.http.HttpSession;
 import org.apache.struts2.ServletActionContext;
 
+import ToolUtils.MD5Utils;
 import model.RSAUtils;
 import model.User;
 import net.sf.json.JSONObject;
@@ -23,17 +29,39 @@ public class UserAction extends BaseAction{
 	}
 	
 	private String passwordSECURE;
-	private int id;
+	private long id;
 	private String userName;
 	private String password;
 	private Integer role;
 	private String email;
+	private String token;//can be used in many way
 	public List<User> users= new ArrayList<User> ();
 	
 	public String getAllUsers() throws Exception {
 		//get users
 		users = userService.getAllUsers();
 		return SUCCESS;
+	}
+	
+	public String registerRequest() throws AddressException, MessagingException{
+		
+		userName="TEST";
+		password="1234";
+		role=1;
+		email="1072207255@qq.com";
+		
+		User user= new User(userName,password,role,email);
+		userService.registerRequest(user);
+		return null;
+	}
+	
+	public String registerValidate() throws IOException{
+		
+		
+		token=request().getParameter("token");
+		email=request().getParameter("email");
+		ServletActionContext.getResponse().getWriter().print(userService.registerValidate(email, token));
+		return null;
 	}
 	
 	public String fetchRSA() throws Exception{
@@ -55,19 +83,23 @@ public class UserAction extends BaseAction{
 	public String login() throws Exception{
 		HttpSession session =session();
 		RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+		System.out.println(privateKey);
+		System.out.println(passwordSECURE);
+		System.out.println(userName);
 		String passwordInput=RSAUtils.decryptBase64(passwordSECURE, privateKey);
 		System.out.println(passwordInput);
+		ServletActionContext.getResponse().getWriter().print(passwordInput);
 		return null;
 	}
 	
 	
 	//helper
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
