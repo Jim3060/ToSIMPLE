@@ -65,6 +65,11 @@
 		<property name="questionnaireDao" ref="questionnaireDao"></property>
 		<property name="questionnaireResultDao" ref="questionnaireResultDao"></property>
 	</bean>
+	<bean id="statisticsService" class="service.Impl.StatisticsServiceImpl">
+		<!-- DAO -->
+		<property name="questionnaireDao" ref="questionnaireDao"></property>
+		<property name="questionnaireResultDao" ref="questionnaireResultDao"></property>
+	</bean>
 	
 	
 

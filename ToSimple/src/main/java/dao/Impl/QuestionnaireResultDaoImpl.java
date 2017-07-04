@@ -52,7 +52,7 @@ public class QuestionnaireResultDaoImpl implements QuestionnaireResultDao {
 		DBCollection questionnaires = db.getCollection("QuestionnaireResults");
 		BasicDBObject query = new BasicDBObject();
 		
-		query.put("ObjectId", id);
+		query.put("questionnaireId", id);
 	    DBCursor dbObj = questionnaires.find(query);
 	    if (dbObj==null){return null;}
 	    Iterator<DBObject> it=dbObj.iterator();
