@@ -4,9 +4,9 @@
 
 <hibernate-mapping>
 	<class name="model.User" table="User">
-		<id name="id" type="integer">
+		<id name="id" type="long">
 			<column name="id" />
-			<generator class="assigned" />
+			<generator class="native" />
 		</id>
 		<property name="userName" type="java.lang.String">
 			<column name="userName" />
@@ -15,6 +15,9 @@
 			<column name="password" />
 		</property>
         <property name="role" column="role"   type="integer"  length="11"/>
-        <property name="email" column="email"  type="java.lang.String"  length="30"/>
+        <property name="email" column="email"  type="java.lang.String"  length="255"/>
+        <property name="token" column="token"  type="java.lang.String"  length="255"/>
+        <property name="createTime" column="createTime"  type="java.util.Date" />
+        <property name="valid" column="valid"  type="int" />
 	</class>
 </hibernate-mapping>

@@ -42,6 +42,14 @@
 			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
 		</action>
 		
+		<action name="registerRequest" class="action.UserAction" method="registerRequest">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
+		<action name="registerValidate" class="action.UserAction" method="registerValidate">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
+		
 		
 		
 		<!-- Questionnaire -->
