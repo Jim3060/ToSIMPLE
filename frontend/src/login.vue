@@ -24,8 +24,8 @@
                 </form>
             </div>
             <div slot="modal-footer" class="modal-footer">
-                <button class="btn btn-default" @click="showLoginModal=false">取消</button>
-                <button class="btn btn-success" @click="login()">登录</button>
+                <el-button @click="showLoginModal=false">取消</el-button>
+                <el-button type="primary" @click="login()">登录</el-button>
             </div>
         </modal>
         <modal :show.sync="showRegModal" effect="zoom" :backdrop="false" >
@@ -51,8 +51,8 @@
                 </form>
             </div>
             <div slot="modal-footer" class="modal-footer">
-                <button class="btn btn-default" @click="showRegModal=false">取消</button>
-                <button class="btn btn-success" @click="register()">注册</button>
+                <el-button  @click="showRegModal=false">取消</el-button>
+                <el-button type="primary" @click="register()">注册</el-button>
             </div>
         </modal>
 
@@ -103,13 +103,13 @@
                         localStorage.user = JSON.stringify(self.user);
                         self.ifLog = true;
                         self.showLoginModal = false;
-                        bus.$emit("showMsg", "success", "登录成功");
+                        this.$message.success("登录成功");
                         self.$emit("login");
                     }else{
-                        bus.$emit("showMsg", "danger", "用户名不存在或密码错误");
+                        this.$message.error("用户名或密码错误");
                     }
                 }).fail(()=>{
-                    bus.$emit("showMsg", "danger", "登录失败：网络异常");
+                    this.$message.error("网络异常");
                 })
 
             },
@@ -119,12 +119,12 @@
                 localStorage.removeItem("user");
                 this.$router.push({path:"/index"});
                 this.$emit("logout");
-                bus.$emit("showMsg", "info", "您已登出");
+                this.$message.info("您已登出");
             },
             register(){
                 var self = this;
                 if(this.regBuf.name == "" || this.regBuf.password1 == "" || this.regBuf.password1 != this.regBuf.password2 || this.regBuf.email == ""){
-                    bus.$emit("showMsg", "warning", "请检查您的输入");
+                    this.$message.error("请检查您的输入");
                     return ;
                 }
                 var postBody = {};
@@ -139,12 +139,12 @@
                         self.ifLog = true;
                         self.showRegModal = false;
                         self.$emit("login");
-                        bus.$emit("showMsg", "success", "注册成功");
+                        this.$message.success("注册成功");
                     }else{
-                        bus.$emit("showMsg", "danger", "注册失败：用户名重复");
+                        this.$message.error("用户名或邮箱重复");
                     }
                 }).fail(()=>{
-                    bus.$emit("showMsg", "danger", "注册失败：网络异常");
+                    this.$message.error("网络异常");
                 })
             },
             getPublicKey(){
