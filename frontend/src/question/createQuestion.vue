@@ -2,11 +2,16 @@
     <div class="create">
         <div>
             问题类型: 
-            <select v-model="type">
+            <!--<select v-model="type">
                 <option>单选</option>
                 <option>多选</option>
                 <option>填空</option>
-            </select>
+            </select>-->
+            <el-radio-group v-model="type" >
+                <el-radio-button label="单选" style="font-weight:400"></el-radio-button>
+                <el-radio-button label="多选" style="font-weight:400"></el-radio-button>
+                <el-radio-button label="填空" style="font-weight:400"></el-radio-button>
+            </el-radio-group>
         </div>
         <div>
             题目: <input v-model="title"></input>
@@ -20,35 +25,45 @@
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
                     <div v-show="edit==index">
                         <input class="option" v-model="buffer"></input>
-                        <button class="btn btn-success btn-sm" @click="save(index)">保存</button>
-                        <button class="btn btn-warning btn-sm" @click="can(index)">取消</button>
+                        <el-button size="small" type="primary" @click="save(index)">保存</el-button>
+                        <el-button size="small" @click="can(index)">取消</el-button>
                     </div>
                     <div v-show="edit!=index">
                         <label class="option">{{option}}</label>
-                        <button class="btn btn-success btn-sm" @click="change(index)">修改</button>
-                        <button class="btn btn-danger btn-sm" @click="del(index)">删除</button>
+                        <el-button size="small" type="primary" @click="change(index)">修改</el-button>
+                        <el-button size="small" type="danger" @click="del(index)">删除</el-button>
                     </div>
                 </li>
                 <li v-if="edit==-1" class="list-group-item" @click="add()">新增选项</li>
             </ul>
         </div>
-        <input type="checkbox" v-model="connect">题目关联</input>
+        <div>
+             <span>题目关联: </span>
+             <el-tooltip :disabled="connectAccessable.length>0 || Object.keys(showAfter).length>0" content="没有可以关联的问题" placement="right">
+                <el-switch :disabled="connectAccessable.length==0 && Object.keys(showAfter).length==0" v-model="connect" ></el-switch>
+             </el-tooltip>
+        </div>
+        <!--<input type="checkbox" v-model="connect">题目关联</input>-->
         <div v-show="connect">
             <ul class="list-group">
                 <li class="list-group-item" v-for="(value, key) in showAfter" :key="key">
                     <connectItem @update="update" @cancel="delCon($event)" :questionnaire="questionnaire" :index="index" :idx="key"></connectItem>
                 </li>
                 <li v-if="newItem" class="list-group-item">
-                    第<input v-model.number="newIdx" style="width:50px;"></input>题
-                    <button @click="addCon()" class="btn btn-success btn-sm">确定</button>
-                    <button @click="newItem=false" class="btn btn-warning btn-sm">取消</button>
+                    第
+                    <select v-model.number="newIdx">
+                        <option v-for="i in connectAccessable" :key="i">{{i}}</option>    
+                    </select>
+                    题
+                    <el-button size="small" type="primary" @click="addCon()">确定</el-button>
+                    <el-button size="small" @click="newItem=false">取消</el-button>
                 </li>
-                <li @click="newItem=true" class="list-group-item">新增关联</li>
+                <li v-show="connectAccessable.length > 0 && !newItem" @click="newItem=true" class="list-group-item">新增关联</li>
             </ul> 
         </div>
         <div>
-            <button @click="submit()" class="btn btn-success">确认</button>
-            <button @click="cancel()" class="btn btn-warning">取消</button>
+            <el-button @click="submit()" type="primary">确认</el-button>
+            <el-button @click="cancel()">取消</el-button>
         </div>
     </div>
 </template>
@@ -57,6 +72,7 @@
 import connectItem from "./connectItem.vue"
 import Vue from "vue"
 import bus from "../bus.js"
+import Element from "element-ui"
 
 export default {
     components:{connectItem},
@@ -76,7 +92,8 @@ export default {
         buffer:"",
         connect: false,
         newItem: false,
-        newIdx: 0
+        newIdx: 0,
+        connectAccessable:[]
     }},
     methods:{
         del(index){
@@ -105,17 +122,15 @@ export default {
         },
         delCon(idx){
             Vue.delete(this.showAfter, idx);
+            this.connectAccessable.push(parseInt(idx)+1);
         },
         addCon(){
             var idx = this.newIdx - 1;
             this.newItem = false;
             Vue.set(this.showAfter, idx, new Array());
+            Vue.delete(this.connectAccessable, this.connectAccessable.indexOf(idx+1)); 
         },
         update(idx, index, select){
-            console.log("update");
-            /*if(index >= 0){
-                this.questionnaire.questions[index].showAfter[idx] = select
-            }*/
             if(select.length > 0){
                 this.showAfter[idx] = select;
                 this.newItem = false;
@@ -141,7 +156,6 @@ export default {
     },
     created(){ 
         if( Object.keys(this.questionnaire).length > 0 && this.index > -1){
-            console.log("call");
             this.title = this.questionnaire.questions[this.index].questionTitle;
             this.type = this.types[this.questionnaire.questions[this.index].type];
             this.limit = this.questionnaire.questions[this.index].limit==undefined?0:this.questionnaire.questions[this.index].limit;
@@ -149,14 +163,19 @@ export default {
             this.showAfter = this.questionnaire.questions[this.index].showAfter == undefined?{}:this.questionnaire.questions[this.index].showAfter;
             this.connect = Object.keys(this.showAfter).length > 0; 
         }
+        var questions = this.questionnaire.questions;
+        for(var i in questions){
+            if((this.index == -1 || i < this.index) && questions[i].type < 2 && Object.keys(this.showAfter).indexOf(i) == -1)
+                this.connectAccessable.push(parseInt(i)+1);
+        }
     }
     
 }
 </script>
 
 <style>
-    .create, .create>div, .create>input{margin:20px;}
+    .create, .create>div, .create>input{margin:10px;}
     .limit{width:50px;}
     .option{width:300px;}
+    .el-button{margin-left:0px!important;}
 </style>
-

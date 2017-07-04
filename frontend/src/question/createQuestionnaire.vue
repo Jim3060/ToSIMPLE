@@ -26,14 +26,12 @@ import {modal} from "vue-strap"
 import bus from "../bus.js"
 
 export default {
-    props:{
-        questionnaire:{default(){return {questions:[]}}}
-    },
     data(){return {
         showModal:false,
         question:{},
         idx: -1,
-        title:""
+        title:"",
+        questionnaire:{questions:[]}
     }},
     components:{modal, questionnaire, create},
     methods:{
@@ -77,28 +75,55 @@ export default {
                 success: function(data){
                     self.questionnaire["questionnaireId"] = data.questionnaireId;
                     bus.$emit("showMsg","success","提交成功");
+                    this.$router.push({name:'n', params:{id: data.questionnaireId}});
                 }
             });
            
+        },
+        publish(status){
+            $.post("setQuestionnaireStatus", {questionnaireId: this.questionnaire.questionnaireId, status: status}, data=>{
+                if(data == '1' || data == 1){
+                    bus.$emit("showMsg", "success", "操作成功");
+                    this.questionnaire.status = status;
+                }
+                else
+                    bus.$emit("showMsg", "warning", "操作失败");
+            }).fail(()=>{
+                bus.$emit("showMsg", "danger", "网络异常");
+            })
+        },
+        loadQuestionnaire(){
+            if(this.$route.name == "n"){
+                var id = this.$route.params.id;
+                var self = this;
+                $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
+                    if(data.valid == "1"){
+                        self.questionnaire = data.questionnaire;
+                        self.title = data.questionnaire.paperTitle;
+                    }else{
+                        bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
+                    }
+                }, "json").fail(()=>{
+                    //bus.$emit("showMsg", "danger", "错误: 网络异常!");
+                    this.$message.error({
+                        title:"错误",
+                        message: "网络异常"
+                    });
+                })
+            }
+
+        }
+    },
+    watch:{
+        '$route'(to, from){
+            if(to.path == "/n"){
+                this.questionnaire = {questions:[]};
+            }else
+                this.loadQuestionnaire();
         }
     },
     created(){
-        if(this.$route.name == "n"){
-            var id = this.$route.params.id;
-            var self = this;
-            $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
-                if(data.valid == "1"){
-                    self.questionnaire = data.questionnaire;
-                }else{
-                    bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
-                }
-            }, "json").fail(()=>{
-                bus.$emit("showMsg", "danger", "错误: 网络异常!");
-            })
-        }
-        else{
-            //this.questionnaire = {questions:[]};
-        }
+        this.loadQuestionnaire();
     }
 }
 </script>

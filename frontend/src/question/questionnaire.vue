@@ -109,15 +109,15 @@ export default {
             $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
                 if(data.valid == "1"){
                     self.questionnaire = data.questionnaire;
+                    for(var i = 0; i < this.questionnaire.questions.length; i++){
+                        this.hidden[i] = !this.ifShow(i);
+                    }
                 }else{
                     bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
                 }
             }, "json").fail(()=>{
                 bus.$emit("showMsg", "danger", "错误: 网络异常!");
             })
-        }
-        for(var i = 0; i < this.questionnaire.questions.length; i++){
-            this.hidden[i] = !this.ifShow(i);
         }
     }
 }
