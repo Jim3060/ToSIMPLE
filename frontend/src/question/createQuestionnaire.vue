@@ -104,7 +104,11 @@ export default {
                         bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
                     }
                 }, "json").fail(()=>{
-                    bus.$emit("showMsg", "danger", "错误: 网络异常!");
+                    //bus.$emit("showMsg", "danger", "错误: 网络异常!");
+                    this.$message.error({
+                        title:"错误",
+                        message: "网络异常"
+                    });
                 })
             }
 

@@ -2,11 +2,16 @@
     <div class="create">
         <div>
             问题类型: 
-            <select v-model="type">
+            <!--<select v-model="type">
                 <option>单选</option>
                 <option>多选</option>
                 <option>填空</option>
-            </select>
+            </select>-->
+            <el-radio-group v-model="type" >
+                <el-radio-button label="单选" style="font-weight:400"></el-radio-button>
+                <el-radio-button label="多选" style="font-weight:400"></el-radio-button>
+                <el-radio-button label="填空" style="font-weight:400"></el-radio-button>
+            </el-radio-group>
         </div>
         <div>
             题目: <input v-model="title"></input>
@@ -20,19 +25,25 @@
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
                     <div v-show="edit==index">
                         <input class="option" v-model="buffer"></input>
-                        <button class="btn btn-success btn-sm" @click="save(index)">保存</button>
-                        <button class="btn btn-warning btn-sm" @click="can(index)">取消</button>
+                        <el-button size="small" type="primary" @click="save(index)">保存</el-button>
+                        <el-button size="small" @click="can(index)">取消</el-button>
                     </div>
                     <div v-show="edit!=index">
                         <label class="option">{{option}}</label>
-                        <button class="btn btn-success btn-sm" @click="change(index)">修改</button>
-                        <button class="btn btn-danger btn-sm" @click="del(index)">删除</button>
+                        <el-button size="small" type="primary" @click="change(index)">修改</el-button>
+                        <el-button size="small" type="danger" @click="del(index)">删除</el-button>
                     </div>
                 </li>
                 <li v-if="edit==-1" class="list-group-item" @click="add()">新增选项</li>
             </ul>
         </div>
-        <input type="checkbox" v-model="connect">题目关联</input>
+        <div>
+             <span>题目关联: </span>
+             <el-tooltip :disabled="connectAccessable.length>0 || Object.keys(showAfter).length>0" content="没有可以关联的问题" placement="right">
+                <el-switch :disabled="connectAccessable.length==0 && Object.keys(showAfter).length==0" v-model="connect" ></el-switch>
+             </el-tooltip>
+        </div>
+        <!--<input type="checkbox" v-model="connect">题目关联</input>-->
         <div v-show="connect">
             <ul class="list-group">
                 <li class="list-group-item" v-for="(value, key) in showAfter" :key="key">
@@ -44,15 +55,15 @@
                         <option v-for="i in connectAccessable" :key="i">{{i}}</option>    
                     </select>
                     题
-                    <button @click="addCon()" class="btn btn-success btn-sm">确定</button>
-                    <button @click="newItem=false" class="btn btn-warning btn-sm">取消</button>
+                    <el-button size="small" type="primary" @click="addCon()">确定</el-button>
+                    <el-button size="small" @click="newItem=false">取消</el-button>
                 </li>
                 <li v-show="connectAccessable.length > 0 && !newItem" @click="newItem=true" class="list-group-item">新增关联</li>
             </ul> 
         </div>
         <div>
-            <button @click="submit()" class="btn btn-success">确认</button>
-            <button @click="cancel()" class="btn btn-warning">取消</button>
+            <el-button @click="submit()" type="primary">确认</el-button>
+            <el-button @click="cancel()">取消</el-button>
         </div>
     </div>
 </template>
@@ -61,6 +72,7 @@
 import connectItem from "./connectItem.vue"
 import Vue from "vue"
 import bus from "../bus.js"
+import Element from "element-ui"
 
 export default {
     components:{connectItem},
@@ -162,8 +174,8 @@ export default {
 </script>
 
 <style>
-    .create, .create>div, .create>input{margin:20px;}
+    .create, .create>div, .create>input{margin:10px;}
     .limit{width:50px;}
     .option{width:300px;}
+    .el-button{margin-left:0px!important;}
 </style>
-
