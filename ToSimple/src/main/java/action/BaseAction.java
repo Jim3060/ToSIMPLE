@@ -7,9 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.opensymphony.xwork2.ActionSupport;
-
-public class BaseAction extends ActionSupport {
+public class BaseAction {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,8 +27,4 @@ public class BaseAction extends ActionSupport {
 		return ServletActionContext.getResponse();
 	}
 
-	@Override
-	public String execute() throws Exception {
-		return null;
-	}
 }
