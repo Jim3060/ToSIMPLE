@@ -25,7 +25,9 @@
 			LoginInterceptor中的Action.LOGIN对应找到name
 			<result name="login">/bookstore/jsp/sorry.jsp</result>		
 		</global-results> -->
-
+		<action name="exel" class="action.QuestionnaireAction" method="exel">
+			<result name="success">/questionnaire/jsp/userCRUD.jsp</result>
+		</action>
 		
 		<!-- User -->
 		

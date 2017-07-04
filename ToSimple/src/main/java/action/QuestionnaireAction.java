@@ -9,12 +9,18 @@ import model.QuestionnaireResult;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import service.QuestionnaireService;
+import service.StatisticsService;
 
 public class QuestionnaireAction extends BaseAction{
 	private static final long serialVersionUID = 1L;
 	private QuestionnaireService questionnaireService;
 	public void setQuestionnaireService(QuestionnaireService questionnaireService) {
 		this.questionnaireService = questionnaireService;
+	}
+	
+	private StatisticsService statisticsService;
+	public void setStatisticsService(StatisticsService questionnaireService) {
+		this.statisticsService = questionnaireService;
 	}
 	
 	
@@ -81,6 +87,12 @@ public class QuestionnaireAction extends BaseAction{
 		ServletActionContext.getResponse().getWriter().print('1');//success
 		return null;
 	}
+	
+	public String exel() throws IOException{
+		Questionnaire questionnaire=questionnaireService.findQuestionnaireById("595b4f2adac1e11c3b16d59f");
+		statisticsService.exportToEXEL("595b4f2adac1e11c3b16d59f", "/Users/JimLiu/Desktop/exel.xls");
+		return null;
+	}
 
 	
 	
@@ -127,6 +139,8 @@ public class QuestionnaireAction extends BaseAction{
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	
+	
 
 	
 

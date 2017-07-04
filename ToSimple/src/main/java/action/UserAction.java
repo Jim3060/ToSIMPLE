@@ -83,8 +83,12 @@ public class UserAction extends BaseAction{
 	public String login() throws Exception{
 		HttpSession session =session();
 		RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+		System.out.println(privateKey);
+		System.out.println(passwordSECURE);
+		System.out.println(userName);
 		String passwordInput=RSAUtils.decryptBase64(passwordSECURE, privateKey);
 		System.out.println(passwordInput);
+		ServletActionContext.getResponse().getWriter().print(passwordInput);
 		return null;
 	}
 	

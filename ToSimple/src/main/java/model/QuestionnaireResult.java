@@ -39,6 +39,10 @@ public class QuestionnaireResult {
 		return (DBObject)JSON.parse(this.questionnaireResultJSON.toString());
 	}
 	
+	public String getQuestionnaireResult(){
+		return this.questionnaireResultJSON.toString();
+	}
+	
 	
 	
 }
