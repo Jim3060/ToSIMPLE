@@ -21,11 +21,9 @@ public class QuestionnaireAction extends BaseAction {
 
     @Autowired
     private QuestionnaireService questionnaireService;
-
     public void setQuestionnaireService(QuestionnaireService questionnaireService) {
         this.questionnaireService = questionnaireService;
     }
-
     private String OBJtest;
     private String questionnaireId;
     private String questionnaire;
