@@ -2,13 +2,13 @@
     <div class="creator">
         <span class="edit-title">问卷标题: </span><input v-model="title"></input>
         <div>
-            <button @click="publish(1)" v-show="questionnaire.status == 0" class="btn btn-success">发布问卷</button>
-            <button @click="publish(0)" v-show="questionnaire.status == 1" class="btn btn-warning">取消发布</button>
+            <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0" >发布问卷</el-button>
+            <el-button type="warning" @click="publish(0)" v-show="questionnaire.status == 1">取消发布</el-button>
         </div>
         <p id="questionnaireId" type="hidden"> </p>
         <questionnaire :questionnaire="questionnaire" :edit="true" @delete="del($event)" @edit="edit($event)"></questionnaire>
-        <button class="btn btn-primary" @click="showModal=true">添加问题</button>
-        <button class="btn btn-success" @click="submit()">提交问卷</button>
+        <el-button type="primary" @click="showModal=true">添加问题</el-button>
+        <el-button type="success" @click="submit()">提交问卷</el-button>
         <modal :show="showModal" effect="zoom" :backdrop="false" >
             <div slot="modal-header" class="modal-header"><h4>编辑问题</h4></div>
             <div slot="modal-body" class="modal-body">
@@ -67,29 +67,35 @@ export default {
             this.questionnaire["createDate"] = new Date();
             this.questionnaire["status"] = 0;
 
-            $.ajax({
+            /*$.ajax({
                 type: 'POST',
                 url: "addQuestionnaire",
                 data: {questionnaire: JSON.stringify(this.questionnaire)},
                 dataType: "json",
                 success: function(data){
                     self.questionnaire["questionnaireId"] = data.questionnaireId;
-                    bus.$emit("showMsg","success","提交成功");
+                    this.$message.success("提交成功");
                     this.$router.push({name:'n', params:{id: data.questionnaireId}});
                 }
-            });
+            });*/
+
+            $.post("addQuestionnaire",{questionnaire:JSON.stringify(this.questionnaire)}, data=>{
+                self.questionnaire["questionnaireId"] = data.questionnaireId;
+                this.$message.success("提交成功");
+                this.$router.push({name:"n", params:{id: data.questionnaireId}});
+            }, "json")
            
         },
         publish(status){
             $.post("setQuestionnaireStatus", {questionnaireId: this.questionnaire.questionnaireId, status: status}, data=>{
                 if(data == '1' || data == 1){
-                    bus.$emit("showMsg", "success", "操作成功");
+                    this.$message.success("操作成功");
                     this.questionnaire.status = status;
                 }
                 else
-                    bus.$emit("showMsg", "warning", "操作失败");
+                    this.$message.error("操作失败");
             }).fail(()=>{
-                bus.$emit("showMsg", "danger", "网络异常");
+                this.$message.error("网络异常");
             })
         },
         loadQuestionnaire(){
@@ -101,14 +107,11 @@ export default {
                         self.questionnaire = data.questionnaire;
                         self.title = data.questionnaire.paperTitle;
                     }else{
-                        bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
+                        this.$message.warning("问卷不存在"); 
                     }
                 }, "json").fail(()=>{
                     //bus.$emit("showMsg", "danger", "错误: 网络异常!");
-                    this.$message.error({
-                        title:"错误",
-                        message: "网络异常"
-                    });
+                    this.$message.error("网络异常");
                 })
             }
 

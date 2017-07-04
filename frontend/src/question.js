@@ -1,5 +1,5 @@
 export default{
-    objectId: 1,
+    questionnaireId: 1,
     paperTitle: "paperTitle",
     authorId: 1,
     createDate: 0,

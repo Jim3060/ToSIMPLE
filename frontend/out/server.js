@@ -44,7 +44,7 @@ http.createServer(function(request,response){
                 //console.log(options);
                 sendRequest(options/*, {form: post}*/).form(post).pipe(response);
             }
-            }
+        }
         else{
             response.writeHead(200);
             fs.readFile(fpath,"utf-8",function(err,data){
