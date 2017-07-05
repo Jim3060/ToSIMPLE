@@ -2,6 +2,8 @@ package service.Impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -50,9 +52,12 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Long registerRequest(User user) throws AddressException, MessagingException {
+		if (validateEmail(user.getEmail())==0){return  -1L;}
+		if (validateUserName(user.getUserName())==0){return 0L;}
 		user.setValid(0);
 		return userDao.save(MailUtils.activateMail(user));
 	}
+
 
     @Override
     public Integer changRole(Long userId, Integer role) {
@@ -60,9 +65,6 @@ public class UserServiceImpl implements UserService{
         return userDao.changRole(userId,role);
     }
 
-    public int validateEmail(String email){
-		return 0;
-	}
 
 	@Override
 	public User getUserByEmail(String email) {
@@ -94,20 +96,57 @@ public class UserServiceImpl implements UserService{
 	public User loginByUserName(String userName, String password) {
 		User user=userDao.getUserByUserName(userName);
 		if (user==null){return null;}
-		if (user.getPassword().equals(password)){
+		if (user.getPassword().equals(password)&&user.getValid()==1){
 			return user;
 		}
 		return null;
 	}
 
 	@Override
-	public User loginByEmail(String email, String password) {
+	public User loginByEmail(String email, String password){
 		User user=userDao.getUserByEmail(email);
 		if (user==null){return null;}
-		if (user.getPassword().equals(password)){
+		if (user.getPassword().equals(password)&&user.getValid()==1){
 			return user;
 		}
 		return null;
+	}
+
+	@Override
+	public int validateUserName(String userName) {
+		// TODO Auto-generated method stub
+		User user=userDao.getUserByUserName(userName);
+		if (user==null){return 1;}
+		if (user.getValid()==0){
+			Date now=new Date();
+			if (now.getTime()>user.getCreateTime().getTime()){
+				userDao.delete(user);
+				return 1;
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public int validateEmail(String email) {
+		//format check
+		String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        Pattern regex = Pattern.compile(check);
+        Matcher matcher = regex.matcher(email);
+        if  (!matcher.matches()){
+        	return 0;
+        }
+		//db check
+		User user=userDao.getUserByEmail(email);
+		if (user==null){return 1;}
+		if (user.getValid()==0){
+			Date now=new Date();
+			if (now.getTime()>user.getCreateTime().getTime()){
+				userDao.delete(user);
+				return 1;
+			}
+		}
+		return 0;
 	}
 
 }

@@ -85,11 +85,15 @@ public class UserAction extends BaseAction {
         RSAPublicKey publicKey = RSAUtils.getPublicKey(keyPair);
         RSAPrivateKey privateKey = RSAUtils.getPrivateKey(keyPair);
 
+
         session.setAttribute("privateKey", privateKey);
 
         JSONObject result = new JSONObject();
         result.put("publicKey", RSAUtils.generateBase64PublicKey(publicKey));
         response.getWriter().print(result);
+
+
+
         return null;
 
     }
@@ -186,6 +190,7 @@ public class UserAction extends BaseAction {
     public void setPasswordSECURE(String passwordSECURE) {
         this.passwordSECURE = passwordSECURE;
     }
+
 
 
 }

@@ -101,7 +101,6 @@ public class QuestionnaireStatistics {
             String obj=gson.toJson(questions.get(i));
             questionArray.add(JSONObject.fromObject(obj));
 		}
-		System.out.println(questions.get(2).blanks.get(0).content);
 		
 		return questionArray.toString();
 	}

@@ -8,21 +8,32 @@ import javax.mail.internet.AddressException;
 import model.User;
 
 public interface UserService {
-    public Long addUser(User user);
 
-    public void deleteUser(User user);
+	public Long addUser(User user);
+
+	public void deleteUser(User user);
+
+	public void updateUser(User user);
+
+	public User getUserById(long id);
+	
+	public User getUserByEmail(String email);
+
+	public List<User> getAllUsers();
+	
+	public int validateUserName(String userName);
+	
+	public int validateEmail(String email);
+	
+
+	
+	
+	
+
 
     public void deleteUser(Long userId);
 
-    public void updateUser(User user);
-
-
-    public User getUserById(long id);
-
-    public User getUserByEmail(String email);
-
-    public List<User> getAllUsers();
-
+  
     /**
      * @param user
      * @return user id in db.
@@ -45,5 +56,6 @@ public interface UserService {
     public User loginByUserName(String userName, String password);
 
     public User loginByEmail(String email, String password);
+
 
 }
