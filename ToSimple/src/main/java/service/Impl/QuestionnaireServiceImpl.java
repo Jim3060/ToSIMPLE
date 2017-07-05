@@ -35,7 +35,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	}
 
 	@Override
-	public String deleteQuestionnaire(String id) {
+	public Integer deleteQuestionnaire(String id) {
 		return questionnaireDao.delete(id);
 		// TODO Auto-generated method stub
 		

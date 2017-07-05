@@ -13,14 +13,12 @@ import org.apache.struts2.ServletActionContext;
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import net.sf.json.JSONObject;
+import org.springframework.web.bind.annotation.*;
 import service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import service.QuestionnaireService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -30,12 +28,14 @@ public class QuestionnaireAction extends BaseAction {
 
     @Autowired
     private QuestionnaireService questionnaireService;
+
     public void setQuestionnaireService(QuestionnaireService questionnaireService) {
         this.questionnaireService = questionnaireService;
     }
 
     @Autowired
     private StatisticsService statisticsService;
+
     public void setStatisticsService(StatisticsService statisticsService) {
         this.statisticsService = statisticsService;
     }
@@ -46,7 +46,15 @@ public class QuestionnaireAction extends BaseAction {
     private String answerPaper;
     private int status;
 
-    @RequestMapping(value = "questionnaire", method = RequestMethod.POST)
+    /**
+     * Save or update the questionnaire.
+     *
+     * @param questionnaire the questionnaire to be saved
+     * @param response      the response to be returned
+     * @return none
+     * @throws Exception
+     */
+    @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
     public String addOrUpdateQuestionnaire(String questionnaire, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
         questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire));
@@ -57,6 +65,14 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
+    /**
+     * Get a questionnaire of the specific questionnaireId
+     *
+     * @param questionnaireId
+     * @param response        the response to be returned
+     * @return none
+     * @throws IOException
+     */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.GET)
     public String findAQuestionnaire(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
         //questionnaireId="5954b29d37fac38fdc65727c";
@@ -78,12 +94,48 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
+    /**
+     * delete a questionnaire of the specific questionnaireId
+     *
+     * @param questionnaireId
+     * @return none
+     */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.DELETE)
-    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId) {
+    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) {
         // TODO delete a questionnaire
+        questionnaireService.deleteQuestionnaire(questionnaireId);
         return null;
     }
 
+    /**
+     * search questionnaires
+     *
+     * @param name
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "questionnaire/search", method = RequestMethod.GET)
+    public String searchQuestionnaireByName(@RequestParam("name") String name, HttpServletResponse response) throws IOException {
+        //TODO
+        return null;
+    }
+
+    @RequestMapping(value = "questionnaire/random", method = RequestMethod.GET)
+    public String randomQuestionnaire(@RequestParam("size") Integer size, HttpServletResponse response) throws IOException {
+        //TODO
+        return null;
+    }
+
+    /**
+     * set the status of questionnaire to @param status
+     *
+     * @param status
+     * @param questionnaireId
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "setQuestionnaireStatus", method = RequestMethod.POST)
     public String setQuestionnaireStatus(int status, String questionnaireId, HttpServletResponse response) throws IOException {
         String valid = "1";
@@ -101,29 +153,57 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "answerPaper", method = RequestMethod.POST)
-    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response) throws IOException {
+    /**
+     * Save a result of the questionnaire
+     *
+     * @param answerPaper
+     * @param response
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "questionnaireResult", method = RequestMethod.POST)
+    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException {
         if (answerPaper == null) {//data not fetched, fail
             response.getWriter().print('0');
             return null;
         }
-        questionnaireService.addQuestionnaireResult(new QuestionnaireResult(answerPaper, request()));
+        questionnaireService.addQuestionnaireResult(new QuestionnaireResult(answerPaper, request));
         response.getWriter().print('1');//success
         return null;
     }
 
+    /**
+     * show a questionnaire result.
+     *
+     * @param questionnaireResultId
+     * @return
+     */
+    @RequestMapping(value = "questionnaireResult/{questionnaireResultId}", method = RequestMethod.GET)
+    public String show(@PathVariable("questionnaireResultId") String questionnaireResultId) {
+        return null;
+    }
+
+    /**
+     * download a questionnaire.
+     *
+     * @param questionnaireId
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "questionnaire/download/{questionnaireId}", method = RequestMethod.GET)
-    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
-		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
-		HSSFWorkbook wb=statisticsService.exportToEXEL(questionnaireId);
-		OutputStream out = response.getOutputStream();
-		response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode("statistics.xls", "UTF-8"));
-		response.setContentType("application/msexcel;charset=UTF-8");
-		wb.write(out);
-		out.flush();
-		out.close();
-		return null;
-	}
+    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
+        //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+        HSSFWorkbook wb = statisticsService.exportToEXEL(questionnaireId);
+        OutputStream out = response.getOutputStream();
+        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("statistics.xls", "UTF-8"));
+        response.setContentType("application/msexcel;charset=UTF-8");
+        wb.write(out);
+        out.flush();
+        out.close();
+        return null;
+    }
 
 
     //helper
