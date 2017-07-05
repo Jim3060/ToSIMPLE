@@ -7,7 +7,7 @@
                 <option>多选</option>
                 <option>填空</option>
             </select>-->
-            <el-radio-group v-model="type" >
+            <el-radio-group v-model="type" size="small">
                 <el-radio-button label="单选" style="font-weight:400"></el-radio-button>
                 <el-radio-button label="多选" style="font-weight:400"></el-radio-button>
                 <el-radio-button label="填空" style="font-weight:400"></el-radio-button>
@@ -47,14 +47,18 @@
         <div v-show="connect">
             <ul class="list-group">
                 <li class="list-group-item" v-for="(value, key) in showAfter" :key="key">
+                    <div style="margin-top:10px"></div>
                     <connectItem @update="update" @cancel="delCon($event)" :questionnaire="questionnaire" :index="index" :idx="key"></connectItem>
                 </li>
                 <li v-if="newItem" class="list-group-item">
-                    第
+                    <!--第
                     <select v-model.number="newIdx">
                         <option v-for="i in connectAccessable" :key="i">{{i}}</option>    
                     </select>
-                    题
+                    题-->
+                    <el-select v-model.number="newIdx" size="small" style="width:150px" placeholder="请选择题号">
+                        <el-option v-for="i in connectAccessable" :key="i" :value="i" :label="'第'+i+'题'"></el-option>
+                    </el-select>
                     <el-button size="small" type="primary" @click="addCon()">确定</el-button>
                     <el-button size="small" @click="newItem=false">取消</el-button>
                 </li>
