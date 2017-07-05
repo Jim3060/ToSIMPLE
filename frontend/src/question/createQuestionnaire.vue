@@ -83,7 +83,9 @@ export default {
                 self.questionnaire["questionnaireId"] = data.questionnaireId;
                 this.$message.success("提交成功");
                 this.$router.push({name:"n", params:{id: data.questionnaireId}});
-            }, "json")
+            }, "json").fail(()=>{
+                this.$message.error("网络异常");
+            })
            
         },
         publish(status){
