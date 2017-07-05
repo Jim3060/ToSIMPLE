@@ -1,105 +1,80 @@
 package action;
 
-import java.io.IOException;
 import java.security.KeyPair;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.struts2.ServletActionContext;
 
-import ToolUtils.MD5Utils;
 import model.RSAUtils;
 import model.User;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import service.UserService;
 
-
+@Controller
 public class UserAction extends BaseAction{
 	private static final long serialVersionUID = 1L;
+
+	@Autowired
 	private UserService userService;
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
 	
 	private String passwordSECURE;
-	private long id;
+	private int id;
 	private String userName;
 	private String password;
 	private Integer role;
 	private String email;
-	private String token;//can be used in many way
 	public List<User> users= new ArrayList<User> ();
-	
+
+	@RequestMapping(value = "allUsers",method = RequestMethod.GET)
 	public String getAllUsers() throws Exception {
 		//get users
 		users = userService.getAllUsers();
-		return SUCCESS;
+		return "userCRUD";
 	}
-	
-	public String registerRequest() throws AddressException, MessagingException{
-		
-		userName="TEST";
-		password="1234";
-		role=1;
-		email="1072207255@qq.com";
-		
-		User user= new User(userName,password,role,email);
-		userService.registerRequest(user);
-		return null;
-	}
-	
-	public String registerValidate() throws IOException{
-		
-		
-		token=request().getParameter("token");
-		email=request().getParameter("email");
-		ServletActionContext.getResponse().getWriter().print(userService.registerValidate(email, token));
-		return null;
-	}
-	
-	public String fetchRSA() throws Exception{
+
+	@RequestMapping(value = "fetchRSA",method = RequestMethod.POST)
+	public String fetchRSA(HttpSession session, HttpServletResponse response) throws Exception{
 		KeyPair keyPair = RSAUtils.initKey();
 		RSAPublicKey publicKey = RSAUtils.getPublicKey(keyPair);
 		RSAPrivateKey privateKey = RSAUtils.getPrivateKey(keyPair);
-		
-        HttpSession session =session();
+
         session.setAttribute("privateKey", privateKey);
 
         JSONObject result = new JSONObject();
 		result.put("publicKey",RSAUtils.generateBase64PublicKey(publicKey));
-		ServletActionContext.getResponse().getWriter().print(result);
+        response.getWriter().print(result);
 		return null;
 		
 	}
 	
-	
-	public String login() throws Exception{
-		HttpSession session =session();
+	@RequestMapping(value = "login",method = RequestMethod.POST)
+	public String login(HttpSession session) throws Exception{
+//		HttpSession session =session();
 		RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
-		System.out.println(privateKey);
-		System.out.println(passwordSECURE);
-		System.out.println(userName);
 		String passwordInput=RSAUtils.decryptBase64(passwordSECURE, privateKey);
 		System.out.println(passwordInput);
-		ServletActionContext.getResponse().getWriter().print(passwordInput);
 		return null;
 	}
-	
-	
-	//helper
 
-	public long getId() {
+
+	public int getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

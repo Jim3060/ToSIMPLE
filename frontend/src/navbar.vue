@@ -11,6 +11,7 @@
             <li :class="{active:($route.path=='/q'||$route.name=='q')}"><a href="#/q">问卷</a></li>
             <li :class="{active:($route.path=='/n'||$route.name=='n')}"><a href="#/n">新建</a></li>
 
+            <login class="navbar-right"></login>
             <form class="navbar-form navbar-right" role="search">
                 <div class="form-group">
                     <input v-model="searchContent" type="text" class="form-control" placeholder="Search">
@@ -25,8 +26,11 @@
 </template>
 
 <script>
+    import login from "./login.vue"
+
     export default{
         name:"navbar",
+        components:{login},
         data(){return {
             searchContent:"",
             role:0
@@ -38,5 +42,5 @@
 </script>
     
 <style>
-
+    nav{position:fixed; top:0px;}
 </style>

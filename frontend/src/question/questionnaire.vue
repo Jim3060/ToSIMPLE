@@ -2,15 +2,15 @@
     <div class="questionnaire">
         <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
         <div>
-            <div v-for="(question, index) in questionnaire.questions" v-if="!hidden[index]" :key="question">
-                <button v-if="edit" class="btn btn-success" @click="change(index)">修改</button>
-                <button v-if="edit" class="btn btn-danger" @click="del(index)">删除</button>
+            <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
+                <el-button v-if="edit" type="primary" @click="change(index)">修改</el-button>
+                <el-button v-if="edit" type="danger" @click="del(index)">删除</el-button>
                 <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" @update="update(index, $event)"></single>
                 <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" @update="update(index, $event)"></multiple>
                 <blank v-if="question.type==2" :index="index" :title="question.questionTitle" @update="update(index, $event)"></blank>
             </div>
         </div>
-        <button v-if="!edit" class="btn btn-success" @click="submit()">提交</button>
+        <el-button type="primary" v-if="!edit" @click="submit()">提交</el-button>
     </div>
 </template>
 
@@ -30,7 +30,8 @@ export default {
     data(){return {
         answer:{},
         hidden:[],
-        dirty: false
+        dirty: false,
+        beginTime:""
     }},
     methods:{
         update(index, data){
@@ -44,26 +45,29 @@ export default {
             this.$emit("edit", index);
         },
         submit(){
-            var postBody = {answer: {}};
-            for(var key in Object.keys(this.answer)){
-                var temp = this.answer[key];
-                if(typeof temp === "number"){
-                    postBody.answer[key] = [[temp],""];
+            var postBody = {answers: []};
+            for(var i = 0; i < this.questionnaire.questions.length; i++){
+                var temp = this.answer[i];
+                if(typeof temp === "undefined"){
+                    postBody.answers.push({choice:[], blank:""});
+                }else if(typeof temp === "number"){
+                    postBody.answers.push({choice:[temp], blank:""})
                 }else if(typeof temp === "object"){
-                    postBody.answer[key] = [temp, ""];
+                    postBody.answers.push({choice: temp, blank:""});
                 }else{
-                    postBody.answer[key] = [[], temp];
+                    postBody.answers.push({choice:[], blank: temp});
                 }
             }
-            postBody.objectId = this.questionnaire["_id"]["$oid"];
-            postBody.answerTime = new Date();
+            postBody.questionnaireId = this.questionnaire.questionnaireId;
+            postBody.beginTime = this.beginTime;
+            postBody.endTime = new Date();
             var self = this;
-            $.post("SaveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
+            $.post("saveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
                 if(data == "1" || data == 1){
-                    bus.$emit("showMsg", "success", "提交成功");
+                    this.$message.success("提交成功"); 
                 }
             }).fail(()=>{
-                bus.$emit("showMsg", "danger", "错误: 网络异常")
+                this.$message.error("网络异常")
             });
         },
         ifShow(index){
@@ -109,16 +113,17 @@ export default {
             $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
                 if(data.valid == "1"){
                     self.questionnaire = data.questionnaire;
+                    for(var i = 0; i < this.questionnaire.questions.length; i++){
+                        this.hidden[i] = !this.ifShow(i);
+                    }
                 }else{
-                    bus.$emit("showMsg", "warning", "警告: 该问卷不存在!");
+                    this.$message.warning("该问卷不存在");
                 }
             }, "json").fail(()=>{
-                bus.$emit("showMsg", "danger", "错误: 网络异常!");
+                this.$message.error("网络异常");
             })
         }
-        for(var i = 0; i < this.questionnaire.questions.length; i++){
-            this.hidden[i] = !this.ifShow(i);
-        }
+        this.beginTime = new Date();
     }
 }
 </script>
