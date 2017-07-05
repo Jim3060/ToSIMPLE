@@ -9,6 +9,7 @@ public class QuestionnaireResultGSON {
 	public String questionnaireId;
 	public String beginTime;
 	public String endTime;
+	public String questionnaireResultId;
 	public List<Answer> answers;
 	
 	public class Answer{

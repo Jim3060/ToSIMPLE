@@ -2,10 +2,16 @@
     <div>
         <ul class="question list-group">
             <li class="list-group-item">[多选, 最多能选{{limit}}项] <span class="question-title">{{index+1}}. {{title}}</span></li>
-            <li class="list-group-item" v-for="(option, index) in options" :key="option">
+            <!--<li class="list-group-item" v-for="(option, index) in options" :key="option">
                 <input type="checkbox" v-model="select" :value="index" :disabled="select.length>=limit&&select.indexOf(index)==-1"></input>
                 <label>{{option}}</label>
-            </li>
+            </li> -->
+            <el-checkbox-group v-model="select" :max="limit">
+                <li class="list-group-item" v-for="(option, index) in options" :key="option">
+                    <el-checkbox :label="index">{{option}}</el-checkbox>
+                </li>
+            </el-checkbox-group>
+
         </ul>
     </div>
 </template>
