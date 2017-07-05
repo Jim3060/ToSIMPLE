@@ -16,7 +16,17 @@ import service.UserService;
 
 public class UserServiceImpl implements UserService{
 	private UserDao userDao;
-	
+
+	@Override
+	public User loginByUserName(String userName, String password) {
+		return null;
+	}
+
+	@Override
+	public User loginByEmail(String email, String password) {
+		return null;
+	}
+
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
