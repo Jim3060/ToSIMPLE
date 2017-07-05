@@ -3,8 +3,8 @@
         <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
         <div>
             <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
-                <el-button v-if="edit" type="primary" @click="change(index)">修改</el-button>
-                <el-button v-if="edit" type="danger" @click="del(index)">删除</el-button>
+                <el-button v-if="edit" type="primary" size="small" @click="change(index)">修改</el-button>
+                <el-button v-if="edit" type="danger" size="small" @click="del(index)">删除</el-button>
                 <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" @update="update(index, $event)"></single>
                 <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" @update="update(index, $event)"></multiple>
                 <blank v-if="question.type==2" :index="index" :title="question.questionTitle" @update="update(index, $event)"></blank>
@@ -62,7 +62,7 @@ export default {
             postBody.beginTime = this.beginTime;
             postBody.endTime = new Date();
             var self = this;
-            $.post("saveAnAnswerPaper", {answerPaper:JSON.stringify(postBody)}, (data)=>{
+            $.post("questionnaireResult", {answerPaper:JSON.stringify(postBody)}, (data)=>{
                 if(data == "1" || data == 1){
                     this.$message.success("提交成功"); 
                 }
@@ -110,7 +110,7 @@ export default {
         if(Object.keys(this.questionnaire) == 0){
             var id = this.$route.params.id;
             var self = this;
-            $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
+            $.get("questionnaire/" + id, data=>{
                 if(data.valid == "1"){
                     self.questionnaire = data.questionnaire;
                     for(var i = 0; i < this.questionnaire.questions.length; i++){

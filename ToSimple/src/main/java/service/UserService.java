@@ -18,14 +18,16 @@ public interface UserService {
 
     public User getUserByEmail(String email);
 
-    public List<User> getAllUsers();
+	public List<User> getAllUsers();
+	
+	public Long registerRequest(User user) throws AddressException, MessagingException;
+	
+	public int registerValidate(String email,String token);//correct 1, token error -2, time error -1
+	
+	public User loginByUserName(String userName,String password);
 
-    public Long registerRequest(User user) throws AddressException, MessagingException;
+	public User loginByEmail(String email,String password);
 
-    public int registerValidate(String email, String token);//correct 1, token error -2, time error -1
 
-    public User loginByUserName(String userName, String password);
-
-    public User loginByEmail(String email, String password);
-
+	
 }

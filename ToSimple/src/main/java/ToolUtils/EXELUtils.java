@@ -1,5 +1,7 @@
 package ToolUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -14,6 +16,7 @@ import model.QuestionnaireResultGSON;
 import model.QuestionnaireGSON;
 
 public class EXELUtils {
+	DateFormat df = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
 	public static HSSFWorkbook GenerateRawResultStatistics(Questionnaire questionnaire,List<QuestionnaireResult> questionnaireResults){
 		QuestionnaireGSON questionnaireGSON=QuestionnaireGSON.getQuestionnaireGSON(questionnaire.getQuestionnaire());
 		HSSFWorkbook wb = new HSSFWorkbook();  
@@ -24,8 +27,15 @@ public class EXELUtils {
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
         
         //input questions
+        int beginPadding=1;
+		HSSFCell cellb = row.createCell((short) 0);  
+		cellb.setCellValue("Answer Time");  
+		cellb.setCellStyle(style);  
+//        HSSFCell cellb = row.createCell((short) 0);  
+//        cellb.setCellValue("Timing");  
+//        cellb.setCellStyle(style);  
         for (int i=0;i<questionnaireGSON.questions.size();i++){
-        	HSSFCell cell = row.createCell((short) i);  
+        	HSSFCell cell = row.createCell((short) i+beginPadding);  
             cell.setCellValue(questionnaireGSON.questions.get(i).questionTitle);  
             cell.setCellStyle(style);  
         }
@@ -35,10 +45,14 @@ public class EXELUtils {
         for (int i=0;i<questionnaireResults.size();i++){
         	QuestionnaireResultGSON questionnaireResultGSON=QuestionnaireResultGSON.getQuestionnaireResultGSON(questionnaireResults.get(i).getQuestionnaireResult());
         	HSSFRow rowa = sheet.createRow((int) i+1); 
+        	//add other info here
+        	HSSFCell cellbb = rowa.createCell((short) 0);  
+    		cellbb.setCellValue(questionnaireResultGSON.beginTime);  
+    		cellbb.setCellStyle(style);  
         	for (int j=0;j<questionnaireResultGSON.answers.size();j++){
         		System.out.println("hi");
         		
-        		HSSFCell cell = rowa.createCell((short) j);  
+        		HSSFCell cell = rowa.createCell((short) j+beginPadding);  
         		if (questionnaireGSON.questions.get(j).type==2){
         			cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
         			System.out.println(questionnaireResultGSON.answers.get(j).blank);

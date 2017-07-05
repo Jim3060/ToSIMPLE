@@ -7,10 +7,13 @@
         {{idx_show}}
         <span>题</span>
         <el-button type="danger" size="small" @click="cancel()" >删除</el-button>
-        <div v-for="i in num" :key="i" class="options">
+        <!--<div v-for="i in num" :key="i" class="options">
             <input type="checkbox" v-model="select" :value="i-1" :disabled="!edit"></input>
             <label>{{questionnaire.questions[idx].choices[i-1]}}</label>
-        </div>
+        </div>-->
+        <el-checkbox-group v-model="select">
+            <el-checkbox v-for="i in num" :key="i" :label="i-1">{{questionnaire.questions[idx].choices[i-1]}}</el-checkbox>
+        </el-checkbox-group>
     </div>
 </template>
 

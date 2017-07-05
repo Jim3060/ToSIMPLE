@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 
 import model.Questionnaire;
 import model.QuestionnaireResult;
+import model.QuestionnaireStatistics;
 import net.sf.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 import service.StatisticsService;
@@ -101,7 +102,7 @@ public class QuestionnaireAction extends BaseAction {
      * @return none
      */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.DELETE)
-    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) {
+    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId) {
         // TODO delete a questionnaire
         questionnaireService.deleteQuestionnaire(questionnaireId);
         return null;
@@ -204,6 +205,18 @@ public class QuestionnaireAction extends BaseAction {
         out.close();
         return null;
     }
+    @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
+    public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
+		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+		QuestionnaireStatistics s=statisticsService.getQuestionnaireStatisticsById(questionnaireId);
+
+		JSONObject result = new JSONObject();
+
+        result.put("questionStatistics", s.getQuestionsJSON());
+        result.put("answerNumber",s.questionnaireResults.size());
+        response.getWriter().print(result);
+        return null;
+	}
 
 
     //helper
