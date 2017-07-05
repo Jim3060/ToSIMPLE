@@ -12,22 +12,38 @@ public interface UserService {
 
     public void deleteUser(User user);
 
+    public void deleteUser(Long userId);
+
     public void updateUser(User user);
+
 
     public User getUserById(long id);
 
     public User getUserByEmail(String email);
 
-	public List<User> getAllUsers();
-	
-	public Long registerRequest(User user) throws AddressException, MessagingException;
-	
-	public int registerValidate(String email,String token);//correct 1, token error -2, time error -1
-	
-	public User loginByUserName(String userName,String password);
+    public List<User> getAllUsers();
 
-	public User loginByEmail(String email,String password);
+    /**
+     * @param user
+     * @return user id in db.
+     * @throws AddressException
+     * @throws MessagingException
+     */
+    public Long registerRequest(User user) throws AddressException, MessagingException;
 
+    /**
+     * change the role of userId
+     *
+     * @param userId
+     * @param role
+     * @return the old role.
+     */
+    public Integer changRole(Long userId, Integer role);
 
-	
+    public int registerValidate(String email, String token);//correct 1, token error -2, time error -1
+
+    public User loginByUserName(String userName, String password);
+
+    public User loginByEmail(String email, String password);
+
 }

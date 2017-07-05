@@ -1,14 +1,17 @@
 package action;
 
+import java.io.IOException;
 import java.security.KeyPair;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.struts2.ServletActionContext;
 
 import model.RSAUtils;
@@ -16,6 +19,7 @@ import model.User;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +31,8 @@ public class UserAction extends BaseAction {
 
     @Autowired
     private UserService userService;
+    private Long userId;
+    private HttpServletResponse response;
 
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -39,6 +45,32 @@ public class UserAction extends BaseAction {
     private Integer role;
     private String email;
     public List<User> users = new ArrayList<User>();
+
+    @RequestMapping(value = "user",method = RequestMethod.POST)
+    public String save(User user){
+        //TODO
+        userService.addUser(user);
+        return null;
+    }
+
+    @RequestMapping(value = "user/userId",method = RequestMethod.GET)
+    public String show(@PathVariable("userId") Long userId,HttpServletResponse response) throws IOException {
+        User user = userService.getUserById(userId);
+        JSONObject result = new JSONObject();
+        result.put("user",user);
+        response.getWriter().print(result);
+        return null;
+    }
+    @RequestMapping(value = "user/userId",method = RequestMethod.PUT)
+    public String edit(@PathVariable("userId") Long userId,Integer role,HttpServletResponse response) throws IOException {
+        userService.changRole(userId,role);
+        return null;
+    }
+    @RequestMapping(value = "user/userId",method = RequestMethod.DELETE)
+    public String delete(@PathVariable("userId") Long userId){
+        userService.deleteUser(userId);
+        return null;
+    }
 
     @RequestMapping(value = "allUsers", method = RequestMethod.GET)
     public String getAllUsers() throws Exception {
@@ -64,7 +96,6 @@ public class UserAction extends BaseAction {
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response) throws Exception {
-//		HttpSession session =session();
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
         String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         System.out.println(passwordInput);
@@ -78,15 +109,33 @@ public class UserAction extends BaseAction {
         }
         JSONObject result = new JSONObject();
         result.put("loginSuccess", loginSuccess);
-        if(loginSuccess == 1){
-            result.put("user",user);
+        if (loginSuccess == 1) {
+            session.setAttribute("user", user);
+            result.put("user", user);
         }
         response.getWriter().print(result);
+        session.removeAttribute("privateKey");
         return null;
     }
 
+    @RequestMapping(value = "logout", method = RequestMethod.GET)
     public String logout(HttpSession session) {
+        session.removeAttribute("user");
+        return null;
+    }
 
+    @RequestMapping(value = "register", method = RequestMethod.POST)
+    public String register(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response, String email) throws MessagingException {
+        RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+        String password = RSAUtils.decryptBase64(passwordSECURE, privateKey);
+        role = 0;
+        User user = new User(userName,password,role,email);
+        Long id = userService.registerRequest(user);
+        user.setId(id);
+        session.removeAttribute("privateKey");
+        int registerSuccess = 1;
+        session.setAttribute("registerSuccess",registerSuccess);
+        session.setAttribute("user",user);
         return null;
     }
 

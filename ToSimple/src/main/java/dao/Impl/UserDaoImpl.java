@@ -13,52 +13,69 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import dao.UserDao;
 
+import javax.jws.soap.SOAPBinding;
+
 public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
-	public Long save(User user) {
-		return (Long) getHibernateTemplate().save(user);
-	}
+    public Long save(User user) {
+        return (Long) getHibernateTemplate().save(user);
+    }
 
-	public void delete(User user) {
-		getHibernateTemplate().delete(user);
-	}
+    public void delete(User user) {
+        getHibernateTemplate().delete(user);
+    }
 
-	public void update(User user) {
-		getHibernateTemplate().merge(user);
-	}
+    @Override
+    public void delete(Long userId) {
+        //TODO
+        getHibernateTemplate().find("delete from User as u where u.id=?",userId);
+    }
 
-	public User getUserById(long id) {
-		@SuppressWarnings("unchecked")
-		List<User> users = (List<User>) getHibernateTemplate().find(
-				"from User as u where u.id=?", id);
-		User user = users.size() > 0 ? users.get(0) : null;
-		return user;
-	}
-	
-	public User getUserByEmail(String email) {
-		@SuppressWarnings("unchecked")
-		List<User> users = (List<User>) getHibernateTemplate().find(
-				"from User as u where u.email=?", email);
-		User user = users.size() > 0 ? users.get(0) : null;
-		return user;
-	}
-	
+    public void update(User user) {
+        getHibernateTemplate().merge(user);
+    }
 
-	public List<User> getAllUsers() {
-		@SuppressWarnings("unchecked")
-		List<User> users = (List<User>) getHibernateTemplate()
-				.find("from User");
-		return users;
-	}
+    public User getUserById(long id) {
+        @SuppressWarnings("unchecked")
+        List<User> users = (List<User>) getHibernateTemplate().find(
+                "from User as u where u.id=?", id);
+        User user = users.size() > 0 ? users.get(0) : null;
+        return user;
+    }
 
-	@Override
-	public User getUserByUserName(String userName) {
-		@SuppressWarnings("unchecked")
-		List<User> users = (List<User>) getHibernateTemplate().find(
-				"from User as u where u.userName=?", userName);
-		User user = users.size() > 0 ? users.get(0) : null;
-		return user;
-		
-	}
-	
+    @Override
+    public Integer changRole(Long userId, Integer role) {
+        User user = getHibernateTemplate().get(User.class, userId);
+        Integer ans = user.getRole();
+        user.setRole(role);
+        getHibernateTemplate().update(user);
+        return ans;
+    }
+
+    public User getUserByEmail(String email) {
+        @SuppressWarnings("unchecked")
+        List<User> users = (List<User>) getHibernateTemplate().find(
+                "from User as u where u.email=?", email);
+        User user = users.size() > 0 ? users.get(0) : null;
+        return user;
+    }
+
+
+    public List<User> getAllUsers() {
+        @SuppressWarnings("unchecked")
+        List<User> users = (List<User>) getHibernateTemplate()
+                .find("from User");
+        return users;
+    }
+
+    @Override
+    public User getUserByUserName(String userName) {
+        @SuppressWarnings("unchecked")
+        List<User> users = (List<User>) getHibernateTemplate().find(
+                "from User as u where u.userName=?", userName);
+        User user = users.size() > 0 ? users.get(0) : null;
+        return user;
+
+    }
+
 //	
 }
