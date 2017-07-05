@@ -54,7 +54,7 @@ public class StatisticsServiceImpl implements StatisticsService{
 		return new QuestionnaireStatistics(questionnaire,questionnaireResults);
 	}
 	
-	public HSSFWorkbook exportToEXEL(String questionnaireId,String filePath) throws IOException{
+	public HSSFWorkbook exportToEXEL(String questionnaireId) throws IOException{
 		Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
 		List<QuestionnaireResult> questionnaireResults=questionnaireResultDao.getAllQuestionnaireResultById(questionnaireId);
 		HSSFWorkbook wb=EXELUtils.GenerateRawResultStatistics(questionnaire, questionnaireResults);

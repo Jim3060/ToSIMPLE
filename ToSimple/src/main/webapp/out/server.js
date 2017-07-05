@@ -6,7 +6,7 @@ var sendRequest = require("request");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
-var address = "192.168.1.30:8080/ToSimple";
+var address = "192.168.1.30:8080";
 
 http.createServer(function(request,response){
     if(!allowExternalRequest&&request.headers["host"]!="127.0.0.1:8080"&&request.headers["host"]!="localhost:8080"){
@@ -25,6 +25,7 @@ http.createServer(function(request,response){
         post += chunk;  
     });   
 
+    console.log(request.headers.cookie);
 
     var fpath = path.join(root, url.parse(request.url).pathname);
     fs.stat(fpath,function(err, stat){
@@ -36,8 +37,14 @@ http.createServer(function(request,response){
             //TODO
             var target = "http://" + address + url.parse(request.url).pathname;
             console.log(target);
-            sendRequest.post(target, {form: post}).pipe(response);
+            if(request.method == "GET")
+                sendRequest(target).pipe(response);
+            else{
+                var options = {url: target, method:"POST", headers:{Cookie: request.headers.cookie}, body:post}
+                //console.log(options);
+                sendRequest(options/*, {form: post}*/).form(post).pipe(response);
             }
+        }
         else{
             response.writeHead(200);
             fs.readFile(fpath,"utf-8",function(err,data){
