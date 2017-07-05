@@ -1,6 +1,14 @@
 package action;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+
+
+import javax.servlet.ServletOutputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 
 import model.Questionnaire;
 import model.QuestionnaireResult;
@@ -104,11 +112,18 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
-    public String exel() throws IOException{
-        Questionnaire questionnaire=questionnaireService.findQuestionnaireById("595b4f2adac1e11c3b16d59f");
-        statisticsService.exportToEXEL("595b4f2adac1e11c3b16d59f", "/Users/JimLiu/Desktop/exel.xls");
-        return null;
-    }
+    @RequestMapping(value = "questionnaire/download/{questionnaireId}", method = RequestMethod.GET)
+    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
+		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+		HSSFWorkbook wb=statisticsService.exportToEXEL(questionnaireId);
+		OutputStream out = response.getOutputStream();
+		response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode("statistics.xls", "UTF-8"));
+		response.setContentType("application/msexcel;charset=UTF-8");
+		wb.write(out);
+		out.flush();
+		out.close();
+		return null;
+	}
 
 
     //helper
@@ -152,6 +167,5 @@ public class QuestionnaireAction extends BaseAction {
     public void setStatus(int status) {
         this.status = status;
     }
-
 
 }
