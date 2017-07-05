@@ -13,7 +13,12 @@ import net.sf.json.JSONObject;
 public interface QuestionnaireService {
 	public String addOrUpdateQuestionnaire(Questionnaire questionnaireJSON);
 
-	public String deleteQuestionnaire(String id);
+	/**
+	 * delete a questionnaire.
+	 * @param id
+	 * @return 1 if deleted success,0 if fail.
+	 */
+	public Integer deleteQuestionnaire(String id);
 	
 	public Questionnaire findQuestionnaireById(String id);
 
