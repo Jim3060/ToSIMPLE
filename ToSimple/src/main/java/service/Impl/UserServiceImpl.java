@@ -29,7 +29,14 @@ public class UserServiceImpl implements UserService{
 		userDao.delete(user);
 	}
 
-	public void updateUser(User user) {
+    @Override
+    public void deleteUser(Long userId) {
+        userDao.delete(userId);
+    }
+
+
+
+    public void updateUser(User user) {
 		userDao.update(user);
 	}
 
@@ -46,8 +53,14 @@ public class UserServiceImpl implements UserService{
 		user.setValid(0);
 		return userDao.save(MailUtils.activateMail(user));
 	}
-	
-	public int validateEmail(String email){
+
+    @Override
+    public Integer changRole(Long userId, Integer role) {
+	    //TODO
+        return userDao.changRole(userId,role);
+    }
+
+    public int validateEmail(String email){
 		return 0;
 	}
 
@@ -60,7 +73,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public int registerValidate(String email, String token) {
-		
 		User userFetch=getUserByEmail(email);
 		if (userFetch.getToken().equals(token)){
 			Date now=new Date();
