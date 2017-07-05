@@ -1,7 +1,12 @@
 package action;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 
+import javax.servlet.ServletOutputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
 import model.Questionnaire;
@@ -10,6 +15,7 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import service.QuestionnaireService;
 import service.StatisticsService;
+
 
 public class QuestionnaireAction extends BaseAction{
 	private static final long serialVersionUID = 1L;
@@ -90,7 +96,13 @@ public class QuestionnaireAction extends BaseAction{
 	
 	public String exel() throws IOException{
 		Questionnaire questionnaire=questionnaireService.findQuestionnaireById("595b4f2adac1e11c3b16d59f");
-		statisticsService.exportToEXEL("595b4f2adac1e11c3b16d59f", "/Users/JimLiu/Desktop/exel.xls");
+		HSSFWorkbook wb=statisticsService.exportToEXEL("595b4f2adac1e11c3b16d59f", "/Users/JimLiu/Desktop/exel.xls");
+		OutputStream out = response().getOutputStream();
+		response().setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode("statistics.xls", "UTF-8"));
+		response().setContentType("application/msexcel;charset=UTF-8");
+		wb.write(out);
+		out.flush();
+		out.close();
 		return null;
 	}
 
