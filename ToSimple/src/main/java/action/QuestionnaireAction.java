@@ -126,6 +126,7 @@ public class QuestionnaireAction extends BaseAction {
 		out.close();
 		return null;
 	}
+    
     @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
     public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
 		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
@@ -138,6 +139,7 @@ public class QuestionnaireAction extends BaseAction {
         response.getWriter().print(result);
         return null;
 	}
+    
     
 
     //helper

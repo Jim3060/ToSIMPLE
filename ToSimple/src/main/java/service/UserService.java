@@ -20,7 +20,11 @@ public interface UserService {
 
 	public List<User> getAllUsers();
 	
-	public Long registerRequest(User user) throws AddressException, MessagingException;
+	public int validateUserName(String userName);
+	
+	public int validateEmail(String email);
+	
+	public Long registerRequest(User user) throws AddressException, MessagingException;//0 for name error,-1 for email error
 	
 	public int registerValidate(String email,String token);//correct 1, token error -2, time error -1
 	
