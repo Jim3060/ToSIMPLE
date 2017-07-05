@@ -7,7 +7,6 @@
         <meta charset="UTF-8"/>         
     </head>
     <body>
-        <p><script type="text/javascript">getContextPath()</script><p>
         <div id="app">
             <navbar></navbar>
             <message></message>
@@ -16,12 +15,3 @@
         <script src="./bundle.js"></script>
     </body>
 </html>
-
-<script type="text/javascript">
-    function getContextPath(){ 
-        var pathName = document.location.pathname; 
-        var index = pathName.substr(1).indexOf("/"); 
-        var result = pathName.substr(0,index+1); 
-        return result; 
-    }
-</script>

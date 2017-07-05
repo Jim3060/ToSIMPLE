@@ -11,6 +11,7 @@ import navbar from "./navbar.vue"
 import message from "./message.vue"
 import questionnaire from "./question/questionnaire.vue"
 import create from "./question/createQuestionnaire.vue"
+import table from "./question/table.vue"
 
 const routes = [
     {path:'/index',component: index},
@@ -18,7 +19,8 @@ const routes = [
     {path:"/q", component: test},
     {path:"/q/:id", name:"q", component: questionnaire},
     {path:"/n", component:create},
-    {path:"/n/:id", name:"n", component: create}
+    {path:"/n/:id", name:"n", component: create},
+    {path:"/usermanager", component: table}
 ]
 
 const router = new VueRouter({
