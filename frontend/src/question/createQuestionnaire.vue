@@ -1,14 +1,17 @@
 <template>
     <div class="creator">
-        <span class="edit-title">问卷标题: </span><input v-model="title"></input>
+        <span v-show="edit" class="edit-title">问卷标题: </span><input v-show="edit" v-model="title"></input>
         <div>
             <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0" >发布问卷</el-button>
             <el-button type="warning" @click="publish(0)" v-show="questionnaire.status == 1">取消发布</el-button>
+            <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
+            <a v-if="$route.name=='n'" :href="'questionnaire/download/'+$route.params.id"><el-button>下载回答</el-button></a>
         </div>
+        <span>编辑模式 </span><el-switch v-model="edit"></el-switch>
         <p id="questionnaireId" type="hidden"> </p>
-        <questionnaire :questionnaire="questionnaire" :edit="true" @delete="del($event)" @edit="edit($event)"></questionnaire>
-        <el-button type="primary" @click="showModal=true">添加问题</el-button>
-        <el-button type="success" @click="submit()">提交问卷</el-button>
+        <questionnaire :questionnaire="questionnaire" :edit="edit" @delete="del($event)" @edit="edit($event)"></questionnaire>
+        <el-button v-show="edit" type="primary" @click="showModal=true">添加问题</el-button>
+        <el-button v-show="edit" type="success" @click="submit()">提交问卷</el-button>
         <modal :show="showModal" effect="zoom" :backdrop="false" >
             <div slot="modal-header" class="modal-header"><h4>编辑问题</h4></div>
             <div slot="modal-body" class="modal-body">
@@ -31,7 +34,8 @@ export default {
         question:{},
         idx: -1,
         title:"",
-        questionnaire:{questions:[]}
+        questionnaire:{questions:[]},
+        edit:true
     }},
     components:{modal, questionnaire, create},
     methods:{
@@ -61,31 +65,50 @@ export default {
             this.question = this.questionnaire.questions[index];
             this.showModal = true;
         },
+        deleteQuestionnaire(){
+            this.$confirm('此操作将永久删除该问卷, 是否继续?', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'danger'
+            }).then(() => {
+                $.ajax({
+                    type:"DELETE",
+                    url: "questionnaire/" + this.$route.params.id,
+                    success: data=>{
+                        if(data == '1' || data == 1)
+                            this.$message.success("删除成功");
+                        else
+                            this.$message.warning("该问卷不存在，或您没有删除的权限");
+                    }
+                }) ;
+            })
+        },
         submit(){
             var self = this;
             this.questionnaire["paperTitle"] = this.title;
             this.questionnaire["createDate"] = new Date();
             this.questionnaire["status"] = 0;
 
-            /*$.ajax({
-                type: 'POST',
-                url: "addQuestionnaire",
-                data: {questionnaire: JSON.stringify(this.questionnaire)},
-                dataType: "json",
-                success: function(data){
+            if(this.$route.name == "n"){
+                var id = this.$route.params.id;
+                $.ajax({
+                    type: 'PUT',
+                    url: "questionnaire/" + id,
+                    data: {questionnaire: JSON.stringify(this.questionnaire)},
+                    dataType: "json",
+                    success: function(data){
+                        this.$message.success("修改成功");
+                    }
+                });
+            }
+            else
+                $.post("questionnaire",{questionnaire:JSON.stringify(this.questionnaire)}, data=>{
                     self.questionnaire["questionnaireId"] = data.questionnaireId;
                     this.$message.success("提交成功");
-                    this.$router.push({name:'n', params:{id: data.questionnaireId}});
-                }
-            });*/
-
-            $.post("addQuestionnaire",{questionnaire:JSON.stringify(this.questionnaire)}, data=>{
-                self.questionnaire["questionnaireId"] = data.questionnaireId;
-                this.$message.success("提交成功");
-                this.$router.push({name:"n", params:{id: data.questionnaireId}});
-            }, "json").fail(()=>{
-                this.$message.error("网络异常");
-            })
+                    this.$router.push({name:"n", params:{id: data.questionnaireId}});
+                }, "json").fail(()=>{
+                    this.$message.error("网络异常");
+                })
            
         },
         publish(status){
@@ -104,7 +127,7 @@ export default {
             if(this.$route.name == "n"){
                 var id = this.$route.params.id;
                 var self = this;
-                $.post("findAQuestionnaire", {questionnaireId: id}, data=>{
+                $.get("questionnaire/" + id, data=>{
                     if(data.valid == "1"){
                         self.questionnaire = data.questionnaire;
                         self.title = data.questionnaire.paperTitle;
@@ -136,5 +159,6 @@ export default {
 <style>
     .edit-title{font-size:20px;}
     .creator>span, .creator>button {margin-left:20px;}
-    .creator>div>button{margin:20px;}
+    .creator>div{margin:15px;}
+    .creator>span{font-size:20px;}
 </style>
