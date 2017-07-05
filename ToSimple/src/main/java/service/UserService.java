@@ -24,6 +24,10 @@ public interface UserService {
 	
 	public int registerValidate(String email,String token);//correct 1, token error -2, time error -1
 	
+	public User loginByUserName(String userName,String password);
+	
+	public User loginByEmail(String email,String password);
+	
 	
 	
 }
