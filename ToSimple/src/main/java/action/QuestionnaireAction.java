@@ -3,7 +3,7 @@ package action;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-
+import java.text.ParseException;
 
 import javax.servlet.ServletOutputStream;
 
@@ -103,7 +103,7 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "answerPaper", method = RequestMethod.POST)
+    @RequestMapping(value = "questionnaireResult", method = RequestMethod.POST)
     public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException {
         if (answerPaper == null) {//data not fetched, fail
             response.getWriter().print('0');
@@ -114,8 +114,8 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "questionnaire/download/{questionnaireId}", method = RequestMethod.GET)
-    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
+    @RequestMapping(value = "questionnaireResult/download/{questionnaireId}", method = RequestMethod.GET)
+    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException, ParseException{
 		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
 		HSSFWorkbook wb=statisticsService.exportToEXEL(questionnaireId);
 		OutputStream out = response.getOutputStream();
