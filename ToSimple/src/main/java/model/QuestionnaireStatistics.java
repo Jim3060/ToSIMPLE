@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -24,47 +26,50 @@ public class QuestionnaireStatistics {
 	}
 	
 	public void initalQuestions(Questionnaire questionnaire){
-		JSONArray questionsJ= (JSONArray) questionnaire.questionnaireJSON.get("questions");
+		QuestionnaireGSON questionnaireGSON= QuestionnaireGSON.getQuestionnaireGSON(questionnaire.getQuestionnaire());
 		Question tmp;
-		Iterator<Object> it = questionsJ.iterator();
-		while(it.hasNext()){
+		for (int i=0;i<questionnaireGSON.questions.size();i++){
+			QuestionnaireGSON.Question qtmp=new  QuestionnaireGSON.Question();
+			qtmp=questionnaireGSON.questions.get(i);
 			tmp=new Question();
-			JSONObject questionJ = (JSONObject) it.next();
-			tmp.title=(String) questionJ.get("questionTitle");
-			tmp.type=(int) questionJ.get("type");
+			tmp.title=qtmp.questionTitle;
+			tmp.type=qtmp.type;
 			tmp.blanks=(List<Blank>) new ArrayList<Blank>();
 			if (tmp.type!=2){//has choices
 				tmp.choices = new ArrayList<Choice> ();
-				JSONArray choicesJ = (JSONArray) questionJ.get("choices");
-				Iterator<Object> itc = choicesJ.iterator();
-				while  (itc.hasNext()){
+				for (int j=0;j<qtmp.choices.size();j++){
 					Choice ctmp=new Choice();
-					ctmp.title=(String) itc.next();
+					ctmp.title=qtmp.choices.get(j);
 					tmp.choices.add(ctmp);
 				}
 			}
 			questions.add(tmp);
 		}
+		
+
 	}
 	
 	public void putResults(List<QuestionnaireResult> questionnaireResults){
 		//put statistics
+		QuestionnaireResultGSON questionnaireResultGSON;
 		for (int i=0;i<questionnaireResults.size();i++){
-			JSONObject tmpResultJ= questionnaireResults.get(i).questionnaireResultJSON;
-			JSONObject  answersJ = (JSONObject) tmpResultJ.get("answer");
-			for (int j=0;j<questions.size();j++){
-				if (answersJ.has(String.valueOf(j))){
-					JSONArray answertmp = (JSONArray) answersJ.get(String.valueOf(j));
-					if (questions.get(j).type==2){
-						questions.get(j).blanks.add(new Blank(answertmp.get(1).toString(),(String)tmpResultJ.get("questionnaireResultId")));//,tmpResultJ.get("_id").toString())
-					}
-					JSONArray choicetmp = (JSONArray) answertmp.get(0);
-					for (int k=0; k<choicetmp.size();k++){
-						questions.get(j).choices.get((int) choicetmp.get(k)).number++;
+			questionnaireResultGSON=QuestionnaireResultGSON.getQuestionnaireResultGSON(questionnaireResults.get(i).getQuestionnaireResult());
+			QuestionnaireResultGSON.Answer atmp;
+			for (int j=0;j<questionnaireResultGSON.answers.size();j++){
+				atmp=questionnaireResultGSON.answers.get(j);
+				if (questions.get(j).type==2){
+					
+					questions.get(j).blanks.add(new Blank(atmp.blank,questionnaireResultGSON.questionnaireResultId));
+				}
+				else{
+					for (int k=0;k<atmp.choice.size();k++){
+						questions.get(j).choices.get(atmp.choice.get(k)).number++;
 					}
 				}
 			}
 		}
+		System.out.println("break");
+
 	}
 	
 	public static class Choice {
@@ -87,6 +92,18 @@ public class QuestionnaireStatistics {
 		public List<Blank> blanks = new ArrayList<Blank>();
 		public String title;
 		public int type;
+	}
+	
+	public String getQuestionsJSON(){
+		JSONArray questionArray=new JSONArray();
+		for (int i=0;i<questions.size();i++){
+			Gson gson=new Gson();
+            String obj=gson.toJson(questions.get(i));
+            questionArray.add(JSONObject.fromObject(obj));
+		}
+		System.out.println(questions.get(2).blanks.get(0).content);
+		
+		return questionArray.toString();
 	}
 	
 	

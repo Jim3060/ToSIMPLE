@@ -31,7 +31,7 @@ public class QuestionnaireResult {
 	
 	public QuestionnaireResult(DBObject questionnaireResultDB ) {
 		if (questionnaireResultDB==null){return;}
-		questionnaireResultDB.put("questionnaireId", questionnaireResultDB.get("_id").toString());
+		questionnaireResultDB.put("questionnaireResultId", questionnaireResultDB.get("_id").toString());
 		this.questionnaireResultJSON = JSONObject.fromObject(questionnaireResultDB.toString());
 	}
 	

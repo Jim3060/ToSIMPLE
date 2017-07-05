@@ -78,4 +78,24 @@ public class UserServiceImpl implements UserService{
 		return -2;
 	}
 
+	@Override
+	public User loginByUserName(String userName, String password) {
+		User user=userDao.getUserByUserName(userName);
+		if (user==null){return null;}
+		if (user.getPassword().equals(password)){
+			return user;
+		}
+		return null;
+	}
+
+	@Override
+	public User loginByEmail(String email, String password) {
+		User user=userDao.getUserByEmail(email);
+		if (user==null){return null;}
+		if (user.getPassword().equals(password)){
+			return user;
+		}
+		return null;
+	}
+
 }

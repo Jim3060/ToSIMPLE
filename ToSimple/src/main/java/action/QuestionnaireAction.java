@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 
 import model.Questionnaire;
 import model.QuestionnaireResult;
+import model.QuestionnaireStatistics;
 import net.sf.json.JSONObject;
 import service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import service.QuestionnaireService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
@@ -102,12 +104,12 @@ public class QuestionnaireAction extends BaseAction {
     }
 
     @RequestMapping(value = "answerPaper", method = RequestMethod.POST)
-    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response) throws IOException {
+    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException {
         if (answerPaper == null) {//data not fetched, fail
             response.getWriter().print('0');
             return null;
         }
-        questionnaireService.addQuestionnaireResult(new QuestionnaireResult(answerPaper, request()));
+        questionnaireService.addQuestionnaireResult(new QuestionnaireResult(answerPaper, request));
         response.getWriter().print('1');//success
         return null;
     }
@@ -124,7 +126,19 @@ public class QuestionnaireAction extends BaseAction {
 		out.close();
 		return null;
 	}
-
+    @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
+    public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
+		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+		QuestionnaireStatistics s=statisticsService.getQuestionnaireStatisticsById(questionnaireId);
+		
+		JSONObject result = new JSONObject();
+        
+        result.put("questionStatistics", s.getQuestionsJSON());
+        result.put("answerNumber",s.questionnaireResults.size());
+        response.getWriter().print(result);
+        return null;
+	}
+    
 
     //helper
     public String getAnswerPaper() {
