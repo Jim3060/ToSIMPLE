@@ -17,7 +17,7 @@
             题目: <input v-model="title"></input>
         </div>
         <div v-if="type=='多选'">
-            最多可以选择<input class="limit" v-model="limit"></input>项
+            最多可以选择<input class="limit" v-model.number="limit"></input>项
         </div>
         <div v-if="type!='填空'">
             选项:
@@ -141,6 +141,25 @@ export default {
             }
 
         },
+        resultCheck(result){
+            if(result.questionTitle == ""){
+                this.$message.warning("题目不能为空");
+                return false;
+            }
+            else if(result.type == 1 && (typeof result.limit == "string" || result.limit <= 0)){
+                this.$message.warning("请设置选择数量限制");
+                return false;
+            }
+            else if(result.type <=1 && result.choices.length < 2){
+                if(result.choices.length == 1)
+                    this.$message.warning("只有一个选项，会不会给人一种钦定的感觉？");
+                else
+                    this.$message.warning("选择题至少应该有2个选项");
+                return false;
+            }
+            else
+                return true;
+        },
         submit(){
             if(this.edit != -1)
                 this.save(this.edit);
@@ -155,7 +174,8 @@ export default {
                 result.choices = this.options;
             if(result.type == 1)
                 result.limit = this.limit;
-            this.$emit("submit", result);
+            if(this.resultCheck(result))
+                this.$emit("submit", result);
         }
     },
     created(){ 

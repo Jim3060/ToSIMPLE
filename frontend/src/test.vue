@@ -1,5 +1,6 @@
 <template>
     <div>
+        <statistic></statistic>
         <questionnaire :questionnaire="data"></questionnaire>
         <create :questionnaire="data"></create>
     </div>
@@ -11,9 +12,10 @@ import Vue from "vue"
 import questionnaire from "./question/questionnaire.vue"
 import data from "./question.js"
 import create from "./question/createQuestionnaire.vue"
+import statistic from "./statistics/questionnaire.vue"
 
 export default {
-    components:{questionnaire, create},
+    components:{questionnaire, create, statistic},
     data(){return {
         url: "",
         content: "",
