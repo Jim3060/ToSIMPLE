@@ -6,7 +6,7 @@ import com.mongodb.util.JSON;
 import net.sf.json.JSONObject;
 
 public class Questionnaire {
-	private JSONObject questionnaireJSON;
+	public JSONObject questionnaireJSON;
 
 	public Questionnaire(){;}
 	

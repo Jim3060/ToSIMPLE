@@ -41,9 +41,18 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 	}
 
 	@Override
-	public void delete() {
+	public String delete(String id) {
 		// TODO Auto-generated method stub
-		
+		DB db = mongoTemplate.getDb();
+		DBCollection questionnaires = db.getCollection("Questionnaires");
+		BasicDBObject query = new BasicDBObject();
+		try{
+			query.put("_id", new ObjectId(id));
+		}catch(Exception e){
+			return null;
+		}
+		questionnaires.remove(query);
+		return id;
 	}
 
 	@Override
