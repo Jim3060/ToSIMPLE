@@ -18,7 +18,7 @@ import service.UserService;
 
 public class UserServiceImpl implements UserService{
 	private UserDao userDao;
-	
+
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
@@ -31,7 +31,14 @@ public class UserServiceImpl implements UserService{
 		userDao.delete(user);
 	}
 
-	public void updateUser(User user) {
+    @Override
+    public void deleteUser(Long userId) {
+        userDao.delete(userId);
+    }
+
+
+
+    public void updateUser(User user) {
 		userDao.update(user);
 	}
 
@@ -50,7 +57,14 @@ public class UserServiceImpl implements UserService{
 		user.setValid(0);
 		return userDao.save(MailUtils.activateMail(user));
 	}
-	
+
+
+    @Override
+    public Integer changRole(Long userId, Integer role) {
+	    //TODO
+        return userDao.changRole(userId,role);
+    }
+
 
 	@Override
 	public User getUserByEmail(String email) {

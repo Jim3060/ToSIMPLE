@@ -8,6 +8,7 @@ import javax.mail.internet.AddressException;
 import model.User;
 
 public interface UserService {
+
 	public Long addUser(User user);
 
 	public void deleteUser(User user);
@@ -24,14 +25,37 @@ public interface UserService {
 	
 	public int validateEmail(String email);
 	
-	public Long registerRequest(User user) throws AddressException, MessagingException;//0 for name error,-1 for email error
-	
-	public int registerValidate(String email,String token);//correct 1, token error -2, time error -1
-	
-	public User loginByUserName(String userName,String password);
-	
-	public User loginByEmail(String email,String password);
+
 	
 	
 	
+
+
+    public void deleteUser(Long userId);
+
+  
+    /**
+     * @param user
+     * @return user id in db.
+     * @throws AddressException
+     * @throws MessagingException
+     */
+    public Long registerRequest(User user) throws AddressException, MessagingException;
+
+    /**
+     * change the role of userId
+     *
+     * @param userId
+     * @param role
+     * @return the old role.
+     */
+    public Integer changRole(Long userId, Integer role);
+
+    public int registerValidate(String email, String token);//correct 1, token error -2, time error -1
+
+    public User loginByUserName(String userName, String password);
+
+    public User loginByEmail(String email, String password);
+
+
 }
