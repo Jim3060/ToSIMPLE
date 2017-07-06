@@ -88,7 +88,7 @@
                 this.showLoginModal = true;
             },
             regModal(){
-                this.regBuf = {};
+                this.regBuf = {name:"", password1:"", password2:"", email:""};
                 this.showRegModal = true;
             },
             login(){
@@ -123,13 +123,33 @@
             },
             register(){
                 var self = this;
-                if(this.regBuf.name == "" || this.regBuf.password1 == "" || this.regBuf.password1 != this.regBuf.password2 || this.regBuf.email == ""){
-                    this.$message.error("请检查您的输入");
+                if(this.regBuf.name == ""){
+                    this.$message.error("用户名不能为空");
+                    return ;
+                }
+                else if(this.regBuf.name.indexOf("@") != -1){
+                    this.$message.error("用户名中不能含有特殊字符");
+                    return ;
+                }
+                else if(this.regBuf.password1 == ""){
+                    this.$message.error("密码不能为空");
+                    return ;
+                }
+                else if(this.regBuf.password1 != this.regBuf.password2){
+                    this.$message.error("密码不一致");
+                    return ;
+                }
+                else if(this.regBuf.email == ""){
+                    this.$message.error("邮箱不能为空");
+                    return ;
+                }
+                else if(this.regBuf.email.indexOf("@") == -1 || this.regBuf.email.indexOf(".") <= this.regBuf.email.indexOf("@")){
+                    this.$message.error("请输入合法的邮箱地址");
                     return ;
                 }
                 var postBody = {};
-                postBody.name = this.regBuf.name;
-                postBody.password = this.encrypt(this.regBuf.password1);
+                postBody.userName = this.regBuf.name;
+                postBody.passwordSECURE = this.encrypt(this.regBuf.password1);
                 postBody.email = this.regBuf.email;
                 $.post("register", postBody, (data)=>{
                     if(data >= 1){

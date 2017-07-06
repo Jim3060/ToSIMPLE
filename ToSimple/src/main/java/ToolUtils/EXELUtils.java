@@ -1,6 +1,7 @@
 package ToolUtils;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import model.QuestionnaireGSON;
 
 public class EXELUtils {
 	DateFormat df = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
-	public static HSSFWorkbook GenerateRawResultStatistics(Questionnaire questionnaire,List<QuestionnaireResult> questionnaireResults){
+	public static HSSFWorkbook GenerateRawResultStatistics(Questionnaire questionnaire,List<QuestionnaireResult> questionnaireResults) throws ParseException{
 		QuestionnaireGSON questionnaireGSON=QuestionnaireGSON.getQuestionnaireGSON(questionnaire.getQuestionnaire());
 		HSSFWorkbook wb = new HSSFWorkbook();  
         
@@ -27,9 +28,12 @@ public class EXELUtils {
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
         
         //input questions
-        int beginPadding=1;
+        int beginPadding=2;
 		HSSFCell cellb = row.createCell((short) 0);  
 		cellb.setCellValue("Answer Time");  
+		cellb.setCellStyle(style);  
+		cellb = row.createCell((short) 1);  
+		cellb.setCellValue("Timing");  
 		cellb.setCellStyle(style);  
 //        HSSFCell cellb = row.createCell((short) 0);  
 //        cellb.setCellValue("Timing");  
@@ -47,8 +51,15 @@ public class EXELUtils {
         	HSSFRow rowa = sheet.createRow((int) i+1); 
         	//add other info here
         	HSSFCell cellbb = rowa.createCell((short) 0);  
-    		cellbb.setCellValue(questionnaireResultGSON.beginTime);  
+    		cellbb.setCellValue(TimeUtils.toNormalTime(questionnaireResultGSON.beginTime));  
     		cellbb.setCellStyle(style);  
+    		
+    		cellbb = rowa.createCell((short) 1);  
+    		Long timing=TimeUtils.getLocalTime(questionnaireResultGSON.endTime).getTime()-TimeUtils.getLocalTime(questionnaireResultGSON.beginTime).getTime();
+    		cellbb.setCellValue(String.valueOf(timing/1000)+"s");  
+    		cellbb.setCellStyle(style);  
+    		
+    		
         	for (int j=0;j<questionnaireResultGSON.answers.size();j++){
         		System.out.println("hi");
         		

@@ -26,11 +26,15 @@ public interface UserDao {
 
     public User getUserById(long id);
 
+
     public List<User> getAllUsers();
 
     public User getUserByEmail(String email);
 
     public User getUserByUserName(String userName);
+	
+	
+
 
     /**
      * change the role of userId

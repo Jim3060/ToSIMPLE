@@ -3,9 +3,13 @@ package action;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+
+import java.text.ParseException;
 
 
 import javax.servlet.ServletOutputStream;
@@ -186,6 +190,7 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
+
     /**
      * Save a result of the questionnaire
      *
@@ -195,6 +200,7 @@ public class QuestionnaireAction extends BaseAction {
      * @return
      * @throws IOException
      */
+
     @RequestMapping(value = "questionnaireResult", method = RequestMethod.POST)
     public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException {
         if (answerPaper == null) {//data not fetched, fail
@@ -205,6 +211,21 @@ public class QuestionnaireAction extends BaseAction {
         response.getWriter().print('1');//success
         return null;
     }
+
+
+    @RequestMapping(value = "questionnaireResult/download/{questionnaireId}", method = RequestMethod.GET)
+    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException, ParseException{
+		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+		HSSFWorkbook wb=statisticsService.exportToEXEL(questionnaireId);
+		OutputStream out = response.getOutputStream();
+		response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode("statistics.xls", "UTF-8"));
+		response.setContentType("application/msexcel;charset=UTF-8");
+		wb.write(out);
+		out.flush();
+		out.close();
+		return null;
+	}
+    
 
     /**
      * show a questionnaire result.
@@ -225,7 +246,8 @@ public class QuestionnaireAction extends BaseAction {
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "questionnaire/download/{questionnaireId}", method = RequestMethod.GET)
+
+    @RequestMapping(value = "questionnaireResult/download/{questionnaireId}", method = RequestMethod.GET)
     public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
         //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
         HSSFWorkbook wb = statisticsService.exportToEXEL(questionnaireId);
@@ -237,6 +259,7 @@ public class QuestionnaireAction extends BaseAction {
         out.close();
         return null;
     }
+
 
     @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
     public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
@@ -250,7 +273,6 @@ public class QuestionnaireAction extends BaseAction {
         response.getWriter().print(result);
         return null;
     }
-
 
     //helper
     public String getAnswerPaper() {
