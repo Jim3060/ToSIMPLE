@@ -1,8 +1,6 @@
 <template>
     <div>
         <statistic></statistic>
-        <questionnaire :questionnaire="data"></questionnaire>
-        <create :questionnaire="data"></create>
     </div>
 </template>
 
