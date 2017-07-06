@@ -65,9 +65,7 @@ public class UserServiceImpl implements UserService {
         return userDao.changRole(userId, role);
     }
 
-    public int validateEmail(String email) {
-        return 0;
-    }
+
 
 
 	@Override
