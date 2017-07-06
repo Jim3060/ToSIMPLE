@@ -5,7 +5,9 @@
             <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0" >发布问卷</el-button>
             <el-button type="warning" @click="publish(0)" v-show="questionnaire.status == 1">取消发布</el-button>
             <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
+            <el-button v-if="$route.name=='n'" @click="jumpToAnswer()">前往回答页</el-button>
             <a v-if="$route.name=='n'" :href="'questionnaireResult/download/'+$route.params.id"><el-button>下载回答</el-button></a>
+            <el-button v-if="$route.name=='n'" @click="jumpToStatistic()">查看统计</el-button>
         </div>
         <span>编辑模式 </span><el-switch v-model="editMode"></el-switch>
         <p id="questionnaireId" type="hidden"> </p>
@@ -84,6 +86,12 @@ export default {
                     }
                 }) ;
             })
+        },
+        jumpToStatistic(){
+            this.$router.push({name:"s", params:{id: this.$route.params.id}});
+        },
+        jumpToAnswer(){
+            this.$router.push({name:"q", params:{id: this.$route.params.id}});
         },
         submit(){
             var self = this;

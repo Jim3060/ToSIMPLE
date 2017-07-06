@@ -97,9 +97,10 @@
                 postBody.userName = this.loginBuf.username;
                 postBody.passwordSECURE = this.encrypt(this.loginBuf.password);
                 $.post("login", postBody, (data)=>{
-                    if(data >= 1){
-                        self.user.role = data;
-                        self.user.username = self.loginBuf.username;
+                    console.log(data);
+                    if(data.loginSuccess == 1 || data.loginSuccess == '1'){
+                        self.user.role = data.user.role;
+                        self.user.username = data.user.userName;
                         localStorage.user = JSON.stringify(self.user);
                         self.ifLog = true;
                         self.showLoginModal = false;
@@ -108,10 +109,10 @@
                     }else{
                         this.$message.error("用户名或密码错误");
                     }
-                }).fail(()=>{
+                }, "json").fail(()=>{
                     this.$message.error("网络异常");
                 })
-
+                this.getPublicKey();
             },
             logout(){
                 this.ifLog = false;
@@ -166,6 +167,7 @@
                 }).fail(()=>{
                     this.$message.error("网络异常");
                 })
+                this.getPublicKey();
             },
             getPublicKey(){
                 var self = this;
