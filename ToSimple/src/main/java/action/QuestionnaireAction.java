@@ -3,10 +3,14 @@ package action;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 import javax.servlet.ServletOutputStream;
 
+import net.sf.json.JSONArray;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
@@ -118,14 +122,42 @@ public class QuestionnaireAction extends BaseAction {
      */
     @RequestMapping(value = "questionnaire/search", method = RequestMethod.GET)
     public String searchQuestionnaireByName(@RequestParam("name") String name, HttpServletResponse response) throws IOException {
-        //TODO
+        List<Questionnaire> list = questionnaireService.searchQuestionnaireByName(name);
+        JSONArray jsonArray = toJSONArray(list);
+        response.getWriter().print(jsonArray);
         return null;
     }
+
 
     @RequestMapping(value = "questionnaire/random", method = RequestMethod.GET)
     public String randomQuestionnaire(@RequestParam("size") Integer size, HttpServletResponse response) throws IOException {
         //TODO
+
         return null;
+    }
+
+    /**
+     * get questionnaire with specific status
+     * @param status
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "questionnaire/status",method = RequestMethod.GET)
+    public String getQuestionnaireByStatus(@RequestParam("status") Integer status,HttpServletResponse response) throws IOException {
+        List<Questionnaire> list = questionnaireService.findQuestionnaireByStatus(status);
+        JSONArray jsonArray = toJSONArray(list);
+        response.getWriter().print(jsonArray);
+        return null;
+    }
+
+    private JSONArray toJSONArray(List<Questionnaire>list){
+        JSONArray jsonArray = new JSONArray();
+        Iterator<Questionnaire> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            jsonArray.add(iterator.next().questionnaireJSON);
+        }
+        return jsonArray;
     }
 
     /**
@@ -205,18 +237,19 @@ public class QuestionnaireAction extends BaseAction {
         out.close();
         return null;
     }
-    @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
-    public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
-		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
-		QuestionnaireStatistics s=statisticsService.getQuestionnaireStatisticsById(questionnaireId);
 
-		JSONObject result = new JSONObject();
+    @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
+    public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
+        //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+        QuestionnaireStatistics s = statisticsService.getQuestionnaireStatisticsById(questionnaireId);
+
+        JSONObject result = new JSONObject();
 
         result.put("questionStatistics", s.getQuestionsJSON());
-        result.put("answerNumber",s.questionnaireResults.size());
+        result.put("answerNumber", s.questionnaireResults.size());
         response.getWriter().print(result);
         return null;
-	}
+    }
 
 
     //helper
