@@ -57,17 +57,19 @@ public class UserAction extends BaseAction {
     public String show(@PathVariable("userId") Long userId,HttpServletResponse response) throws IOException {
         User user = userService.getUserById(userId);
         JSONObject result = new JSONObject();
-        result.put("user",user);
+        result.put("user", user);
         response.getWriter().print(result);
         return null;
     }
-    @RequestMapping(value = "user/userId",method = RequestMethod.PUT)
-    public String edit(@PathVariable("userId") Long userId,Integer role,HttpServletResponse response) throws IOException {
-        userService.changRole(userId,role);
+
+    @RequestMapping(value = "user/userId", method = RequestMethod.PUT)
+    public String edit(@PathVariable("userId") Long userId, Integer role, HttpServletResponse response) throws IOException {
+        userService.changRole(userId, role);
         return null;
     }
-    @RequestMapping(value = "user/userId",method = RequestMethod.DELETE)
-    public String delete(@PathVariable("userId") Long userId){
+
+    @RequestMapping(value = "user/userId", method = RequestMethod.DELETE)
+    public String delete(@PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
         return null;
     }
@@ -129,13 +131,13 @@ public class UserAction extends BaseAction {
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
         String password = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         role = 0;
-        User user = new User(userName,password,role,email);
+        User user = new User(userName, password, role, email);
         Long id = userService.registerRequest(user);
         user.setId(id);
         session.removeAttribute("privateKey");
         int registerSuccess = 1;
-        session.setAttribute("registerSuccess",registerSuccess);
-        session.setAttribute("user",user);
+        session.setAttribute("registerSuccess", registerSuccess);
+        session.setAttribute("user", user);
         return null;
     }
 

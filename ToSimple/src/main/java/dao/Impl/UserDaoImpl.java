@@ -27,7 +27,7 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
     @Override
     public void delete(Long userId) {
         //TODO
-        getHibernateTemplate().find("delete from User as u where u.id=?",userId);
+        getHibernateTemplate().find("delete from User as u where u.id=?", userId);
     }
 
     public void update(User user) {
