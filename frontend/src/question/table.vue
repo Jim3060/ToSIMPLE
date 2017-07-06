@@ -16,8 +16,8 @@
                     <th>{{data_item.username}}</th>
                     <th>{{data_item.email}}</th>
                     <th>
-                        <button class="btn btn-success" @click="create()">创建</button>
-                        <button class="btn btn-primary" @click="refresh()">刷新</button>
+                        <button v-if="data_item.role != 2" class="btn btn-success" @click="create()">解封用户</button>
+                        <button v-else class="btn btn-primary" @click="refresh()">封禁用户</button>
                     </th>
                 </tr>
             </tbody>
@@ -35,7 +35,8 @@
 
     export default {
         data(){return {
-            data:[]
+            data:[{"ID" : 1, "role" : 1, "username" : "zhu", "email" : "8@qq.com"},
+            {"ID" : 1, "role" : 2, "username" : "zhu", "email" : "8@qq.com"}]
         }},
         /*
         created() {
