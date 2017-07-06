@@ -213,19 +213,6 @@ public class QuestionnaireAction extends BaseAction {
     }
 
 
-    @RequestMapping(value = "questionnaireResult/download/{questionnaireId}", method = RequestMethod.GET)
-    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException, ParseException{
-		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
-		HSSFWorkbook wb=statisticsService.exportToEXEL(questionnaireId);
-		OutputStream out = response.getOutputStream();
-		response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode("statistics.xls", "UTF-8"));
-		response.setContentType("application/msexcel;charset=UTF-8");
-		wb.write(out);
-		out.flush();
-		out.close();
-		return null;
-	}
-    
 
     /**
      * show a questionnaire result.
@@ -248,7 +235,7 @@ public class QuestionnaireAction extends BaseAction {
      */
 
     @RequestMapping(value = "questionnaireResult/download/{questionnaireId}", method = RequestMethod.GET)
-    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
+    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException, ParseException {
         //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
         HSSFWorkbook wb = statisticsService.exportToEXEL(questionnaireId);
         OutputStream out = response.getOutputStream();
