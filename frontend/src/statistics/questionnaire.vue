@@ -1,6 +1,7 @@
 <template>
-    <div>
-        <question v-for="(data, index) in resultData.questionStatistics" :key="data" :statisticData="data" :index="index" :title="questionnaire.questions[index].questionTitle" :total="resultData.answerNumber"></question>
+    <div class="statistics">
+        <el-button @click="goBack()">返回</el-button>
+        <div><question v-for="(data, index) in resultData.questionStatistics" :key="data" :statisticData="data" :index="index" :title="questionnaire.questions[index]!=undefined?questionnaire.questions[index].questionTitle:'Loading...'" :total="resultData.answerNumber"></question></div>
     </div>
 </template>
 
@@ -10,12 +11,20 @@ import question from "./question.vue"
 export default {
     components:{question},
     data(){return {
-        resultData:{"questionStatistics":[{"choices":[{"title":"A","number":2},{"title":"B","number":2}],"blanks":[],"title":"Q1","type":0},{"choices":[{"title":"A","number":2},{"title":"B","number":3},{"title":"C","number":2}],"blanks":[],"title":"Q2","type":1}],"answerNumber":4},
+        resultData:{"questionStatistics":[],"answerNumber":1},
         questionnaire:{questions:[]}
     }},
+    methods:{
+        goBack(){
+            this.$router.push({name:"n", params:{id: this.$route.params.id}});
+        }
+    },
     created(){
         var id = this.$route.params.id;
         var self = this;
+        $.get("questionnaireStatistics/" + id, data=>{
+            self.resultData = data;
+        }, "json")
         $.get("questionnaire/" + id, data=>{
             if(data.valid == "1"){
                 self.questionnaire = data.questionnaire;
@@ -28,3 +37,8 @@ export default {
     }
 }
 </script>
+
+<style>
+    .statistics>button{margin-left:4%; margin-bottom:10px;}
+</style>
+

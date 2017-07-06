@@ -6,7 +6,7 @@ var sendRequest = require("request");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
-var address = "192.168.1.30:8080";
+var address = "192.168.1.116:8080";
 
 http.createServer(function(request,response){
     if(!allowExternalRequest&&request.headers["host"]!="127.0.0.1:8080"&&request.headers["host"]!="localhost:8080"){
@@ -35,7 +35,8 @@ http.createServer(function(request,response){
         }
         else if(err||!stat.isFile()){
             //TODO
-            var target = "http://" + address + url.parse(request.url).pathname;
+            //console.log(url.parse(request.url));
+            var target = "http://" + address + url.parse(request.url).path;
             console.log( request.method + " " + target);
             if(request.method == "GET" || request.method == "DELETE"){
                 var options = {url: target, method: request.method, headers:{Cookie: request.headers.cookie}};

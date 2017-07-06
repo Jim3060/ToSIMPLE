@@ -1,7 +1,7 @@
 <template>
     <el-card class="box-card">
         <div slot="header">
-            <span class="statistic-title">{{index+1}}.{{"title"}}</span>
+            <span class="statistic-title">{{index+1}}.{{title}}</span>
             <el-radio-group style="float: right" v-model="type" size="small">
                 <el-radio-button label="饼图" style="font-weight:400"></el-radio-button>
                 <el-radio-button label="条形图" style="font-weight:400"></el-radio-button>
