@@ -61,7 +61,4 @@ public class QuestionnaireResultDaoImpl implements QuestionnaireResultDao {
 	    }
 		return questionnaireResults;
 	}
-
-	
-
 }
