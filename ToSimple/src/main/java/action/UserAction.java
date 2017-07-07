@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import service.UserService;
 
 @Controller
@@ -76,7 +77,7 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "allUsers", method = RequestMethod.GET)
-    public String getAllUsers() throws Exception {
+    public String getAllUsers(@RequestParam("page")Integer page, @RequestParam("size") Integer size) throws Exception {
         //get users
         users = userService.getAllUsers();
         return "userCRUD";
@@ -114,7 +115,7 @@ public class UserAction extends BaseAction {
                 loginSuccess = 0;
             }
         }
-        
+
         JSONObject result = new JSONObject();
         result.put("loginSuccess", loginSuccess);
         if (loginSuccess == 1) {
@@ -136,7 +137,6 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public String register(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response, String email) throws MessagingException, IOException {
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
-        System.out.println(passwordSECURE);
         String password = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         role = 0;
         User user = new User(userName, password, role, email);
@@ -146,7 +146,7 @@ public class UserAction extends BaseAction {
         response.getWriter().print(1);
         return null;
     }
-    
+
     @RequestMapping(value = "registerValidate", method = RequestMethod.GET)
     public String registerValidate(HttpSession session, @RequestParam("token") String token, HttpServletResponse response, @RequestParam("email") String email) throws MessagingException, IOException {
     	int flag=userService.registerValidate(email, token);
