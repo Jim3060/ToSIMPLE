@@ -1,7 +1,14 @@
 <template>
     <div class="statistics">
         <el-button @click="goBack()">返回</el-button>
-        <div><question v-for="(data, index) in resultData.questionStatistics" :key="data" :statisticData="data" :index="index" :title="questionnaire.questions[index]!=undefined?questionnaire.questions[index].questionTitle:'Loading...'" :total="resultData.answerNumber"></question></div>
+        <div>
+            <question v-for="(data, index) in resultData.questionStatistics" :key="data" 
+                    :statisticData="data" :index="index" 
+                    :title="questionnaire.questions[index]!=undefined?questionnaire.questions[index].questionTitle:'Loading...'" 
+                    :questionType="questionnaire.questions[index]!=undefined?questionnaire.questions[index].type:'填空'" 
+                    :total="resultData.answerNumber">
+            </question>
+        </div>
     </div>
 </template>
 
