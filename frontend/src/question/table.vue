@@ -11,18 +11,18 @@
                     <th>邮箱</th>
                     <th>操作</th>
                 </tr>
-                <tr v-for="(data_item, index) in data" :key="data_item">
+                <tr v-for="(data_item, index) in users" :key="data_item">
                     <th>{{index + 1}}</th>
-                    <th>{{data_item.ID}}</th>
+                    <th>{{data_item.id}}</th>
                     <th v-if="data_item.role==2">封禁用户</th>
                     <th v-else-if="data_item.role==0">普通用户</th>
                     <th v-else>系统管理员</th>
                     <th>{{data_item.username}}</th>
                     <th>{{data_item.email}}</th>
                     <th>
-                        <el-button v-if="data_item.role == 2" type="warning" @click="unban(data_item.ID, index)">解封用户</el-button>
-                        <el-button v-if="data_item.role==0" type="danger" @click="ban(data_item.ID, index)">封禁用户</el-button>
-                        <el-button v-if="data_item.role==0" type="warning" @click="set_manager(data_item.ID, index)">更改为管理员</el-button>
+                        <el-button v-if="data_item.role == 2" type="warning" @click="unban(data_item.id, index)">解封用户</el-button>
+                        <el-button v-if="data_item.role==0" type="danger" @click="ban(data_item.id, index)">封禁用户</el-button>
+                        <el-button v-if="data_item.role==0" type="warning" @click="set_manager(data_item.id, index)">设管理员</el-button>
                     </th>
                 </tr>
             </tbody>
@@ -48,12 +48,13 @@
 
     export default {
         data(){return {
-            data:[{"ID" : 1, "role" : 0, "username" : "zhubo", "email" : "8@qq.com"},
+            users:[{"ID" : 1, "role" : 0, "username" : "zhubo", "email" : "8@qq.com"},
             {"ID" : 1, "role" : 2, "username" : "zhu", "email" : "8@qq.com"}],
             datachanged:[],
-            pageIndex : {},
-            pageLength : {},
-            pageSize : {}
+            pageIndex : {default(){return 0}},
+            pageLength : {default(){return 0}},
+            pageSize : {},
+            userNum : {}
         }},
         methods:{
             ban(ID, index) {
@@ -144,7 +145,9 @@
                 type:"GET",
                 url:"allUser?page=" + self.pageIndex + "&size=" + self.pageSize,
                 success: data=>{
-
+                    self.users = data.users;
+                    self.userNum = data.userNum;
+                    self.pageLength = self.userNum / self.pageSize + 1;
                 }
             });
             
