@@ -14,15 +14,17 @@ import message from "./message.vue"
 import questionnaire from "./question/questionnaire.vue"
 import create from "./question/createQuestionnaire.vue"
 import statistic from "./statistics/questionnaire.vue"
+import qView from "./question/questionnairesView.vue"
 
 const routes = [
     {path:'/index',component: index},
     {path:"/", redirect:"/index"},
-    {path:"/q", component: test},
+    {path:"/q", component: qView},
     {path:"/q/:id", name:"q", component: questionnaire},
     {path:"/n", component:create},
     {path:"/n/:id", name:"n", component: create},
-    {path:"/s/:id", name:"s", component: statistic}
+    {path:"/s/:id", name:"s", component: statistic},
+    {path:"/search/:name", name:"search", component: qView}
 ]
 
 const router = new VueRouter({
