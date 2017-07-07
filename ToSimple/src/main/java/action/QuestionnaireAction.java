@@ -63,6 +63,7 @@ public class QuestionnaireAction extends BaseAction {
      * @return none
      * @throws Exception
      */
+    //TODO
     @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
     public String addOrUpdateQuestionnaire(String questionnaire, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
@@ -110,9 +111,12 @@ public class QuestionnaireAction extends BaseAction {
      * @return none
      */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.DELETE)
-    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId) {
+    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException {
         // TODO delete a questionnaire
-        questionnaireService.deleteQuestionnaire(questionnaireId);
+        Integer integer = questionnaireService.deleteQuestionnaire(questionnaireId);
+        JSONObject result = new JSONObject();
+        result.put("deleteSuccess", integer);
+        response.getWriter().print(result);
         return null;
     }
 
@@ -297,7 +301,6 @@ public class QuestionnaireAction extends BaseAction {
     public int getStatus() {
         return status;
     }
-
 
     public void setStatus(int status) {
         this.status = status;
