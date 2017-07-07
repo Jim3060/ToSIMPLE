@@ -37,6 +37,13 @@ public interface QuestionnaireService {
 	 */
 	public List<Questionnaire> searchQuestionnaireByName(String name,Integer size);
 
+	/**
+	 * Get n random questionnaires.
+	 * @param size
+	 * @return
+	 */
+	public List<Questionnaire> randomQuestionnaire(Integer size);
+
 
 	/**
 	 * search questionnaire by name. max num is 30

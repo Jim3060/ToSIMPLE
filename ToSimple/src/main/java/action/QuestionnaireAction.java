@@ -173,8 +173,9 @@ public class QuestionnaireAction extends BaseAction {
 
     @RequestMapping(value = "questionnaire/random", method = RequestMethod.GET)
     public String randomQuestionnaire(@RequestParam("size") Integer size, HttpServletResponse response) throws IOException {
-        //TODO
-
+        List<Questionnaire> list = questionnaireService.randomQuestionnaire(size);
+        JSONArray jsonArray = toJSONArray(list);
+        response.getWriter().print(jsonArray);
         return null;
     }
 

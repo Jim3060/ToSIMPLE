@@ -35,11 +35,6 @@ public class UserAction extends BaseAction {
     private UserService userService;
     private Long userId;
     private HttpServletResponse response;
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
     private String passwordSECURE;
     private int id;
     private String userName;
@@ -47,6 +42,10 @@ public class UserAction extends BaseAction {
     private Integer role;
     private String email;
     public List<User> users = new ArrayList<User>();
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "user",method = RequestMethod.POST)
     public String save(User user){

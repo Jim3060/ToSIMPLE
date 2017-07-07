@@ -25,7 +25,14 @@ public interface QuestionnaireDao {
     public Questionnaire findQuestionnaireByUser(int id);
 
     /**
-     * search questionnaires by name.(fuzzy search)
+     * get a sample of questionnaires. The questionnaire status must be 1
+     * @param size the max size of the questionnaires.
+     * @return
+     */
+    public List<Questionnaire> randomQuestionnaire(Integer size);
+
+    /**
+     * search questionnaires by name.(fuzzy search) Only return the questionnaire with status equals 1
      * @param name the name
      * @param size the number of questionnaire not allowed bigger than 30.
      * @return  the list of questionnaires

@@ -118,4 +118,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     public List<Questionnaire> findQuestionnaireByStatus(Integer status) {
         return questionnaireDao.findQuestionnaireByStatus(status);
     }
+
+    @Override
+    public List<Questionnaire> randomQuestionnaire(Integer size) {
+        return questionnaireDao.randomQuestionnaire(size);
+    }
 }
