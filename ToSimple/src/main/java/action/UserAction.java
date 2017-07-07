@@ -77,10 +77,24 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "allUsers", method = RequestMethod.GET)
-    public String getAllUsers(@RequestParam("page")Integer page, @RequestParam("size") Integer size) throws Exception {
+    public String getAllUsers(HttpServletResponse response) throws Exception {
         //get users
         users = userService.getAllUsers();
-        return "userCRUD";
+        JSONObject result = new JSONObject();
+    	result.put("users",users);
+    	response.getWriter().print(result);
+        return null;
+    }
+
+    @RequestMapping(value = "allUser", method = RequestMethod.GET)
+    public String getUsersByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
+        //get users
+        users = userService.getUsersByPage(page,pageSize);
+        JSONObject result = new JSONObject();
+    	result.put("users",users);
+    	response.getWriter().print(result);
+    	return null;
+
     }
 
     @RequestMapping(value = "fetchRSA", method = RequestMethod.GET)
@@ -137,6 +151,7 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public String register(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response, String email) throws MessagingException, IOException {
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+        System.out.println(passwordSECURE);
         String password = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         role = 0;
         User user = new User(userName, password, role, email);
