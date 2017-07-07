@@ -6,7 +6,7 @@ var sendRequest = require("request");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
-var address = "192.168.1.30:8080";
+var address = "192.168.1.116:8080";
 
 http.createServer(function(request,response){
     if(!allowExternalRequest&&request.headers["host"]!="127.0.0.1:8080"&&request.headers["host"]!="localhost:8080"){

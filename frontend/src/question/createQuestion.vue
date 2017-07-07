@@ -201,5 +201,4 @@ export default {
     .create, .create>div, .create>input{margin:10px;}
     .limit{width:50px;}
     .option{width:300px;}
-    .el-button{margin-left:0px!important;}
 </style>

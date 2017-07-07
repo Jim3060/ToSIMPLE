@@ -15,6 +15,7 @@
         <div class="buttons">
             <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
             <el-button type="success" @click="submit()">提交问卷</el-button>
+            <el-button @click="save()">暂存问卷</el-button>
         </div>
         <modal :show="showModal" effect="zoom" :backdrop="false" >
             <div slot="modal-header" class="modal-header"><h4>编辑问题</h4></div>
@@ -40,7 +41,8 @@ export default {
         title:"",
         questionnaire:{questions:[]},
         editMode: true,
-        invalid: false
+        invalid: false,
+        recovered: false
     }},
     components:{modal, questionnaire, create},
     methods:{
@@ -69,6 +71,31 @@ export default {
             this.idx = index;
             this.question = this.questionnaire.questions[index];
             this.showModal = true;
+        },
+        save(){
+            this.$confirm("将问卷暂存在本地存在丢失和被他人看到的可能，并且会覆盖之前暂存的问卷，是否要继续？", "警告", {
+                confirmButtonText: "暂存",
+                cancelButtonText: "取消",
+                type: "danger"
+            }).then(()=>{
+                this.questionnaire.paperTitle = this.title;
+                localStorage.questionnaire = JSON.stringify(this.questionnaire)
+                this.$message.success("问卷已暂存，请记得及时提交");
+                this.recovered = false;
+            })
+        },
+        recover(){
+            if(localStorage.questionnaire != undefined){
+                this.$confirm("检测到本地有暂存的问卷，是否恢复？","信息",{
+                    confirmButtonText: "恢复",
+                    cancelButtonText: "取消",
+                    type:"info"
+                }).then(()=>{
+                    this.questionnaire = JSON.parse(localStorage.questionnaire);
+                    this.title = this.questionnaire.paperTitle;
+                    this.recovered = true;
+                })
+            }
         },
         deleteQuestionnaire(){
             this.$confirm('此操作将永久删除该问卷, 是否继续?', '警告', {
@@ -114,6 +141,8 @@ export default {
                     dataType: "json",
                     success: function(data){
                         this.$message.success("修改成功");
+                        if(this.recovered)
+                            localStorage.removeItem("questionnaire");
                     }
                 });
             }
@@ -122,6 +151,8 @@ export default {
                     if(data.valid == 1){
                         self.questionnaire["questionnaireId"] = data.questionnaireId;
                         this.$message.success("提交成功");
+                        if(this.recovered)
+                            localStorage.removeItem("questionnaire");
                         this.$router.push({name:"n", params:{id: data.questionnaireId}});
                     }
                     else{
@@ -170,12 +201,16 @@ export default {
             if(to.path == "/n"){
                 this.questionnaire = {questions:[]};
                 this.invalid = false;
+                this.recover();
             }else
                 this.loadQuestionnaire();
         }
     },
     created(){
-        this.loadQuestionnaire();
+        if(localStorage.questionnaire == undefined || this.$route.name == 'n')
+            this.loadQuestionnaire();
+        else
+            this.recover();
     }
 }
 </script>

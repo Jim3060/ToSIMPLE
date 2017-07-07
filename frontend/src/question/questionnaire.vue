@@ -48,14 +48,23 @@ export default {
             var postBody = {answers: []};
             for(var i = 0; i < this.questionnaire.questions.length; i++){
                 var temp = this.answer[i];
+                if(this.hidden[i])
+                    continue;
                 if(typeof temp === "undefined"){
-                    postBody.answers.push({choice:[], blank:""});
+                    //postBody.answers.push({choice:[], blank:""});
+                    this.$message.warning("请记得回答第"+ (i+1) +"题");
+                    return;
                 }else if(typeof temp === "number"){
                     postBody.answers.push({choice:[temp], blank:""})
                 }else if(typeof temp === "object"){
                     postBody.answers.push({choice: temp, blank:""});
                 }else{
-                    postBody.answers.push({choice:[], blank: temp});
+                    if(temp == ""){
+                        this.$message.warning("请记得回答第"+ (i+1) +"题");
+                        return;
+                    }
+                    else
+                        postBody.answers.push({choice:[], blank: temp});
                 }
             }
             postBody.questionnaireId = this.questionnaire.questionnaireId;
