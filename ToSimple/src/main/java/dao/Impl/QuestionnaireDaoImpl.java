@@ -117,9 +117,11 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
         Pattern regName = Pattern.compile(name, CASE_INSENSITIVE);
-//        query.put("status", new BasicDBObject("$gt", "1"));
+        query.put("status", new BasicDBObject("$eq", 1));
         query.put("paperTitle", regName);
-        DBCursor dbCursor = questionnaires.find(query).limit(size);
+        BasicDBObject fields = new BasicDBObject("paperTitle",true).append("_id",true);
+        DBCursor dbCursor = questionnaires.find(query,fields).limit(size);
+
         List<Questionnaire> list = new ArrayList<Questionnaire>();
         while (dbCursor.hasNext()) {
             list.add(new Questionnaire(dbCursor.next()));

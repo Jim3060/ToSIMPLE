@@ -18,7 +18,7 @@
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close" p:driverClass="com.mysql.jdbc.Driver"
 		p:jdbcUrl="jdbc:mysql://localhost:3306/questionnaireServey" p:user="root"
-		p:password="Ljy970714" p:maxPoolSize="40" p:minPoolSize="1"
+		p:password="lulls520" p:maxPoolSize="40" p:minPoolSize="1"
 		p:initialPoolSize="1" p:maxIdleTime="20" />
 
 	<bean id="sessionFactory"
@@ -26,7 +26,7 @@
 		p:dataSource-ref="dataSource">
 		<property name="mappingResources">
 			<list>	
-				<value>model/User.hbm.xml</value>
+				<value>User.hbm.xml</value>
 			</list>
 		</property>
 		<!-- Hibernate SessionFactory -->
@@ -39,8 +39,6 @@
 			</value>
 		</property>
 	</bean>
-
-
 
     <!-- DAO Bean -->
 

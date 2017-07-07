@@ -151,7 +151,6 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public String register(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response, String email) throws MessagingException, IOException {
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
-        System.out.println(passwordSECURE);
         String password = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         role = 0;
         User user = new User(userName, password, role, email);
