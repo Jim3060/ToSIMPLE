@@ -30,14 +30,6 @@ public interface QuestionnaireService {
 	public QuestionnaireStatistics getQuestionnaireStatisticsById(String id);
 
 	/**
-	 * search questionnaire by name.
-	 * @param name
-	 * @param size
-	 * @return
-	 */
-	public List<Questionnaire> searchQuestionnaireByName(String name,Integer size);
-
-	/**
 	 * Get n random questionnaires.
 	 * @param size
 	 * @return
@@ -51,6 +43,15 @@ public interface QuestionnaireService {
 	 * @return
 	 */
 	public List<Questionnaire> searchQuestionnaireByName(String name);
+
+	/**
+	 * search questionnaire by name. max num is 30
+	 * @param page page num
+	 * @param pageSize num of the page
+	 * @param name
+	 * @return
+	 */
+	public List<Questionnaire> searchQuestionnaireByName(Integer page,Integer pageSize,String name);
 
 
 	public List<Questionnaire> findQuestionnaireByStatus(Integer status);

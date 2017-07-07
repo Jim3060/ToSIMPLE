@@ -163,6 +163,14 @@ public class QuestionnaireAction extends BaseAction {
      * @throws IOException
      */
     @RequestMapping(value = "questionnaire/search", method = RequestMethod.GET)
+    public String searchQuestionnaireByName(@RequestParam("page")Integer page,@RequestParam("pageSize")Integer pageSize,@RequestParam("name") String name, HttpServletResponse response) throws IOException {
+        List<Questionnaire> list = questionnaireService.searchQuestionnaireByName(page,pageSize,name);
+        JSONArray jsonArray = toJSONArray(list);
+        response.getWriter().print(jsonArray);
+        return null;
+    }
+
+    @RequestMapping(value = "questionnaire/search", method = RequestMethod.GET)
     public String searchQuestionnaireByName(@RequestParam("name") String name, HttpServletResponse response) throws IOException {
         List<Questionnaire> list = questionnaireService.searchQuestionnaireByName(name);
         JSONArray jsonArray = toJSONArray(list);

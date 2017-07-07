@@ -104,8 +104,8 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name, Integer size) {
-        return questionnaireDao.searchQuestionnaireByName(name, size);
+    public List<Questionnaire>  searchQuestionnaireByName(Integer page,Integer pageSize,String name) {
+        return questionnaireDao.searchQuestionnaireByName(page,pageSize,name);
     }
 
     @Override
