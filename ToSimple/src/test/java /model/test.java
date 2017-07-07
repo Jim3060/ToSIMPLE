@@ -81,14 +81,16 @@ public class test {
 //        while (iterator.hasNext()){
 //            System.out.print(iterator.next().questionnaireJSON);
 //        }
-        DB db = mongoTemplate.getDb();
-        DBCollection questionnaires = db.getCollection("Questionnaires");
-        BasicDBObject query = new BasicDBObject();
-        DBCursor dbCursor = questionnaires.find().limit(2);
-        List<Questionnaire> list = new ArrayList<Questionnaire>();
-        while (dbCursor.hasNext()) {
-            list.add(new Questionnaire(dbCursor.next()));
-        }
+        questionnaireDao.delete("595c8504074a131e1d0fe7fd");
+
+//        DB db = mongoTemplate.getDb();
+//        DBCollection questionnaires = db.getCollection("Questionnaires");
+//        BasicDBObject query = new BasicDBObject();
+//        DBCursor dbCursor = questionnaires.find().limit(2);
+//        List<Questionnaire> list = new ArrayList<Questionnaire>();
+//        while (dbCursor.hasNext()) {
+//            list.add(new Questionnaire(dbCursor.next()));
+//        }
     }
 
 
