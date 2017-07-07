@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import service.UserService;
 
@@ -133,17 +134,23 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public String register(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response, String email) throws MessagingException {
+    public String register(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response, String email) throws MessagingException, IOException {
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+        System.out.println(passwordSECURE);
         String password = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         role = 0;
         User user = new User(userName, password, role, email);
         Long id = userService.registerRequest(user);
         user.setId(id);
         session.removeAttribute("privateKey");
-        int registerSuccess = 1;
-        session.setAttribute("registerSuccess", registerSuccess);
-        session.setAttribute("user", user);
+        response.getWriter().print(1);
+        return null;
+    }
+    
+    @RequestMapping(value = "registerValidate", method = RequestMethod.GET)
+    public String registerValidate(HttpSession session, @RequestParam("token") String token, HttpServletResponse response, @RequestParam("email") String email) throws MessagingException, IOException {
+    	int flag=userService.registerValidate(email, token);
+    	response.getWriter().print(flag);
         return null;
     }
 

@@ -29,6 +29,7 @@ import service.QuestionnaireService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 @RestController
@@ -65,10 +66,21 @@ public class QuestionnaireAction extends BaseAction {
      */
     //TODO
     @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
-    public String addOrUpdateQuestionnaire(String questionnaire, HttpServletResponse response) throws Exception {
+    public String addOrUpdateQuestionnaire(String questionnaire,HttpSession session, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire));
+        if (session.getAttribute("userid")==null){
+        	JSONObject result = new JSONObject();
+        	result.put("valid",0);
+        	response.getWriter().print(result);
+        	return null;
+        }
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,(Long)session.getAttribute("userid")));
         JSONObject result = new JSONObject();
+        if (questionnaireId==null){
+        	result.put("valid",-1);
+        }
+        else{result.put("valid", 1);}
+        result.put("valid",1);
         result.put("questionnaireId", questionnaireId);
         response.getWriter().print(result);
         System.out.print(questionnaire);
@@ -76,13 +88,23 @@ public class QuestionnaireAction extends BaseAction {
     }
     
     @RequestMapping(value = "questionnaire/questionnaireId", method =  RequestMethod.PUT)
-    public String addOrUpdateQuestionnaire(String questionnaire, HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
-        System.out.print(questionnaire);
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire));
+    public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
+        //check for author
+        if (session.getAttribute("userid")==null){
+        	JSONObject result = new JSONObject();
+        	result.put("valid",0);
+        	response.getWriter().print(result);
+        	return null;
+        }
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,(Long)session.getAttribute("userid")));
         JSONObject result = new JSONObject();
+        if (questionnaireId==null){
+        	result.put("valid",-1);
+        }
+        else{result.put("valid", 1);}
         result.put("questionnaireId", questionnaireId);
         response.getWriter().print(result);
-        System.out.print(questionnaire);
+        
         return null;
     }
     

@@ -35,7 +35,8 @@ http.createServer(function(request,response){
         }
         else if(err||!stat.isFile()){
             //TODO
-            var target = "http://" + address + url.parse(request.url).pathname;
+            //console.log(url.parse(request.url));
+            var target = "http://" + address + url.parse(request.url).path;
             console.log( request.method + " " + target);
             if(request.method == "GET" || request.method == "DELETE"){
                 var options = {url: target, method: request.method, headers:{Cookie: request.headers.cookie}};
