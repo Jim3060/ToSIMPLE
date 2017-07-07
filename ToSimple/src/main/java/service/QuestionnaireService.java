@@ -24,5 +24,5 @@ public interface QuestionnaireService {
 
 	public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult);
 	
-	public QuestionnaireStatistics getQuestionnaireStatisticsById(String id);
+	public QuestionnaireResult getQuestionnaireResultByid(String id);
 }

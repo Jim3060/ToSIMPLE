@@ -71,10 +71,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
 	}
 
 	
-	public QuestionnaireStatistics getQuestionnaireStatisticsById(String id){
-		Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(id);
-		List<QuestionnaireResult> questionnaireResults=questionnaireResultDao.getAllQuestionnaireResultById(id);
-		return new QuestionnaireStatistics(questionnaire,questionnaireResults);
+	@Override
+	public QuestionnaireResult getQuestionnaireResultByid(String id) {
+		return questionnaireResultDao.getQuestionnaireResultById(id);
 	}
 	
 	public static void main(String[] args) {
@@ -91,6 +90,8 @@ public class QuestionnaireServiceImpl implements QuestionnaireService{
         QuestionnaireGSON p = gson.fromJson(jsontest, QuestionnaireGSON.class);
         System.out.println(p);
 	}
+
+	
 
 	
 

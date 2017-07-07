@@ -53,9 +53,9 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
             return 0;
         }
 
-        WriteResult writeResult = questionnaires.remove(query);
+        DBObject object = questionnaires.findAndRemove(query);
 //        System.out.print(writeResult);
-        return writeResult.getN();
+        return (object == null)? 0: 1;
     }
 
     @Override

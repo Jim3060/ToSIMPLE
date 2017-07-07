@@ -106,14 +106,16 @@ public class UserAction extends BaseAction {
         Integer loginSuccess = 1;
         User user = userService.loginByEmail(userName, passwordInput);
         if (user == null) {
-            user = userService.loginByEmail(userName, passwordInput);
+            user = userService.loginByUserName(userName, passwordInput);
             if (user == null) {
                 loginSuccess = 0;
             }
         }
+        
         JSONObject result = new JSONObject();
         result.put("loginSuccess", loginSuccess);
         if (loginSuccess == 1) {
+        	user.setPassword(null);
             session.setAttribute("user", user);
             result.put("user", user);
         }

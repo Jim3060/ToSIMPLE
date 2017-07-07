@@ -65,6 +65,18 @@ public class QuestionnaireAction extends BaseAction {
         System.out.print(questionnaire);
         return null;
     }
+    
+    @RequestMapping(value = "questionnaire/questionnaireId", method =  RequestMethod.PUT)
+    public String addOrUpdateQuestionnaire(String questionnaire, HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
+        System.out.print(questionnaire);
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire));
+        JSONObject result = new JSONObject();
+        result.put("questionnaireId", questionnaireId);
+        response.getWriter().print(result);
+        System.out.print(questionnaire);
+        return null;
+    }
+    
 
     /**
      * Get a questionnaire of the specific questionnaireId
