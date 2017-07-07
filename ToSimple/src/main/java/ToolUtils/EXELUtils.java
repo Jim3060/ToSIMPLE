@@ -28,11 +28,14 @@ public class EXELUtils {
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
         
         //input questions
-        int beginPadding=2;
+        int beginPadding=3;
 		HSSFCell cellb = row.createCell((short) 0);  
-		cellb.setCellValue("Answer Time");  
+		cellb.setCellValue("Client IP");  
 		cellb.setCellStyle(style);  
 		cellb = row.createCell((short) 1);  
+		cellb.setCellValue("Answer Time");  
+		cellb.setCellStyle(style);  
+		cellb = row.createCell((short) 2);  
 		cellb.setCellValue("Timing");  
 		cellb.setCellStyle(style);  
 //        HSSFCell cellb = row.createCell((short) 0);  
@@ -50,11 +53,16 @@ public class EXELUtils {
         	QuestionnaireResultGSON questionnaireResultGSON=QuestionnaireResultGSON.getQuestionnaireResultGSON(questionnaireResults.get(i).getQuestionnaireResult());
         	HSSFRow rowa = sheet.createRow((int) i+1); 
         	//add other info here
+        	
         	HSSFCell cellbb = rowa.createCell((short) 0);  
+    		cellbb.setCellValue(questionnaireResultGSON.userIP);  
+    		cellbb.setCellStyle(style);  
+    		
+        	cellbb = rowa.createCell((short) 1);  
     		cellbb.setCellValue(TimeUtils.toNormalTime(questionnaireResultGSON.beginTime));  
     		cellbb.setCellStyle(style);  
     		
-    		cellbb = rowa.createCell((short) 1);  
+    		cellbb = rowa.createCell((short) 2);  
     		Long timing=TimeUtils.getLocalTime(questionnaireResultGSON.endTime).getTime()-TimeUtils.getLocalTime(questionnaireResultGSON.beginTime).getTime();
     		cellbb.setCellValue(String.valueOf(timing/1000)+"s");  
     		cellbb.setCellStyle(style);  

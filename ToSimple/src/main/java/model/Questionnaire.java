@@ -12,7 +12,7 @@ public class Questionnaire {
         ;
     }
 
-    public Questionnaire(String questionnaireStr, Integer userid) {
+    public Questionnaire(String questionnaireStr, Long userid) {
         this.questionnaireJSON = JSONObject.fromObject(questionnaireStr);
         this.questionnaireJSON.put("authorId", userid);
         if (this.questionnaireJSON.get("questionnaireId") == null) {

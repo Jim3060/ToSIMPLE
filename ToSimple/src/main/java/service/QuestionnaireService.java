@@ -24,6 +24,9 @@ public interface QuestionnaireService {
 
 	public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult);
 	
+
+	public QuestionnaireResult getQuestionnaireResultByid(String id);
+
 	public QuestionnaireStatistics getQuestionnaireStatisticsById(String id);
 
 	/**
@@ -44,4 +47,5 @@ public interface QuestionnaireService {
 
 
 	public List<Questionnaire> findQuestionnaireByStatus(Integer status);
+
 }

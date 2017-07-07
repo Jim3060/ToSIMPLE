@@ -9,10 +9,15 @@ import net.sf.json.JSONObject;
 
 public interface QuestionnaireResultDao {
 
-    public Integer save(QuestionnaireResult questionnaireResult);
-
-    public List<QuestionnaireResult> getAllQuestionnaireResultById(String id);
-
+	
+	public Integer save(QuestionnaireResult questionnaireResult);
+	
+	public List<QuestionnaireResult> getAllQuestionnaireResultById(String id);
+	
+	public QuestionnaireResult getQuestionnaireResultById(String id);
+	
+	
+	
 
 //	public User getQuestionnaireById(int id);
 //

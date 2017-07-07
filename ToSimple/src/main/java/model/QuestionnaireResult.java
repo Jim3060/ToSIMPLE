@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
+import ToolUtils.IPUtils;
 import net.sf.json.JSONObject;
 
 public class QuestionnaireResult {
@@ -22,8 +23,11 @@ public class QuestionnaireResult {
 	
 	public QuestionnaireResult(String questionnaireResult, HttpServletRequest request) {
 		this.questionnaireResultJSON = JSONObject.fromObject(questionnaireResult);
-		String userIP = request.getHeader("x-forwarded-for");
+		
+		String userIP = IPUtils.getIpAddress(request);
+		System.out.println(userIP);
 		this.questionnaireResultJSON.put("userIP",userIP);
+		
 		if (this.questionnaireResultJSON.get("questionnaireResultId")==null){
 			questionnaireResultJSON.put("questionnaireResultId", "");
 		}
@@ -36,6 +40,7 @@ public class QuestionnaireResult {
 	}
 	
 	public DBObject getQuestionnaireResultDB(){
+		System.out.println(this.questionnaireResultJSON.get("userIP"));
 		return (DBObject)JSON.parse(this.questionnaireResultJSON.toString());
 	}
 	

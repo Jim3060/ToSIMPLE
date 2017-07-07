@@ -11,6 +11,7 @@ public class QuestionnaireResultGSON {
 	public String endTime;
 	public String questionnaireResultId;
 	public List<Answer> answers;
+	public String userIP;
 	
 	public class Answer{
 		public List<Integer> choice;

@@ -21,6 +21,11 @@ import model.QuestionnaireStatistics;
 import net.sf.json.JSONObject;
 import service.QuestionnaireService;
 
+
+
+	
+	
+
 public class QuestionnaireServiceImpl implements QuestionnaireService {
     private QuestionnaireDao questionnaireDao;
 
@@ -48,6 +53,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return questionnaireDao.findQuestionnaireById(id);
 
     }
+    
+    @Override
+	public QuestionnaireResult getQuestionnaireResultByid(String id) {
+		return questionnaireResultDao.getQuestionnaireResultById(id);
+	}
 
 
     @Override
@@ -77,6 +87,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     }
 
     public static void main(String[] args) {
+
 //		String questinnaireSTRING="{'questions':[{'questionTitle':'testSINGLE','type':0,'choices':['c1','c2']},{'questionTitle':'testMUTIPLE','type':1,'choices':['c1','c2','c3'],'limit':'2'},{'questionTitle':'testBLANK','type':2}],'paperTitle':'testPaper','createDate':'2017-07-03T03:15:06.174Z','status':0}";
 //		Questionnaire questionnaire=new Questionnaire(questinnaireSTRING);
 //		String answerSTRING="{'answer':{'0':[[0],''],'1':[[1,2],''],'2':[[],'test']},'objectId':'5959b6badac1e1082a93c51d','answerTime':'2017-07-03T03:17:56.866Z'}";
@@ -101,6 +112,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     public List<Questionnaire> searchQuestionnaireByName(String name) {
         return questionnaireDao.searchQuestionnaireByName(name);
     }
+
 
     @Override
     public List<Questionnaire> findQuestionnaireByStatus(Integer status) {
