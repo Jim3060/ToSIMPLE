@@ -44,5 +44,7 @@ public interface UserDao {
      * @return the old role.
      */
     public Integer changRole(Long userId, Integer role);
+    
+    public List<User> getUsersByPage(Integer page, Integer pageSize);
 
 }

@@ -152,4 +152,10 @@ public class UserServiceImpl implements UserService {
 		return 0;
 	}
 
+	@Override
+	public List<User> getUsersByPage(Integer page, Integer pageSize) {
+		
+		return userDao.getUsersByPage(page, pageSize);
+	}
+
 }

@@ -76,10 +76,24 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "allUsers", method = RequestMethod.GET)
-    public String getAllUsers() throws Exception {
+    public String getAllUsers(HttpServletResponse response) throws Exception {
         //get users
         users = userService.getAllUsers();
-        return "userCRUD";
+        JSONObject result = new JSONObject();
+    	result.put("users",users);
+    	response.getWriter().print(result);
+        return null;
+    }
+    
+    @RequestMapping(value = "allUser", method = RequestMethod.GET)
+    public String getUsersByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
+        //get users
+        users = userService.getUsersByPage(page,pageSize);
+        JSONObject result = new JSONObject();
+    	result.put("users",users);
+    	response.getWriter().print(result);
+    	return null;
+      
     }
 
     @RequestMapping(value = "fetchRSA", method = RequestMethod.GET)
