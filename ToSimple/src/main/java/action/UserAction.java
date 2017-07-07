@@ -91,6 +91,7 @@ public class UserAction extends BaseAction {
         users = userService.getUsersByPage(page,pageSize);
         JSONObject result = new JSONObject();
     	result.put("users",users);
+    	result.put("userNum",userService.getValidUserNumber());
     	response.getWriter().print(result);
     	return null;
       

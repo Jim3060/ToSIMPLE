@@ -58,6 +58,8 @@ public interface UserService {
     public User loginByUserName(String userName, String password);
 
     public User loginByEmail(String email, String password);
+    
+    public Long getValidUserNumber();
 
 
 }

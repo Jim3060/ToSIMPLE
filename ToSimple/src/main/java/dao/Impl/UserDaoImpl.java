@@ -80,13 +80,23 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
     }
 
 	@Override
-	public List<User> getUsersByPage(Integer page, Integer pageSize) {
+	public List<User> getValidUsersByPage(Integer page, Integer pageSize) {
 		// TODO Auto-generated method stub
 		Session session = this.getSession();
         session.beginTransaction(); 
-        List<User> list=session.createQuery("from User").setMaxResults(pageSize).setFirstResult(page*pageSize).list();
+        List<User> list=session.createQuery("from User as u where u.valid=1").setMaxResults(pageSize).setFirstResult(page*pageSize).list();
         session.getTransaction().commit();
 		return list;
+	}
+
+	@Override
+	public Long getValidUserNumber() {
+		// TODO Auto-generated method stub
+		@SuppressWarnings("unchecked")
+        Long num =  (Long)getHibernateTemplate().find("select count(*) from User as u where u.valid=1").listIterator().next();
+       
+        return num;
+		
 	}
 
 //	

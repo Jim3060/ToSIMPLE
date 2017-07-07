@@ -68,7 +68,7 @@ public class QuestionnaireAction extends BaseAction {
     @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
     public String addOrUpdateQuestionnaire(String questionnaire,HttpSession session, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
-        if (session.getAttribute("userid")==null){
+        if (session.getAttribute("user")==null){
         	JSONObject result = new JSONObject();
         	result.put("valid",0);
         	response.getWriter().print(result);
@@ -90,7 +90,7 @@ public class QuestionnaireAction extends BaseAction {
     @RequestMapping(value = "questionnaire/questionnaireId", method =  RequestMethod.PUT)
     public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
         //check for author
-        if (session.getAttribute("userid")==null){
+        if (session.getAttribute("user")==null){
         	JSONObject result = new JSONObject();
         	result.put("valid",0);
         	response.getWriter().print(result);

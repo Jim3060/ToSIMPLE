@@ -47,6 +47,8 @@ public interface QuestionnaireDao {
      * @return the list of questionnaire
      */
     public List<Questionnaire> findQuestionnaireByStatus(Integer status);
+    
+    
 
 //    /**
 //     * find questionnaires by status
