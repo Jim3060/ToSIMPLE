@@ -16,20 +16,20 @@ import dao.UserDao;
 import model.User;
 import service.UserService;
 
-public class UserServiceImpl implements UserService{
-	private UserDao userDao;
+public class UserServiceImpl implements UserService {
+    private UserDao userDao;
 
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
-	}
-	
-	public Long addUser(User user) {
-		return userDao.save(user);
-	}
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
-	public void deleteUser(User user) {
-		userDao.delete(user);
-	}
+    public Long addUser(User user) {
+        return userDao.save(user);
+    }
+
+    public void deleteUser(User user) {
+        userDao.delete(user);
+    }
 
     @Override
     public void deleteUser(Long userId) {
@@ -37,33 +37,35 @@ public class UserServiceImpl implements UserService{
     }
 
 
-
     public void updateUser(User user) {
-		userDao.update(user);
-	}
+        userDao.update(user);
+    }
 
-	public User getUserById(long id) {
-		return userDao.getUserById(id);
-	}
+    public User getUserById(long id) {
+        return userDao.getUserById(id);
+    }
 
-	public List<User> getAllUsers() {
-		return userDao.getAllUsers();
-	}
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers();
+    }
 
-	@Override
-	public Long registerRequest(User user) throws AddressException, MessagingException {
-		if (validateEmail(user.getEmail())==0){return  -1L;}
-		if (validateUserName(user.getUserName())==0){return 0L;}
-		user.setValid(0);
-		return userDao.save(MailUtils.activateMail(user));
-	}
+
+    @Override
+    public Long registerRequest(User user) throws AddressException, MessagingException {
+      if (validateEmail(user.getEmail())==0){return  -1L;}
+      if (validateUserName(user.getUserName())==0){return 0L;}
+      user.setValid(0);
+      return userDao.save(MailUtils.activateMail(user));
+    }
 
 
     @Override
     public Integer changRole(Long userId, Integer role) {
-	    //TODO
-        return userDao.changRole(userId,role);
+        //TODO
+        return userDao.changRole(userId, role);
     }
+
+
 
 
 	@Override
@@ -111,6 +113,7 @@ public class UserServiceImpl implements UserService{
 		}
 		return null;
 	}
+
 
 	@Override
 	public int validateUserName(String userName) {

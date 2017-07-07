@@ -62,6 +62,7 @@ public class QuestionnaireResultDaoImpl implements QuestionnaireResultDao {
 		return questionnaireResults;
 	}
 
+
 	@Override
 	public QuestionnaireResult getQuestionnaireResultById(String id) {
 		if (id==null){return null;}
@@ -84,5 +85,6 @@ public class QuestionnaireResultDaoImpl implements QuestionnaireResultDao {
 	}
 
 	
+
 
 }

@@ -3,10 +3,18 @@ package action;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+
 import java.text.ParseException;
+
 
 import javax.servlet.ServletOutputStream;
 
+import net.sf.json.JSONArray;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
@@ -55,6 +63,7 @@ public class QuestionnaireAction extends BaseAction {
      * @return none
      * @throws Exception
      */
+    //TODO
     @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
     public String addOrUpdateQuestionnaire(String questionnaire, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
@@ -114,9 +123,12 @@ public class QuestionnaireAction extends BaseAction {
      * @return none
      */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.DELETE)
-    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId) {
+    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException {
         // TODO delete a questionnaire
-        questionnaireService.deleteQuestionnaire(questionnaireId);
+        Integer integer = questionnaireService.deleteQuestionnaire(questionnaireId);
+        JSONObject result = new JSONObject();
+        result.put("deleteSuccess", integer);
+        response.getWriter().print(result);
         return null;
     }
 
@@ -130,14 +142,42 @@ public class QuestionnaireAction extends BaseAction {
      */
     @RequestMapping(value = "questionnaire/search", method = RequestMethod.GET)
     public String searchQuestionnaireByName(@RequestParam("name") String name, HttpServletResponse response) throws IOException {
-        //TODO
+        List<Questionnaire> list = questionnaireService.searchQuestionnaireByName(name);
+        JSONArray jsonArray = toJSONArray(list);
+        response.getWriter().print(jsonArray);
         return null;
     }
+
 
     @RequestMapping(value = "questionnaire/random", method = RequestMethod.GET)
     public String randomQuestionnaire(@RequestParam("size") Integer size, HttpServletResponse response) throws IOException {
         //TODO
+
         return null;
+    }
+
+    /**
+     * get questionnaire with specific status
+     * @param status
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "questionnaire/status",method = RequestMethod.GET)
+    public String getQuestionnaireByStatus(@RequestParam("status") Integer status,HttpServletResponse response) throws IOException {
+        List<Questionnaire> list = questionnaireService.findQuestionnaireByStatus(status);
+        JSONArray jsonArray = toJSONArray(list);
+        response.getWriter().print(jsonArray);
+        return null;
+    }
+
+    private JSONArray toJSONArray(List<Questionnaire>list){
+        JSONArray jsonArray = new JSONArray();
+        Iterator<Questionnaire> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            jsonArray.add(iterator.next().questionnaireJSON);
+        }
+        return jsonArray;
     }
 
     /**
@@ -189,19 +229,6 @@ public class QuestionnaireAction extends BaseAction {
     }
 
 
-    @RequestMapping(value = "questionnaireResult/download/{questionnaireId}", method = RequestMethod.GET)
-    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException, ParseException{
-		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
-		HSSFWorkbook wb=statisticsService.exportToEXEL(questionnaireId);
-		OutputStream out = response.getOutputStream();
-		response.setHeader("Content-disposition", "attachment;filename="+ URLEncoder.encode("statistics.xls", "UTF-8"));
-		response.setContentType("application/msexcel;charset=UTF-8");
-		wb.write(out);
-		out.flush();
-		out.close();
-		return null;
-	}
-    
 
     /**
      * show a questionnaire result.
@@ -222,19 +249,33 @@ public class QuestionnaireAction extends BaseAction {
      * @return
      * @throws IOException
      */
-   
-    @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
-    public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId,HttpServletResponse response) throws IOException{
-		//Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
-		QuestionnaireStatistics s=statisticsService.getQuestionnaireStatisticsById(questionnaireId);
 
-		JSONObject result = new JSONObject();
+    @RequestMapping(value = "questionnaireResult/download/{questionnaireId}", method = RequestMethod.GET)
+    public String statisticsDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException, ParseException {
+        //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+        HSSFWorkbook wb = statisticsService.exportToEXEL(questionnaireId);
+        OutputStream out = response.getOutputStream();
+        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("statistics.xls", "UTF-8"));
+        response.setContentType("application/msexcel;charset=UTF-8");
+        wb.write(out);
+        out.flush();
+        out.close();
+        return null;
+    }
+
+
+    @RequestMapping(value = "questionnaireStatistics/{questionnaireId}", method = RequestMethod.GET)
+    public String getStatisticsById(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
+        //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+        QuestionnaireStatistics s = statisticsService.getQuestionnaireStatisticsById(questionnaireId);
+
+        JSONObject result = new JSONObject();
 
         result.put("questionStatistics", s.getQuestionsJSON());
-        result.put("answerNumber",s.questionnaireResults.size());
+        result.put("answerNumber", s.questionnaireResults.size());
         response.getWriter().print(result);
         return null;
-	}
+    }
 
     //helper
     public String getAnswerPaper() {
@@ -272,7 +313,6 @@ public class QuestionnaireAction extends BaseAction {
     public int getStatus() {
         return status;
     }
-
 
     public void setStatus(int status) {
         this.status = status;

@@ -1,17 +1,21 @@
 <template>
     <div class="creator">
-        <span v-show="edit" class="edit-title">问卷标题: </span><input v-show="edit" v-model="title"></input>
-        <div>
+        <span class="edit-title">问卷标题: </span><input class="edit-title" :disabled="!editMode" v-model="title"></input>
+        <div class="buttons">
             <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0" >发布问卷</el-button>
             <el-button type="warning" @click="publish(0)" v-show="questionnaire.status == 1">取消发布</el-button>
             <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
-            <a v-if="$route.name=='n'" :href="'questionnaire/download/'+$route.params.id"><el-button>下载回答</el-button></a>
+            <el-button v-if="$route.name=='n'" @click="jumpToAnswer()">前往回答页</el-button>
+            <a v-if="$route.name=='n'" :href="'questionnaireResult/download/'+$route.params.id"><el-button>下载回答</el-button></a>
+            <el-button v-if="$route.name=='n'" @click="jumpToStatistic()">查看统计</el-button>
         </div>
-        <span>编辑模式 </span><el-switch v-model="edit"></el-switch>
+        <span>编辑模式 </span><el-switch v-model="editMode"></el-switch>
         <p id="questionnaireId" type="hidden"> </p>
-        <questionnaire :questionnaire="questionnaire" :edit="edit" @delete="del($event)" @edit="edit($event)"></questionnaire>
-        <el-button v-show="edit" type="primary" @click="showModal=true">添加问题</el-button>
-        <el-button v-show="edit" type="success" @click="submit()">提交问卷</el-button>
+        <questionnaire :questionnaire="questionnaire" :edit="editMode" @delete="del($event)" @edit="edit($event)"></questionnaire>
+        <div class="buttons">
+            <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
+            <el-button type="success" @click="submit()">提交问卷</el-button>
+        </div>
         <modal :show="showModal" effect="zoom" :backdrop="false" >
             <div slot="modal-header" class="modal-header"><h4>编辑问题</h4></div>
             <div slot="modal-body" class="modal-body">
@@ -35,7 +39,7 @@ export default {
         idx: -1,
         title:"",
         questionnaire:{questions:[]},
-        edit:true
+        editMode:true
     }},
     components:{modal, questionnaire, create},
     methods:{
@@ -82,6 +86,12 @@ export default {
                     }
                 }) ;
             })
+        },
+        jumpToStatistic(){
+            this.$router.push({name:"s", params:{id: this.$route.params.id}});
+        },
+        jumpToAnswer(){
+            this.$router.push({name:"q", params:{id: this.$route.params.id}});
         },
         submit(){
             var self = this;
@@ -158,7 +168,7 @@ export default {
 
 <style>
     .edit-title{font-size:20px;}
-    .creator>span, .creator>button {margin-left:20px;}
-    .creator>div{margin:15px;}
+    .creator>span {margin-left:20px;}
+    .creator>.buttons{margin:15px;}
     .creator>span{font-size:20px;}
 </style>

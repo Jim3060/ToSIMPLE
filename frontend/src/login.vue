@@ -88,7 +88,7 @@
                 this.showLoginModal = true;
             },
             regModal(){
-                this.regBuf = {};
+                this.regBuf = {name:"", password1:"", password2:"", email:""};
                 this.showRegModal = true;
             },
             login(){
@@ -97,9 +97,10 @@
                 postBody.userName = this.loginBuf.username;
                 postBody.passwordSECURE = this.encrypt(this.loginBuf.password);
                 $.post("login", postBody, (data)=>{
-                    if(data >= 1){
-                        self.user.role = data;
-                        self.user.username = self.loginBuf.username;
+                    console.log(data);
+                    if(data.loginSuccess == 1 || data.loginSuccess == '1'){
+                        self.user.role = data.user.role;
+                        self.user.username = data.user.userName;
                         localStorage.user = JSON.stringify(self.user);
                         self.ifLog = true;
                         self.showLoginModal = false;
@@ -108,10 +109,10 @@
                     }else{
                         this.$message.error("用户名或密码错误");
                     }
-                }).fail(()=>{
+                }, "json").fail(()=>{
                     this.$message.error("网络异常");
                 })
-
+                this.getPublicKey();
             },
             logout(){
                 this.ifLog = false;
@@ -123,13 +124,33 @@
             },
             register(){
                 var self = this;
-                if(this.regBuf.name == "" || this.regBuf.password1 == "" || this.regBuf.password1 != this.regBuf.password2 || this.regBuf.email == ""){
-                    this.$message.error("请检查您的输入");
+                if(this.regBuf.name == ""){
+                    this.$message.error("用户名不能为空");
+                    return ;
+                }
+                else if(this.regBuf.name.indexOf("@") != -1){
+                    this.$message.error("用户名中不能含有特殊字符");
+                    return ;
+                }
+                else if(this.regBuf.password1 == ""){
+                    this.$message.error("密码不能为空");
+                    return ;
+                }
+                else if(this.regBuf.password1 != this.regBuf.password2){
+                    this.$message.error("密码不一致");
+                    return ;
+                }
+                else if(this.regBuf.email == ""){
+                    this.$message.error("邮箱不能为空");
+                    return ;
+                }
+                else if(this.regBuf.email.indexOf("@") == -1 || this.regBuf.email.indexOf(".") <= this.regBuf.email.indexOf("@")){
+                    this.$message.error("请输入合法的邮箱地址");
                     return ;
                 }
                 var postBody = {};
-                postBody.name = this.regBuf.name;
-                postBody.password = this.encrypt(this.regBuf.password1);
+                postBody.userName = this.regBuf.name;
+                postBody.passwordSECURE = this.encrypt(this.regBuf.password1);
                 postBody.email = this.regBuf.email;
                 $.post("register", postBody, (data)=>{
                     if(data >= 1){
@@ -146,6 +167,7 @@
                 }).fail(()=>{
                     this.$message.error("网络异常");
                 })
+                this.getPublicKey();
             },
             getPublicKey(){
                 var self = this;
