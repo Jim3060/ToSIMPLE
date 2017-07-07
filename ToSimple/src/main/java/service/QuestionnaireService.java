@@ -24,5 +24,28 @@ public interface QuestionnaireService {
 
 	public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult);
 	
+
+	public QuestionnaireResult getQuestionnaireResultByid(String id);
+
 	public QuestionnaireStatistics getQuestionnaireStatisticsById(String id);
+
+	/**
+	 * search questionnaire by name.
+	 * @param name
+	 * @param size
+	 * @return
+	 */
+	public List<Questionnaire> searchQuestionnaireByName(String name,Integer size);
+
+
+	/**
+	 * search questionnaire by name. max num is 30
+	 * @param name
+	 * @return
+	 */
+	public List<Questionnaire> searchQuestionnaireByName(String name);
+
+
+	public List<Questionnaire> findQuestionnaireByStatus(Integer status);
+
 }

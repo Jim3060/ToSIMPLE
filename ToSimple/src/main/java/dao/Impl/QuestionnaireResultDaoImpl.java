@@ -62,6 +62,29 @@ public class QuestionnaireResultDaoImpl implements QuestionnaireResultDao {
 		return questionnaireResults;
 	}
 
+
+	@Override
+	public QuestionnaireResult getQuestionnaireResultById(String id) {
+		if (id==null){return null;}
+		DB db = mongoTemplate.getDb();
+		DBCollection questionnaireResults = db.getCollection("QuestionnaireResults");
+		BasicDBObject query = new BasicDBObject();
+		// TODO Auto-generated method stub
+		try {
+            query.put("_id", new ObjectId(id));
+        } catch (Exception e) {
+            return null;
+        }
+		
+		DBObject resultDB=questionnaireResults.findOne(query);
+		if ((resultDB) == null) {
+            return null;
+        }
+
+		return new QuestionnaireResult(resultDB);
+	}
+
 	
+
 
 }

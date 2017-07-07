@@ -10,7 +10,7 @@
                 <blank v-if="question.type==2" :index="index" :title="question.questionTitle" @update="update(index, $event)"></blank>
             </div>
         </div>
-        <el-button type="primary" v-if="!edit" @click="submit()">提交</el-button>
+        <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
     </div>
 </template>
 

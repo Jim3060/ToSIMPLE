@@ -6,18 +6,47 @@ import model.User;
 
 public interface UserDao {
 
-	public Long save(User user);
+    public Long save(User user);
 
-	public void delete(User user);
+    /**
+     * delete user
+     *
+     * @param user
+     */
+    public void delete(User user);
 
-	public void update(User user);
+    /**
+     * delete user.
+     *
+     * @param userId
+     */
+    public void delete(Long userId);
 
-	public User getUserById(long id);
+    public void update(User user);
 
-	public List<User> getAllUsers();
+    public User getUserById(long id);
+
+
+    public List<User> getAllUsers();
+
+    public User getUserByEmail(String email);
+
+    public User getUserByUserName(String userName);
 	
-	public User getUserByEmail(String email);
 	
-	public User getUserByUserName(String userName);
+
+
+    /**
+     * change the role of userId
+     *
+     * @param userId
+     * @param role
+     * @return the old role.
+     */
+    public Integer changRole(Long userId, Integer role);
+    
+    public List<User> getValidUsersByPage(Integer page, Integer pageSize);
+    
+    public Long getValidUserNumber();
 
 }

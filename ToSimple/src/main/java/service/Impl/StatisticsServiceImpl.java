@@ -3,6 +3,7 @@ package service.Impl;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class StatisticsServiceImpl implements StatisticsService{
 		return new QuestionnaireStatistics(questionnaire,questionnaireResults);
 	}
 	
-	public HSSFWorkbook exportToEXEL(String questionnaireId) throws IOException{
+	public HSSFWorkbook exportToEXEL(String questionnaireId) throws IOException, ParseException{
 		Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
 		List<QuestionnaireResult> questionnaireResults=questionnaireResultDao.getAllQuestionnaireResultById(questionnaireId);
 		HSSFWorkbook wb=EXELUtils.GenerateRawResultStatistics(questionnaire, questionnaireResults);
