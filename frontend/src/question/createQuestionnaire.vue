@@ -1,5 +1,5 @@
 <template>
-    <div class="creator">
+    <div v-show="!invalid" class="creator">
         <span class="edit-title">问卷标题: </span><input class="edit-title" :disabled="!editMode" v-model="title"></input>
         <div class="buttons">
             <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0" >发布问卷</el-button>
@@ -39,7 +39,8 @@ export default {
         idx: -1,
         title:"",
         questionnaire:{questions:[]},
-        editMode:true
+        editMode: true,
+        invalid: false
     }},
     components:{modal, questionnaire, create},
     methods:{
@@ -78,9 +79,14 @@ export default {
                 $.ajax({
                     type:"DELETE",
                     url: "questionnaire/" + this.$route.params.id,
+                    dataType: "json",
                     success: data=>{
-                        if(data == '1' || data == 1)
-                            this.$message.success("删除成功");
+                        if(data.deleteSuccess == '1' || data.deleteSuccess == 1){
+                            this.$message.success("删除成功，即将离开此页...");
+                            setTimeout(()=>{
+                                this.$router.push({path:"/index"});
+                            }, 2000)
+                        }
                         else
                             this.$message.warning("该问卷不存在，或您没有删除的权限");
                     }
@@ -113,9 +119,14 @@ export default {
             }
             else
                 $.post("questionnaire",{questionnaire:JSON.stringify(this.questionnaire)}, data=>{
-                    self.questionnaire["questionnaireId"] = data.questionnaireId;
-                    this.$message.success("提交成功");
-                    this.$router.push({name:"n", params:{id: data.questionnaireId}});
+                    if(data.valid == 1){
+                        self.questionnaire["questionnaireId"] = data.questionnaireId;
+                        this.$message.success("提交成功");
+                        this.$router.push({name:"n", params:{id: data.questionnaireId}});
+                    }
+                    else{
+                        this.$message.error("提交失败");
+                    }
                 }, "json").fail(()=>{
                     this.$message.error("网络异常");
                 })
@@ -141,8 +152,10 @@ export default {
                     if(data.valid == "1"){
                         self.questionnaire = data.questionnaire;
                         self.title = data.questionnaire.paperTitle;
+                        this.invalid = false;
                     }else{
                         this.$message.warning("问卷不存在"); 
+                        this.invalid = true;
                     }
                 }, "json").fail(()=>{
                     //bus.$emit("showMsg", "danger", "错误: 网络异常!");
@@ -156,6 +169,7 @@ export default {
         '$route'(to, from){
             if(to.path == "/n"){
                 this.questionnaire = {questions:[]};
+                this.invalid = false;
             }else
                 this.loadQuestionnaire();
         }
