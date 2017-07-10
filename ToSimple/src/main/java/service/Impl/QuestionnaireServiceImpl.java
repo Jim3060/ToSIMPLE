@@ -119,8 +119,22 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return questionnaireDao.findQuestionnaireByStatus(status);
     }
 
+
     @Override
     public List<Questionnaire> randomQuestionnaire(Integer size) {
         return questionnaireDao.randomQuestionnaire(size);
     }
+  
+    @Override
+    public List<Questionnaire> findQuestionnairesByUser(Long userid) {
+      List<Questionnaire> raw=questionnaireDao.findQuestionnaireByUser(userid);
+      List<Questionnaire> result=new ArrayList<Questionnaire>();
+      //Questionnaire tmp=new Questionnaire();
+      for (int  i=0;i<raw.size();i++){
+        raw.get(i).questionnaireJSON.remove("questions");
+        result.add(new Questionnaire(raw.get(i).getQuestionnaire()));
+      }
+      return result;
+    }
+
 }

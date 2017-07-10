@@ -22,7 +22,7 @@ public interface QuestionnaireDao {
 
     public Questionnaire findQuestionnaireById(String id);
 
-    public Questionnaire findQuestionnaireByUser(int id);
+    public List<Questionnaire> findQuestionnaireByUser(Long id);
 
     /**
      * get a sample of questionnaires. The questionnaire status must be 1
@@ -55,6 +55,8 @@ public interface QuestionnaireDao {
      * @return the list of questionnaire
      */
     public List<Questionnaire> findQuestionnaireByStatus(Integer status);
+    
+    
 
 //    /**
 //     * find questionnaires by status

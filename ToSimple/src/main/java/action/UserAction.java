@@ -60,6 +60,8 @@ public class UserAction extends BaseAction {
         User user = userService.getUserById(userId);
         JSONObject result = new JSONObject();
         result.put("user", user);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(result);
         return null;
     }
@@ -83,8 +85,8 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         users = userService.getAllUsers();
         JSONObject result = new JSONObject();
-    	result.put("users",users);
-    	response.getWriter().print(result);
+    	  result.put("users",users);
+    	  response.getWriter().print(result);
         return null;
     }
 
@@ -94,11 +96,11 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         users = userService.getUsersByPage(page,pageSize);
         JSONObject result = new JSONObject();
-    	result.put("users",users);
-    	response.getWriter().print(result);
-    	return null;
-
+        result.put("users",users);
+    	  response.getWriter().print(result);
+    	  return null;
     }
+
 
     @RequestMapping(value = "fetchRSA", method = RequestMethod.GET)
     public String fetchRSA(HttpSession session, HttpServletResponse response) throws Exception {
@@ -142,6 +144,7 @@ public class UserAction extends BaseAction {
             session.setAttribute("user", user);
             result.put("user", user);
         }
+        
         response.getWriter().print(result);
         session.removeAttribute("privateKey");
         return null;
