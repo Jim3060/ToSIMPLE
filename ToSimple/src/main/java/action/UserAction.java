@@ -59,6 +59,8 @@ public class UserAction extends BaseAction {
         User user = userService.getUserById(userId);
         JSONObject result = new JSONObject();
         result.put("user", user);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(result);
         return null;
     }
@@ -76,10 +78,29 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "allUsers", method = RequestMethod.GET)
-    public String getAllUsers() throws Exception {
+    public String getAllUsers(HttpServletResponse response) throws Exception {
         //get users
         users = userService.getAllUsers();
-        return "userCRUD";
+        JSONObject result = new JSONObject();
+    	result.put("users",users);
+    	response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
+    	response.getWriter().print(result);
+        return null;
+    }
+    
+    @RequestMapping(value = "allUser", method = RequestMethod.GET)
+    public String getUsersByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
+        //get users
+        users = userService.getUsersByPage(page,pageSize);
+        JSONObject result = new JSONObject();
+    	result.put("users",users);
+    	result.put("userNum",userService.getValidUserNumber());
+    	response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
+    	response.getWriter().print(result);
+    	return null;
+      
     }
 
     @RequestMapping(value = "fetchRSA", method = RequestMethod.GET)
@@ -122,6 +143,7 @@ public class UserAction extends BaseAction {
             session.setAttribute("user", user);
             result.put("user", user);
         }
+        
         response.getWriter().print(result);
         session.removeAttribute("privateKey");
         return null;

@@ -21,6 +21,8 @@ public interface UserService {
 
 	public List<User> getAllUsers();
 	
+	public List<User> getUsersByPage(Integer page,Integer pageSize);
+	
 	public int validateUserName(String userName);
 	
 	public int validateEmail(String email);
@@ -56,6 +58,8 @@ public interface UserService {
     public User loginByUserName(String userName, String password);
 
     public User loginByEmail(String email, String password);
+    
+    public Long getValidUserNumber();
 
 
 }

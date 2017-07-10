@@ -103,9 +103,18 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public Questionnaire findQuestionnaireByUser(int id) {
+    public List<Questionnaire> findQuestionnaireByUser(Long id) {
         // TODO Auto-generated method stub
-        return null;
+		DB db = mongoTemplate.getDb();
+		DBCollection questionnaires = db.getCollection("Questionnaires");
+		BasicDBObject query = new BasicDBObject();
+		query.put("authorId", id);
+		DBCursor dbCursor = questionnaires.find(query);
+		List<Questionnaire> list = new ArrayList<Questionnaire>();
+		while (dbCursor.hasNext()) {
+		    list.add(new Questionnaire(dbCursor.next()));
+		}
+		return list;
     }
 
     @Override

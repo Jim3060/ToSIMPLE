@@ -1,5 +1,6 @@
 package service.Impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -150,6 +151,24 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return 0;
+	}
+
+	@Override
+	public List<User> getUsersByPage(Integer page, Integer pageSize) {
+		List<User> raw=userDao.getValidUsersByPage(page, pageSize);
+		List<User> result=new ArrayList<User>();
+		for (int i=0;i<raw.size();i++){
+			raw.get(i).setPassword("");
+			raw.get(i).setToken("");
+			result.add(raw.get(i));
+		}
+		return result;
+	}
+
+	@Override
+	public Long getValidUserNumber() {
+		return userDao.getValidUserNumber();
+		
 	}
 
 }

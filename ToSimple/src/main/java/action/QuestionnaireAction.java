@@ -1,6 +1,7 @@
 package action;
 
 import java.io.IOException;
+import model.User;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 
@@ -68,13 +69,15 @@ public class QuestionnaireAction extends BaseAction {
     @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
     public String addOrUpdateQuestionnaire(String questionnaire,HttpSession session, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
-        if (session.getAttribute("userid")==null){
+        if (session.getAttribute("user")==null){
         	JSONObject result = new JSONObject();
         	result.put("valid",0);
+        	response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
         	response.getWriter().print(result);
         	return null;
         }
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,(Long)session.getAttribute("userid")));
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,((User)session.getAttribute("user")).getId()));
         JSONObject result = new JSONObject();
         if (questionnaireId==null){
         	result.put("valid",-1);
@@ -82,7 +85,10 @@ public class QuestionnaireAction extends BaseAction {
         else{result.put("valid", 1);}
         result.put("valid",1);
         result.put("questionnaireId", questionnaireId);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(result);
+       
         System.out.print(questionnaire);
         return null;
     }
@@ -90,19 +96,23 @@ public class QuestionnaireAction extends BaseAction {
     @RequestMapping(value = "questionnaire/questionnaireId", method =  RequestMethod.PUT)
     public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
         //check for author
-        if (session.getAttribute("userid")==null){
+        if (session.getAttribute("user")==null){
         	JSONObject result = new JSONObject();
         	result.put("valid",0);
+        	response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
         	response.getWriter().print(result);
         	return null;
         }
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,(Long)session.getAttribute("userid")));
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,(Long)session.getAttribute("user")));
         JSONObject result = new JSONObject();
         if (questionnaireId==null){
         	result.put("valid",-1);
         }
         else{result.put("valid", 1);}
         result.put("questionnaireId", questionnaireId);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(result);
         
         return null;
@@ -134,6 +144,33 @@ public class QuestionnaireAction extends BaseAction {
         JSONObject result = new JSONObject();
         result.put("valid", valid);
         result.put("questionnaire", questionnairestr);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
+        response.getWriter().print(result);
+        return null;
+    }
+    
+    
+    @RequestMapping(value = "questionnaire", method = RequestMethod.GET)
+    public String findQuestionnairesByUser( HttpServletResponse response, HttpSession session) throws IOException {
+        //questionnaireId="5954b29d37fac38fdc65727c";
+        int valid = 1;
+        List<Questionnaire> list=new  ArrayList<Questionnaire>();
+        JSONArray listJ=new  JSONArray();
+        if (session.getAttribute("user") == null) {
+            valid = 0;
+        }
+        else if ((list=questionnaireService.findQuestionnairesByUser(((User)session.getAttribute("user")).getId())) == null) {
+            valid = 0;
+        } 
+        for (int i =0; i<list.size();i++){
+        	listJ.add(list.get(i).questionnaireJSON);
+        }
+        JSONObject result = new JSONObject();
+        result.put("valid", valid);
+        result.put("questionnaires", listJ);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(result);
         return null;
     }
@@ -166,6 +203,8 @@ public class QuestionnaireAction extends BaseAction {
     public String searchQuestionnaireByName(@RequestParam("name") String name, HttpServletResponse response) throws IOException {
         List<Questionnaire> list = questionnaireService.searchQuestionnaireByName(name);
         JSONArray jsonArray = toJSONArray(list);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(jsonArray);
         return null;
     }
@@ -189,6 +228,8 @@ public class QuestionnaireAction extends BaseAction {
     public String getQuestionnaireByStatus(@RequestParam("status") Integer status,HttpServletResponse response) throws IOException {
         List<Questionnaire> list = questionnaireService.findQuestionnaireByStatus(status);
         JSONArray jsonArray = toJSONArray(list);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(jsonArray);
         return null;
     }
@@ -224,6 +265,7 @@ public class QuestionnaireAction extends BaseAction {
             questionnaireS.setStatus(status);
             questionnaireService.addOrUpdateQuestionnaire(questionnaireS);
         }
+        
         response.getWriter().print(valid);
         return null;
     }

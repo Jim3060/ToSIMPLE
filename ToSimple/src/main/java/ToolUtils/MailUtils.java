@@ -42,7 +42,7 @@ public class MailUtils {
         u.setCreateTime(new Date(activateTime));
         token = u.getToken();
         //发送的邮箱内容
-        String content = "<p>您好 O(∩_∩)O~~<br><br>欢迎加入iClass!<br><br>帐户需要激活才能使用，赶紧激活成为ToSimple正式的一员吧:)<br><br>请在2小时内点击下面的链接立即激活帐户："
+        String content = "<p>您好 O(∩_∩)O~~<br><br>欢迎加入ToSimple!<br><br>帐户需要激活才能使用，赶紧激活成为ToSimple正式的一员吧:)<br><br>请在2小时内点击下面的链接立即激活帐户："
         +"<br><a href='"+URL+"/registerValidate?token="+token+"&email="+to+"'>"
         +URL+"/registerValidate?token="+token+"&email="+to+"</a></p>";
         //调用发送邮箱服务

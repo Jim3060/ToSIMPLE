@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+
 import model.User;
 
+import org.hibernate.Session;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -76,6 +78,26 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
         return user;
 
     }
+
+	@Override
+	public List<User> getValidUsersByPage(Integer page, Integer pageSize) {
+		// TODO Auto-generated method stub
+		Session session = this.getSession();
+        session.beginTransaction(); 
+        List<User> list=session.createQuery("from User as u where u.valid=1").setMaxResults(pageSize).setFirstResult(page*pageSize).list();
+        session.getTransaction().commit();
+		return list;
+	}
+
+	@Override
+	public Long getValidUserNumber() {
+		// TODO Auto-generated method stub
+		@SuppressWarnings("unchecked")
+        Long num =  (Long)getHibernateTemplate().find("select count(*) from User as u where u.valid=1").listIterator().next();
+       
+        return num;
+		
+	}
 
 //	
 }
