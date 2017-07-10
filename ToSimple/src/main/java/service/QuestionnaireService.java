@@ -47,5 +47,7 @@ public interface QuestionnaireService {
 
 
 	public List<Questionnaire> findQuestionnaireByStatus(Integer status);
+	
+	public List<Questionnaire> findQuestionnairesByUser(Long userid); 
 
 }

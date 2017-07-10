@@ -59,6 +59,8 @@ public class UserAction extends BaseAction {
         User user = userService.getUserById(userId);
         JSONObject result = new JSONObject();
         result.put("user", user);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         response.getWriter().print(result);
         return null;
     }
@@ -81,6 +83,8 @@ public class UserAction extends BaseAction {
         users = userService.getAllUsers();
         JSONObject result = new JSONObject();
     	result.put("users",users);
+    	response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
     	response.getWriter().print(result);
         return null;
     }
@@ -92,6 +96,8 @@ public class UserAction extends BaseAction {
         JSONObject result = new JSONObject();
     	result.put("users",users);
     	result.put("userNum",userService.getValidUserNumber());
+    	response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
     	response.getWriter().print(result);
     	return null;
       
@@ -137,6 +143,7 @@ public class UserAction extends BaseAction {
             session.setAttribute("user", user);
             result.put("user", user);
         }
+        
         response.getWriter().print(result);
         session.removeAttribute("privateKey");
         return null;

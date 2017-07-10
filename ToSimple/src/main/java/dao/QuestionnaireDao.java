@@ -22,7 +22,7 @@ public interface QuestionnaireDao {
 
     public Questionnaire findQuestionnaireById(String id);
 
-    public Questionnaire findQuestionnaireByUser(int id);
+    public List<Questionnaire> findQuestionnaireByUser(Long id);
 
     /**
      * search questionnaires by name.(fuzzy search)
