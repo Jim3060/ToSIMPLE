@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import service.UserService;
 
 @Controller
@@ -34,11 +35,6 @@ public class UserAction extends BaseAction {
     private UserService userService;
     private Long userId;
     private HttpServletResponse response;
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
     private String passwordSECURE;
     private int id;
     private String userName;
@@ -46,6 +42,10 @@ public class UserAction extends BaseAction {
     private Integer role;
     private String email;
     public List<User> users = new ArrayList<User>();
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(value = "user",method = RequestMethod.POST)
     public String save(User user){
@@ -56,6 +56,7 @@ public class UserAction extends BaseAction {
 
     @RequestMapping(value = "user/userId",method = RequestMethod.GET)
     public String show(@PathVariable("userId") Long userId,HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
         User user = userService.getUserById(userId);
         JSONObject result = new JSONObject();
         result.put("user", user);
@@ -67,6 +68,7 @@ public class UserAction extends BaseAction {
 
     @RequestMapping(value = "user/userId", method = RequestMethod.PUT)
     public String edit(@PathVariable("userId") Long userId, Integer role, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
         userService.changRole(userId, role);
         return null;
     }
@@ -80,31 +82,29 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "allUsers", method = RequestMethod.GET)
     public String getAllUsers(HttpServletResponse response) throws Exception {
         //get users
+        response.setContentType("application/json;charset=UTF-8");
         users = userService.getAllUsers();
         JSONObject result = new JSONObject();
-    	result.put("users",users);
-    	response.setCharacterEncoding("utf-8");
-        response.setContentType("application/json");
-    	response.getWriter().print(result);
+    	  result.put("users",users);
+    	  response.getWriter().print(result);
         return null;
     }
-    
+
     @RequestMapping(value = "allUser", method = RequestMethod.GET)
     public String getUsersByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
         //get users
+        response.setContentType("application/json;charset=UTF-8");
         users = userService.getUsersByPage(page,pageSize);
         JSONObject result = new JSONObject();
-    	result.put("users",users);
-    	result.put("userNum",userService.getValidUserNumber());
-    	response.setCharacterEncoding("utf-8");
-        response.setContentType("application/json");
-    	response.getWriter().print(result);
-    	return null;
-      
+        result.put("users",users);
+    	  response.getWriter().print(result);
+    	  return null;
     }
+
 
     @RequestMapping(value = "fetchRSA", method = RequestMethod.GET)
     public String fetchRSA(HttpSession session, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
         KeyPair keyPair = RSAUtils.initKey();
         RSAPublicKey publicKey = RSAUtils.getPublicKey(keyPair);
         RSAPrivateKey privateKey = RSAUtils.getPrivateKey(keyPair);
@@ -124,6 +124,7 @@ public class UserAction extends BaseAction {
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
         String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         System.out.println(passwordInput);
@@ -135,7 +136,7 @@ public class UserAction extends BaseAction {
                 loginSuccess = 0;
             }
         }
-        
+
         JSONObject result = new JSONObject();
         result.put("loginSuccess", loginSuccess);
         if (loginSuccess == 1) {
@@ -157,8 +158,8 @@ public class UserAction extends BaseAction {
 
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public String register(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response, String email) throws MessagingException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
-        System.out.println(passwordSECURE);
         String password = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         role = 0;
         User user = new User(userName, password, role, email);
@@ -168,10 +169,11 @@ public class UserAction extends BaseAction {
         response.getWriter().print(1);
         return null;
     }
-    
+
     @RequestMapping(value = "registerValidate", method = RequestMethod.GET)
     public String registerValidate(HttpSession session, @RequestParam("token") String token, HttpServletResponse response, @RequestParam("email") String email) throws MessagingException, IOException {
-    	int flag=userService.registerValidate(email, token);
+        response.setContentType("application/json;charset=UTF-8");
+        int flag=userService.registerValidate(email, token);
     	response.getWriter().print(flag);
         return null;
     }

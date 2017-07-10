@@ -1,14 +1,12 @@
 package dao.Impl;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 
 import com.mongodb.*;
+import model.QuestionnaireStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -18,6 +16,7 @@ import org.bson.types.ObjectId;
 import dao.QuestionnaireDao;
 import model.Questionnaire;
 import net.sf.json.JSONObject;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 
 import static java.lang.Math.min;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -63,7 +62,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 
         DBObject object = questionnaires.findAndRemove(query);
 //        System.out.print(writeResult);
-        return (object == null)? 0: 1;
+        return (object == null) ? 0 : 1;
 
     }
 
@@ -118,17 +117,19 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name,Integer size) {
+    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name) {
 
-//        size = min(size,30);
+        pageSize = min(pageSize,30);
 
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
         Pattern regName = Pattern.compile(name, CASE_INSENSITIVE);
-//        query.put("status", new BasicDBObject("$gt", "1"));
+        query.put("status", new BasicDBObject("$eq", 1));
         query.put("paperTitle", regName);
-        DBCursor dbCursor = questionnaires.find(query).limit(size);
+        BasicDBObject fields = new BasicDBObject("paperTitle", true).append("_id", true);
+        DBCursor dbCursor = questionnaires.find(query, fields).skip(page * 30).limit(pageSize);
+
         List<Questionnaire> list = new ArrayList<Questionnaire>();
         while (dbCursor.hasNext()) {
             list.add(new Questionnaire(dbCursor.next()));
@@ -137,33 +138,38 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name) {
-        return searchQuestionnaireByName(name,30);
+    public List<Questionnaire> randomQuestionnaire(Integer size) {
+        DB db = mongoTemplate.getDb();
+        List<BasicDBObject> li = new LinkedList<>();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        BasicDBObject sample = new BasicDBObject("$sample", new BasicDBObject("size", size));
+        BasicDBObject match = new BasicDBObject("$match", new BasicDBObject("status", 1));
+        BasicDBObject project = new BasicDBObject("$project", new BasicDBObject("paperTitle", true));
+        li.add(match);
+        li.add(sample);
+        li.add(project);
+        AggregationOutput aggregationOutput = questionnaires.aggregate(li);
+        Iterable<DBObject> result = aggregationOutput.results();
+        Iterator<DBObject> it = result.iterator();
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        while (it.hasNext()) {
+            list.add(new Questionnaire(it.next()));
+        }
+        return list;
     }
 
+    @Override
+    public List<Questionnaire> searchQuestionnaireByName(String name) {
+        return searchQuestionnaireByName(0, 30, name);
+    }
 
-
-//    @Override
-//    public List<Questionnaire> findQuestionnaireByStatus(Integer status, Integer size) {
-//        size = min(size,30);
-//        DB db = mongoTemplate.getDb();
-//        DBCollection questionnaires = db.getCollection("Questionnaires");
-//        BasicDBObject query = new BasicDBObject();
-//        query.put("status",status);
-//        DBCursor dbCursor = questionnaires.find(query).limit(size);
-//        List<Questionnaire> list = new ArrayList<Questionnaire>();
-//        while (dbCursor.hasNext()) {
-//            list.add(new Questionnaire(dbCursor.next()));
-//        }
-//        return list;
-//    }
 
     @Override
     public List<Questionnaire> findQuestionnaireByStatus(Integer status) {
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
-        query.put("status",status);
+        query.put("status", status);
         DBCursor dbCursor = questionnaires.find(query);
         List<Questionnaire> list = new ArrayList<Questionnaire>();
         while (dbCursor.hasNext()) {

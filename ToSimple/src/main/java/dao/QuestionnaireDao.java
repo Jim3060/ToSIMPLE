@@ -25,12 +25,20 @@ public interface QuestionnaireDao {
     public List<Questionnaire> findQuestionnaireByUser(Long id);
 
     /**
-     * search questionnaires by name.(fuzzy search)
+     * get a sample of questionnaires. The questionnaire status must be 1
+     * @param size the max size of the questionnaires.
+     * @return
+     */
+    public List<Questionnaire> randomQuestionnaire(Integer size);
+
+    /**
+     * search questionnaires by name.(fuzzy search) Only return the questionnaire with status equals 1
+     * @param page the page num.begin with 0.
      * @param name the name
-     * @param size the number of questionnaire not allowed bigger than 30.
+     * @param pageSize the number of questionnaire not allowed bigger than 30.
      * @return  the list of questionnaires
      */
-    public List<Questionnaire> searchQuestionnaireByName(String name,Integer size);
+    public List<Questionnaire> searchQuestionnaireByName(Integer page,Integer pageSize,String name);
 
     /**
      * search questionnaires by name.(fuzzy search)
