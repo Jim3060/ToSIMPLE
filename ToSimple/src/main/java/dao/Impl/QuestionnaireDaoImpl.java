@@ -110,7 +110,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     @Override
     public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name) {
 
-//        size = min(size,30);
+        pageSize = min(pageSize,30);
 
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
