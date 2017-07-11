@@ -85,7 +85,7 @@ public class EXELUtils {
         		}
         		else {
         			for (int k=0;k<questionnaireResultGSON.answers.get(j).choice.size();k++){
-        				cell.setCellValue(questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)));
+        				cell.setCellValue(questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text);
         			}
         		}
                 cell.setCellStyle(style);  

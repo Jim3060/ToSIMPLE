@@ -13,6 +13,8 @@
     <import resource="spring-mongodb-config.xml"/>
     <import resource="springmvc.xml"/>
 
+
+
     <!-- Bean -->
     <!-- NEED TO BE MODIFIED -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
@@ -53,6 +55,10 @@
     <bean id="questionnaireResultDao" class="dao.Impl.QuestionnaireResultDaoImpl">
         <property name="mongoTemplate" ref="mongoTemplate"/>
     </bean>
+    
+    <bean id="fileDao" class="dao.Impl.FileDaoImpl">
+        <property name="mongoTemplate" ref="mongoTemplate"/>
+    </bean>
 
 
     <!-- Service -->
@@ -70,6 +76,12 @@
         <!-- DAO -->
         <property name="questionnaireDao" ref="questionnaireDao"></property>
         <property name="questionnaireResultDao" ref="questionnaireResultDao"></property>
+    </bean>
+    
+    <bean id="fileService" class="service.Impl.FileServiceImpl">
+        <!-- DAO -->
+        <property name="fileDao" ref="fileDao"></property>
+        
     </bean>
 
 

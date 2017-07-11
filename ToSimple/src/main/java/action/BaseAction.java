@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 
+
 public class BaseAction {
 
 	private static final long serialVersionUID = 1L;
