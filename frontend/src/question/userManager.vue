@@ -127,15 +127,16 @@
                 })
             },
             handleCurrentChange(val) {
+                console.log(val);
                 var self = this;
                 self.pageIndex = val;
-                $.ajax({
+                /*$.ajax({
                     type:"GET",
                     url:"allUser/page=" + (self.pageIndex - 1) + "&pageSize=" + self.pageSize,
                     success: data=>{
                         
                     }
-                });
+                });*/
             }
         },
         created() {
