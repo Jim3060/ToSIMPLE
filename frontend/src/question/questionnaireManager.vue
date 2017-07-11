@@ -1,32 +1,41 @@
 <template>
     <div id="tb">
-        <h1>User Mananger</h1>
+        <h1>问卷管理中心</h1>
         <table class="table table-striped table-condensed table-bordered">
             <tbody>
                 <tr>
                     <th>序号</th>
                     <th>ID</th>
+                    <th>问卷标题</th>
+                    <th>创建时间</th>
+                    <th>创建用户</th>
                     <th>状态</th>
-                    <th>用户名</th>
-                    <th>邮箱</th>
                     <th>操作</th>
                 </tr>
-                <tr v-for="(data_item, index) in users" :key="data_item">
+                <tr v-for="(data_item, index) in questionnaires" :key="data_item">
                     <th>{{index + 1}}</th>
                     <th>{{data_item.id}}</th>
-                    <th v-if="data_item.role==2">封禁用户</th>
-                    <th v-else-if="data_item.role==0">普通用户</th>
-                    <th v-else>系统管理员</th>
-                    <th>{{data_item.username}}</th>
-                    <th>{{data_item.email}}</th>
+                    <th>{{data_item.title}}</th>
+                    <th>{{data_item.date}}</th>
+                    <th>{{data_item.user}}</th>
+                    <th v-if="data_item.status==0">未发布</th>
+                    <th v-else>已发布</th> 
                     <th>
-                        <el-button v-if="data_item.role == 2" type="warning" @click="unban(data_item.id, index)">解封用户</el-button>
-                        <el-button v-if="data_item.role==0" type="danger" @click="ban(data_item.id, index)">封禁用户</el-button>
-                        <el-button v-if="data_item.role==0" type="warning" @click="set_manager(data_item.id, index)">设管理员</el-button>
+                        <el-button @click="viewContent(data_item.id)">查看问卷内容</el-button>
+                        <el-button v-if="data_item.status == 1">处理举报</el-button>
+                        <el-button v-else-if="data_item.status==2" @click="ban(data_item.id, index)">封禁问卷</el-button>
+                        <el-button v-else-if="data_item.status==3" @click="unban(data_item.id, index)">解封问卷</el-button>
                     </th>
                 </tr>
             </tbody>
         </table>
+        <el-table :data="tableData" stripe border style="width: 100%">
+            <el-table-column prop="id" label="ID" width="180"></el-table-column>
+            <el-table-column prop="title" label="问卷标题" width="180"></el-table-column>
+            <el-table-column prop="date" label="创建时间" width="180"></el-table-column>
+            <el-table-column prop="date" label="创建用户" width="180"></el-table-column>
+            <el-table-column prop="date" label="状态" width="180"></el-table-column>
+        </el-table>
         <div class="container">
             <el-pagination
                 @current-change="handleCurrentChange"
@@ -35,6 +44,19 @@
                 :total="pageLength">
             </el-pagination>
         </div>
+        <el-dialog
+            title="操作"
+            :visible.sync="dialogVisible"
+            size="tiny"
+            :before-close="handleClose">
+            <span>请做出你的决定</span><br>
+            <el-radio class="radio" v-model="radio" label="1">举报通过</el-radio><br>
+            <el-radio class="radio" v-model="radio" label="2">举报不通过</el-radio>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="manageDecision()">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -48,13 +70,10 @@
 
     export default {
         data(){return {
-            users:[{"ID" : 1, "role" : 0, "username" : "zhubo", "email" : "8@qq.com"},
-            {"ID" : 1, "role" : 2, "username" : "zhu", "email" : "8@qq.com"}],
-            datachanged:[],
-            pageIndex : {default(){return 0}},
-            pageLength : {default(){return 0}},
-            pageSize : {},
-            userNum : {}
+            questionnaires : [{"id" : 1, "title" : "investigation", "date" : "2017-07-12", "user" : "Zhu", "status" : 0},
+            {"id" : 1, "title" : "interview", "date" : "2017-07-13", "user" : "Zhu", "status" : 1}],
+            dialogVisible : true,
+            radio : 1
         }},
         methods:{
             ban(ID, index) {
@@ -80,30 +99,18 @@
                 })  
             },
 
-            unban(ID, index){
-                this.$confirm('此操作会改变用户的状态, 您确定继续吗?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
-                }).then(() => {
-                    $.ajax({
-                        type:"PUT",
-                        url: "user/ID=" + ID,
-                        data: {"role" : 0},
-                        success: data=>{
-                            if(data == '1' || data == 1) {
-                                var self = this;
-                                self.data[index].role = 2;
-                                this.$message.success("解封用户成功！");
-                            }
-                            else
-                                this.$message.warning("网络传输异常！");
-                        }
-                    });
-                })
+            viewContent(id) {
+                
             },
-            set_manager(data, index){
-                this.$confirm('此操作会改变用户的状态, 您确定继续吗?', '警告', {
+
+            manageDecision() {
+                var self = this;
+                self.dialogVisible = false;
+                console.log(self.radio);
+            },
+
+            ban(data, index){
+                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'danger'
@@ -115,8 +122,7 @@
                         success: data=>{
                             if(data == '1' || data == 1) {
                                 var self = this;
-                                self.data[index].role = 0;
-                                this.$message.success("设置管理员用户成功！");
+                                this.$message.success("封禁成功！");
                             }
                             else
                                 this.$message.warning("网络传输异常！");
@@ -124,6 +130,17 @@
                     });
                 })
             },
+
+            unban(id, index) {
+                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'danger'
+                }).then(() => {
+
+                });
+            },
+
             handleCurrentChange(val) {
                 var self = this;
                 self.pageIndex = val;
