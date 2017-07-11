@@ -1,8 +1,15 @@
 <html>
-<bead>
 
-</bead>
+<head>
+
+</head>
 <body>
-<h1>Hello World</h1>
+<img src="picture/5963355613b40f4767ebe188"/>
+<form method="post" action="picture" enctype="multipart/form-data">
+	select a file:
+	<input type="file" name="file" />
+	<br/><br/>
+	<input type="submit" value="upload" />
+</form>
 </body>
 </html>
