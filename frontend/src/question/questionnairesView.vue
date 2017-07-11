@@ -8,6 +8,11 @@
                 </li>
             </ul>
         </div>
+        <div v-if="$route.name=='search'">
+            <el-pagination @current-change="handleCurrentChange" 
+               :current-page="currentPage" :page-size="25" layout="total, prev, pager, next" :total="count">
+            </el-pagination>
+        </div>
     </div>
 </template>
 
@@ -18,21 +23,26 @@
         components:{simple},
         data(){return {
             questionnaires:[],
-            notFound: false
+            notFound: false,
+            currentPage: 1,
+            count: 1,
         }},
         watch:{
             '$route'(to, from){
                 if(to.path == "/q"){
                     this.getRandom();
                 }else
-                    this.getSearch();
+                    this.getSearch(1);
             }
         },
         methods:{
-            getSearch(){
+            getSearch(page){
+                if(page == NaN)
+                    return;
                 var self = this;
-                $.get("questionnaire/search?name=" + this.$route.params.name, data=>{
-                    self.questionnaires = data;
+                $.get(`questionnaire/search?name=${this.$route.params.name}&page=${page-1}&pageSize=25`, data=>{
+                    self.questionnaires = data.items;
+                    self.count = data.count;
                     if(data.length == 0)
                         self.notFound = true;
                     else
@@ -48,11 +58,15 @@
                 }, "json").fail(()=>{
                     this.$message.error("网络异常");
                 })
+            },
+            handleCurrentChange(page){
+                this.currentPage = page;
+                this.getSearch(page);
             }
         },
         created(){
             if(this.$route.name == "search"){ // search
-                this.getSearch();
+                this.getSearch(1);
             }
             else{ // random
                 this.notFound = false;

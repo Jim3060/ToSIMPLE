@@ -8,6 +8,31 @@ var root = path.resolve(".");
 var allowExternalRequest = true;
 var address = "192.168.1.116:8080";
 
+var mime = {
+    "html": "text/html",
+    "htm": "text/html",
+    "css": "text/css",
+    "js": "text/javascript",
+    "xml": "text/xml",
+    "json": "application/json",
+
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "png": "image/png",
+    "gif": "image/gif",
+    "bmp": "image/bmp",
+    "svg": "image/svg+xml",
+    "ico": "image/x-icon",
+
+    "mp3": "audio/mpeg",
+    "wav": "audio/x-wav",
+    "mp4": "video/mp4",
+    "swf": "application/x-shockwave-flash",
+
+    "woff": "application/x-font-woff"
+
+}
+
 http.createServer(function(request,response){
     if(!allowExternalRequest&&request.headers["host"]!="127.0.0.1:8080"&&request.headers["host"]!="localhost:8080"){
         response.writeHead(403);
@@ -49,11 +74,22 @@ http.createServer(function(request,response){
             }
         }
         else{
-            response.writeHead(200);
-            fs.readFile(fpath,"utf-8",function(err,data){
-                var rsp = data ;
-                response.end(rsp);
-            })
+            var extname = path.extname(fpath);
+            extname = extname ? extname.slice(1) : 'unknown';
+            var resContentType = mime[extname] || 'text/plain';
+
+            response.writeHead(200, {'Content-type': resContentType});
+            if(extname == "woff" || extname == "woff2"){
+                fs.readFile(fpath,"binary",function(err,data){
+                    var rsp = data ;
+                    response.end(rsp, "binary");
+                })
+            }else{
+                fs.readFile(fpath,"utf-8",function(err,data){
+                    var rsp = data ;
+                    response.end(rsp);
+                })
+            }
         }
     });    
 }).listen(8080, ()=>{console.log("listen on 8080");});
