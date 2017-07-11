@@ -10,7 +10,8 @@
             <li :class="{active:$route.path=='/index'}"><a href="#">首页</a></li>
             <li :class="{active:($route.path=='/q'||$route.name=='q')}"><a href="#/q">问卷</a></li>
             <li :class="{active:($route.path=='/n'||$route.name=='n')}"><a href="#/n">新建</a></li>
-            <li v-show="$route.name=='s'" :class="{active:($route.name=='s')}"><a>统计</a></li>
+           <li :class="{active:($route.path=='/userManager')}"><a href="#/userManager">管理用户</a></li>
+           <li :class="{active:($route.path=='/questionnaireManager')}"><a href="#/questionnaireManager">管理问卷</a></li>
 
             <login class="navbar-right"></login>
             <form class="navbar-form navbar-right" role="search">

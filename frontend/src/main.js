@@ -15,14 +15,18 @@ import questionnaire from "./question/questionnaire.vue"
 import create from "./question/createQuestionnaire.vue"
 import statistic from "./statistics/questionnaire.vue"
 import qView from "./question/questionnairesView.vue"
+import userManager from "./question/userManager.vue"
+import questionnaireManager from "./question/questionnaireManager.vue"
 
 const routes = [
     {path:'/index',component: index},
     {path:"/", redirect:"/index"},
-    {path:"/q", component: qView},
+    {path:"/q", component: test},
     {path:"/q/:id", name:"q", component: questionnaire},
     {path:"/n", component:create},
     {path:"/n/:id", name:"n", component: create},
+    {path:"/userManager", component: userManager},
+    {path:"/questionnaireManager", component : questionnaireManager}
     {path:"/s/:id", name:"s", component: statistic},
     {path:"/search/:name", name:"search", component: qView}
 ]
