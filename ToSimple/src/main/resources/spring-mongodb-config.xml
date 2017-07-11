@@ -7,17 +7,24 @@
                 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                 http://www.springframework.org/schema/data/mongo
                 http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
- 
-    <!-- 加载属性配置文件 -->   
-          
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:setting.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 加载属性配置文件 -->
         <!-- 定义mongo对象，对应的是mongodb官方jar包中的Mongo，replica-set设置集群副本的ip地址和端口 -->  
-        <mongo:mongo id="mongo" replica-set="localhost:27017">  
-            <!-- 一些连接属性的设置 -->      
+        <mongo:mongo id="mongo" host="${spring.data.mongodb.host}" port="${spring.data.mongodb.port}">
+    <!--<mongo:mongo id="mongo" replica-set="">-->
+            <!-- 一些连接属性的设置 -->
             
         </mongo:mongo>  
                       
         <!-- mongo的工厂，通过它来取得mongo实例,dbname为mongodb的数据库名，没有的话会自动创建 -->  
-        <mongo:db-factory dbname="Questionnaire" mongo-ref="mongo"/>  
+        <mongo:db-factory dbname="${spring.data.mongodb.dbname}" mongo-ref="mongo"/>
       
         <!-- mongodb的主要操作对象，所有对mongodb的增删改查的操作都是通过它完成 -->  
         <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">  

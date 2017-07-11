@@ -29,6 +29,8 @@ import org.springframework.expression.spel.ast.Projection;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 import static com.mongodb.client.model.Filters.*;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
@@ -114,6 +116,7 @@ public class test {
         BasicDBObject fields = new BasicDBObject("paperTitle", true).append("_id", true);
         DBCursor dbCursor = questionnaires.find(query, fields);
 
+
         while (dbCursor.hasNext()) {
             DBObject o = dbCursor.next();
             System.out.println(o.toString());
@@ -152,5 +155,51 @@ public class test {
 //        }
     }
 
+    @Test
+    public void testYM(){
+        StringBuffer stringBuffer = new StringBuffer("Hello");
+//        Integer i = 20;
+        System.out.print(stringBuffer.toString());
+        change(stringBuffer);
+        System.out.print(stringBuffer.toString());
+
+        Integer i = 20;
+        System.out.print(i);
+        change1(i);
+        System.out.print(i);
+
+        INT k = new INT(5);
+        System.out.print(k.getI());
+        change3(k);
+        System.out.print(k.getI());
+
+
+    }
+    class INT{
+        private Integer i;
+
+        public INT(Integer i) {
+            this.i = i;
+        }
+
+        public Integer getI() {
+            return i;
+        }
+
+        public void setI(Integer i) {
+            this.i = i;
+        }
+    }
+
+    private void change3(INT i){
+        i.setI(30);
+    }
+    private void change(StringBuffer stringBuffer){
+        stringBuffer.append("world");
+    }
+
+    private void change1(Integer i){
+        i += 5;
+    }
 
 }

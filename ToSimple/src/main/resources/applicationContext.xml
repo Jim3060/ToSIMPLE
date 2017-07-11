@@ -13,6 +13,8 @@
     <import resource="spring-mongodb-config.xml"/>
     <import resource="springmvc.xml"/>
 
+
+
     <!-- Bean -->
     <!-- NEED TO BE MODIFIED -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"

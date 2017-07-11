@@ -1,14 +1,14 @@
 package action;
 
 import java.io.IOException;
+
+import ToolUtils.CountUtils;
 import model.User;
+
 import java.io.OutputStream;
 import java.net.URLEncoder;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 
 import java.text.ParseException;
@@ -16,6 +16,7 @@ import java.text.ParseException;
 
 import javax.servlet.ServletOutputStream;
 
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -71,15 +72,15 @@ public class QuestionnaireAction extends BaseAction {
     public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
 
-        if (session.getAttribute("user")==null){
-        	JSONObject result = new JSONObject();
-        	result.put("valid",0);
-        	response.setCharacterEncoding("utf-8");
-          response.setContentType("application/json");
-        	response.getWriter().print(result);
-        	return null;
+        if (session.getAttribute("user") == null) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
+            response.getWriter().print(result);
+            return null;
         }
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,((User)session.getAttribute("user")).getId()));
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire, ((User) session.getAttribute("user")).getId()));
         JSONObject result = new JSONObject();
         if (questionnaireId == null) {
             result.put("valid", -1);
@@ -91,7 +92,7 @@ public class QuestionnaireAction extends BaseAction {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         response.getWriter().print(result);
-       
+
         System.out.print(questionnaire);
         return null;
     }
@@ -101,13 +102,13 @@ public class QuestionnaireAction extends BaseAction {
         //check for author
 
         response.setContentType("application/json;charset=UTF-8");
-        if (session.getAttribute("user")==null){
-        	JSONObject result = new JSONObject();
-        	result.put("valid",0);
-        	response.getWriter().print(result);
-        	return null;
+        if (session.getAttribute("user") == null) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.getWriter().print(result);
+            return null;
         }
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,(Long)session.getAttribute("user")));
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire, (Long) session.getAttribute("user")));
 
         JSONObject result = new JSONObject();
         if (questionnaireId == null) {
@@ -152,22 +153,41 @@ public class QuestionnaireAction extends BaseAction {
         response.getWriter().print(result);
         return null;
     }
-    
-    
+
+    /**
+     * get all the questionanres by page.max pageSize is 30.
+     *
+     * @param page
+     * @param pageSize
+     * @param response
+     * @throws IOException
+     */
+    @RequestMapping(value = "allQuestionnaire", method = RequestMethod.GET)
+    public void fetchAllQuestionnaire(@RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        CountUtils countUtils = new CountUtils(0);
+        List<Questionnaire> list = questionnaireService.fetchAll(page, pageSize, countUtils);
+        JSONArray jsonArray = toJSONArray(list);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("items",jsonArray);
+        jsonObject.put("count", countUtils.getCount());
+        response.getWriter().print(jsonObject);
+        return;
+    }
+
     @RequestMapping(value = "questionnaire", method = RequestMethod.GET)
-    public String findQuestionnairesByUser( HttpServletResponse response, HttpSession session) throws IOException {
+    public String findQuestionnairesByUser(HttpServletResponse response, HttpSession session) throws IOException {
         //questionnaireId="5954b29d37fac38fdc65727c";
         int valid = 1;
-        List<Questionnaire> list=new  ArrayList<Questionnaire>();
-        JSONArray listJ=new  JSONArray();
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        JSONArray listJ = new JSONArray();
         if (session.getAttribute("user") == null) {
             valid = 0;
-        }
-        else if ((list=questionnaireService.findQuestionnairesByUser(((User)session.getAttribute("user")).getId())) == null) {
+        } else if ((list = questionnaireService.findQuestionnairesByUser(((User) session.getAttribute("user")).getId())) == null) {
             valid = 0;
-        } 
-        for (int i =0; i<list.size();i++){
-        	listJ.add(list.get(i).questionnaireJSON);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            listJ.add(list.get(i).questionnaireJSON);
         }
         JSONObject result = new JSONObject();
         result.put("valid", valid);
@@ -204,26 +224,30 @@ public class QuestionnaireAction extends BaseAction {
      * @throws IOException
      */
     @RequestMapping(value = "questionnaire/search", method = RequestMethod.GET)
-    public String searchQuestionnaireByName(@RequestParam(value = "page",defaultValue = "0") Integer page , @RequestParam(value = "pageSize",defaultValue = "30") Integer pageSize, @RequestParam("name") String name, HttpServletResponse response) throws IOException {
+    public String searchQuestionnaireByName(@RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize, @RequestParam("name") String name, HttpServletResponse response) throws IOException {
 //        response.setCharacterEncoding("utf-8");
         response.setContentType("application/json;charset=UTF-8");
         List<Questionnaire> list = new LinkedList<>();
-        list = questionnaireService.searchQuestionnaireByName(page, pageSize, name);
+        CountUtils countUtils = new CountUtils(0);
+        list = questionnaireService.searchQuestionnaireByName(page, pageSize, name, countUtils);
         JSONArray jsonArray = toJSONArray(list);
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
-        response.getWriter().print(jsonArray);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("items",jsonArray);
+        jsonObject.put("count", countUtils.getCount());
+        response.getWriter().print(jsonObject);
         return null;
     }
 
     @RequestMapping(value = "questionnaire/random", method = RequestMethod.GET)
-    public String randomQuestionnaire(@RequestParam(value = "size",defaultValue = "30") Integer size, HttpServletResponse response) throws IOException {
+    public String randomQuestionnaire(@RequestParam(value = "size", defaultValue = "30") Integer size, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         List<Questionnaire> list = questionnaireService.randomQuestionnaire(size);
         JSONArray jsonArray = toJSONArray(list);
         response.getWriter().print(jsonArray);
         Iterator<Questionnaire> iterator = list.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             System.out.print(iterator.next().questionnaireJSON.toString());
         }
         return null;
@@ -240,11 +264,15 @@ public class QuestionnaireAction extends BaseAction {
     @RequestMapping(value = "questionnaire/status", method = RequestMethod.GET)
     public String getQuestionnaireByStatus(@RequestParam("status") Integer status, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
-        List<Questionnaire> list = questionnaireService.findQuestionnaireByStatus(status);
+        CountUtils countUtils = new CountUtils(0);
+        List<Questionnaire> list = questionnaireService.findQuestionnaireByStatus(status, countUtils);
         JSONArray jsonArray = toJSONArray(list);
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
-        response.getWriter().print(jsonArray);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("items",jsonArray);
+        jsonObject.put("count", countUtils.getCount());
+        response.getWriter().print(jsonObject);
         return null;
     }
 
@@ -280,7 +308,7 @@ public class QuestionnaireAction extends BaseAction {
             questionnaireS.setStatus(status);
             questionnaireService.addOrUpdateQuestionnaire(questionnaireS);
         }
-        
+
         response.getWriter().print(valid);
         return null;
     }
