@@ -1,6 +1,7 @@
 package action;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyPair;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -8,6 +9,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import service.UserService;
 
 @Controller
@@ -47,21 +50,19 @@ public class UserAction extends BaseAction {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "user",method = RequestMethod.POST)
-    public String save(User user){
+    @RequestMapping(value = "user", method = RequestMethod.POST)
+    public String save(User user) {
         //TODO
         userService.addUser(user);
         return null;
     }
 
-    @RequestMapping(value = "user/userId",method = RequestMethod.GET)
-    public String show(@PathVariable("userId") Long userId,HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "user/userId", method = RequestMethod.GET)
+    public String show(@PathVariable("userId") Long userId, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         User user = userService.getUserById(userId);
         JSONObject result = new JSONObject();
         result.put("user", user);
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("application/json");
         response.getWriter().print(result);
         return null;
     }
@@ -71,6 +72,20 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         userService.changRole(userId, role);
         return null;
+    }
+
+    @RequestMapping(value = "picture", method = RequestMethod.POST)
+    public void savePicture(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException{
+        System.out.println("here");
+        System.out.println(file);
+        InputStream fileContent =file.getInputStream();
+//        String url = fileService.saveFile(fileContent);
+        String url = "url";
+
+        JSONObject result = new JSONObject();
+        result.put("imgUrl", url);
+        response.getWriter().print(result);
+        return;
     }
 
     @RequestMapping(value = "user/userId", method = RequestMethod.DELETE)
@@ -85,20 +100,20 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         users = userService.getAllUsers();
         JSONObject result = new JSONObject();
-    	  result.put("users",users);
-    	  response.getWriter().print(result);
+        result.put("users", users);
+        response.getWriter().print(result);
         return null;
     }
 
     @RequestMapping(value = "allUser", method = RequestMethod.GET)
-    public String getUsersByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
+    public String getUsersByPage(HttpServletResponse response, @RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize) throws Exception {
         //get users
         response.setContentType("application/json;charset=UTF-8");
-        users = userService.getUsersByPage(page,pageSize);
+        users = userService.getUsersByPage(page, pageSize);
         JSONObject result = new JSONObject();
-        result.put("users",users);
-    	  response.getWriter().print(result);
-    	  return null;
+        result.put("users", users);
+        response.getWriter().print(result);
+        return null;
     }
 
 
@@ -115,7 +130,6 @@ public class UserAction extends BaseAction {
         JSONObject result = new JSONObject();
         result.put("publicKey", RSAUtils.generateBase64PublicKey(publicKey));
         response.getWriter().print(result);
-
 
 
         return null;
@@ -140,11 +154,11 @@ public class UserAction extends BaseAction {
         JSONObject result = new JSONObject();
         result.put("loginSuccess", loginSuccess);
         if (loginSuccess == 1) {
-        	user.setPassword(null);
+            user.setPassword(null);
             session.setAttribute("user", user);
             result.put("user", user);
         }
-        
+
         response.getWriter().print(result);
         session.removeAttribute("privateKey");
         return null;
@@ -173,8 +187,8 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "registerValidate", method = RequestMethod.GET)
     public String registerValidate(HttpSession session, @RequestParam("token") String token, HttpServletResponse response, @RequestParam("email") String email) throws MessagingException, IOException {
         response.setContentType("application/json;charset=UTF-8");
-        int flag=userService.registerValidate(email, token);
-    	response.getWriter().print(flag);
+        int flag = userService.registerValidate(email, token);
+        response.getWriter().print(flag);
         return null;
     }
 
@@ -225,7 +239,6 @@ public class UserAction extends BaseAction {
     public void setPasswordSECURE(String passwordSECURE) {
         this.passwordSECURE = passwordSECURE;
     }
-
 
 
 }

@@ -1,5 +1,6 @@
 package dao;
 
+import ToolUtils.CountUtils;
 import com.mongodb.DBObject;
 
 import model.Questionnaire;
@@ -25,6 +26,14 @@ public interface QuestionnaireDao {
     public List<Questionnaire> findQuestionnaireByUser(Long id);
 
     /**
+     * fetch all questionnaires.
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<Questionnaire> fetchAll(Integer page,Integer pageSize,CountUtils countUtils);
+
+    /**
      * get a sample of questionnaires. The questionnaire status must be 1
      * @param size the max size of the questionnaires.
      * @return
@@ -38,14 +47,14 @@ public interface QuestionnaireDao {
      * @param pageSize the number of questionnaire not allowed bigger than 30.
      * @return  the list of questionnaires
      */
-    public List<Questionnaire> searchQuestionnaireByName(Integer page,Integer pageSize,String name);
+    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils);
 
     /**
      * search questionnaires by name.(fuzzy search)
      * @param name the name
      * @return  the list of questionnaires
      */
-    public List<Questionnaire> searchQuestionnaireByName(String name);
+    public List<Questionnaire> searchQuestionnaireByName(String name,CountUtils countUtils);
 
 
 
@@ -54,7 +63,7 @@ public interface QuestionnaireDao {
      * @param status the status of the questionnaire
      * @return the list of questionnaire
      */
-    public List<Questionnaire> findQuestionnaireByStatus(Integer status);
+    public List<Questionnaire> findQuestionnaireByStatus(Integer status,CountUtils countUtils);
     
     
 
