@@ -14,7 +14,12 @@ public class QuestionnaireGSON {
 	public static class Question{
 		public String questionTitle;
 		public int type;
-		public List<String> choices;
+		public List<Choice> choices;
+	}
+	
+	public static class Choice{
+		public String text;
+		public String photoId;
 	}
 	
 	public static QuestionnaireGSON getQuestionnaireGSON(String json){

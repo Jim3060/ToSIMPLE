@@ -57,7 +57,7 @@
 	</servlet-mapping>
 	
 	<welcome-file-list>
-	    <welcome-file>/out/index.html</welcome-file>
+	    <welcome-file>ToSimple/index.html</welcome-file>
 	    
 	</welcome-file-list>
 

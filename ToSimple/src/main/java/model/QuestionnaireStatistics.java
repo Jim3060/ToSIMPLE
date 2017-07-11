@@ -39,7 +39,7 @@ public class QuestionnaireStatistics {
 				tmp.choices = new ArrayList<Choice> ();
 				for (int j=0;j<qtmp.choices.size();j++){
 					Choice ctmp=new Choice();
-					ctmp.title=qtmp.choices.get(j);
+					ctmp.title=qtmp.choices.get(j).text;
 					tmp.choices.add(ctmp);
 				}
 			}
