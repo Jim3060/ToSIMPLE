@@ -8,7 +8,7 @@
             </li> -->
             <el-checkbox-group v-model="select" :max="limit">
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
-                    <el-checkbox :label="index">{{option}}</el-checkbox>
+                    <el-checkbox :label="index">{{option.text}}</el-checkbox>
                 </li>
             </el-checkbox-group>
 
