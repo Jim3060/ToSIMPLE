@@ -8,7 +8,10 @@
             </li> -->
             <el-checkbox-group v-model="select" :max="limit">
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
-                    <el-checkbox :label="index">{{option.text}}</el-checkbox>
+                    <el-checkbox :label="index">
+                        <span>{{option.text}}</span>
+                        <div v-if="option.photoId!=undefined&&option.photoId!=''" ><img :src="'file/'+option.photoId" /></div>
+                    </el-checkbox>
                 </li>
             </el-checkbox-group>
 
