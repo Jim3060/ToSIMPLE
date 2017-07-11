@@ -57,6 +57,10 @@ export default {
                 }else if(typeof temp === "number"){
                     postBody.answers.push({choice:[temp], blank:""})
                 }else if(typeof temp === "object"){
+                    if(temp.length == 0){
+                        this.$message.warning("请记得回答第"+ (i+1) +"题");
+                        return;
+                    }
                     postBody.answers.push({choice: temp, blank:""});
                 }else{
                     if(temp == ""){
