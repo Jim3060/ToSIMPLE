@@ -71,7 +71,6 @@ public class QuestionnaireAction extends BaseAction {
     @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
     public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
-
         if (session.getAttribute("user") == null) {
             JSONObject result = new JSONObject();
             result.put("valid", 0);
@@ -80,7 +79,8 @@ public class QuestionnaireAction extends BaseAction {
             response.getWriter().print(result);
             return null;
         }
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire, ((User) session.getAttribute("user")).getId()));
+        
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,((User)session.getAttribute("user")).getId()));
         JSONObject result = new JSONObject();
         if (questionnaireId == null) {
             result.put("valid", -1);
@@ -97,18 +97,32 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "questionnaire/questionnaireId", method = RequestMethod.PUT)
-    public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session, HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
+    
+    @RequestMapping(value = "questionnaire/{questionnaireId}", method =  RequestMethod.POST)
+    public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
         //check for author
-
-        response.setContentType("application/json;charset=UTF-8");
-        if (session.getAttribute("user") == null) {
-            JSONObject result = new JSONObject();
-            result.put("valid", 0);
-            response.getWriter().print(result);
-            return null;
+    	System.out.print(questionnaire);
+        if (session.getAttribute("user")==null){
+        	JSONObject result = new JSONObject();
+        	result.put("valid",0);
+        	response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
+        	response.getWriter().print(result);
+        	return null;
         }
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire, (Long) session.getAttribute("user")));
+        System.out.println(questionnaire);
+        Questionnaire questionnaireTest=new Questionnaire(questionnaire);
+        System.out.println(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")));
+        System.out.println(String.valueOf(((User)session.getAttribute("user")).getId()));
+        if (questionnaireTest.questionnaireJSON.has("authorId")&&!(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User)session.getAttribute("user")).getId())))){
+        	JSONObject result = new JSONObject();
+        	result.put("valid",0);
+        	response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
+        	response.getWriter().print(result);
+        	return null;
+        }
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,((User)session.getAttribute("user")).getId()));
 
         JSONObject result = new JSONObject();
         if (questionnaireId == null) {
@@ -295,9 +309,14 @@ public class QuestionnaireAction extends BaseAction {
      * @throws IOException
      */
     @RequestMapping(value = "setQuestionnaireStatus", method = RequestMethod.POST)
-    public String setQuestionnaireStatus(int status, String questionnaireId, HttpServletResponse response) throws IOException {
+    public String setQuestionnaireStatus(Integer status, String questionnaireId, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         String valid = "1";
+        if(status>4 || status <0){
+            valid="0";
+            response.getWriter().print(valid);
+            return null;
+        }
         if (questionnaireId == null) {
             valid = "0";
         }

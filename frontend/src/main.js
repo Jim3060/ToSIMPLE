@@ -3,8 +3,10 @@ import VueRouter from "vue-router"
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 
+import VCharts from "v-charts"
 Vue.use(VueRouter)
 Vue.use(ElementUI)
+Vue.use(VCharts)
 
 
 import test from "./test.vue"
@@ -17,18 +19,21 @@ import userManager from "./question/userManager.vue"
 import questionnaireManager from "./question/qmofm.vue"
 import statistic from "./statistics/questionnaire.vue"
 import qView from "./question/questionnairesView.vue"
+import myQuestionnaire from "./manage/myquestionnaires.vue"
+
 
 const routes = [
     {path:'/index',component: index},
     {path:"/", redirect:"/index"},
-    {path:"/q", component: qView},
+    {path:"/q", component: test},
     {path:"/q/:id", name:"q", component: questionnaire},
     {path:"/n", component:create},
     {path:"/n/:id", name:"n", component: create},
     {path:"/userManager", component: userManager},
     {path:"/questionnaireManager", component : questionnaireManager},
     {path:"/s/:id", name:"s", component: statistic},
-    {path:"/search/:name", name:"search", component: qView}
+    {path:"/search/:name", name:"search", component: qView},
+    {path:"/m/q", component: myQuestionnaire}
 ]
 
 const router = new VueRouter({

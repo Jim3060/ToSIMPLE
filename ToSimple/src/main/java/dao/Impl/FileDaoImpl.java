@@ -29,12 +29,7 @@ public class FileDaoImpl implements FileDao{
 	@Override
 	public String saveFile(InputStream fileContent) {
 		DB db = mongoTemplate.getDb();
-		
 		GridFS gfsPhoto = new GridFS(db, "questionnaireFiles");  
-		DBObject query1 = new BasicDBObject();
-		GridFSDBFile imageForOutput = gfsPhoto.findOne(query1); 
-		if (imageForOutput!=null){gfsPhoto.remove(imageForOutput);}
-		
 		GridFSInputFile gfsFile = gfsPhoto.createFile(fileContent);  
 		gfsFile.save();  
 		return gfsFile.getId().toString();
