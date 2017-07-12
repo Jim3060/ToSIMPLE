@@ -26,7 +26,7 @@ const routes = [
     {path:"/n", component:create},
     {path:"/n/:id", name:"n", component: create},
     {path:"/userManager", component: userManager},
-    {path:"/questionnaireManager", component : questionnaireManager}
+    {path:"/questionnaireManager", component : questionnaireManager},
     {path:"/s/:id", name:"s", component: statistic},
     {path:"/search/:name", name:"search", component: qView}
 ]

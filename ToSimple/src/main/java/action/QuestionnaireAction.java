@@ -97,10 +97,10 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "questionnaire/questionnaireId", method = RequestMethod.PUT)
+    @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.PUT)
     public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session, HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
         //check for author
-
+        System.out.print(questionnaire);
         response.setContentType("application/json;charset=UTF-8");
         if (session.getAttribute("user") == null) {
             JSONObject result = new JSONObject();
