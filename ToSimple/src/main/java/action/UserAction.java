@@ -200,10 +200,7 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "user/role",method = RequestMethod.POST)
     public void changeRole(Long userId,Integer role,HttpServletResponse response) throws IOException {
         Integer integer = userService.changRole(userId,role);
-        System.out.print(integer);
-        System.out.print(userId);
-        System.out.print(role);
-        System.out.print("CHANGEROLE");
+        response.setContentType("application/json;charset=UTF-8");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("success",1);
         jsonObject.put("oldRole",integer);
