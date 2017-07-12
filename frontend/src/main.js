@@ -19,6 +19,7 @@ import userManager from "./question/userManager.vue"
 import questionnaireManager from "./question/questionnaireManager.vue"
 import statistic from "./statistics/questionnaire.vue"
 import qView from "./question/questionnairesView.vue"
+import myQuestionnaire from "./manage/myquestionnaires.vue"
 
 
 const routes = [
@@ -31,7 +32,8 @@ const routes = [
     {path:"/userManager", component: userManager},
     {path:"/questionnaireManager", component : questionnaireManager},
     {path:"/s/:id", name:"s", component: statistic},
-    {path:"/search/:name", name:"search", component: qView}
+    {path:"/search/:name", name:"search", component: qView},
+    {path:"/m/q", component: myQuestionnaire}
 ]
 
 const router = new VueRouter({
