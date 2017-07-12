@@ -7,23 +7,27 @@ import java.util.regex.Pattern;
 
 import com.mongodb.*;
 import model.QuestionnaireStatistics;
+import model.Report;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.util.JSON;
 import org.bson.types.ObjectId;
+import org.hibernate.Session;
 
 import dao.QuestionnaireDao;
 import model.Questionnaire;
 import net.sf.json.JSONObject;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import static java.lang.Math.min;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 
 
-public class QuestionnaireDaoImpl implements QuestionnaireDao {
+public class QuestionnaireDaoImpl extends HibernateDaoSupport implements QuestionnaireDao {
     protected MongoTemplate mongoTemplate;
 
     public void setMongoTemplate(MongoTemplate template) {
@@ -198,4 +202,64 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         }
         return list;
     }
+
+	@Override
+	public List<Questionnaire> getReportedQuestionnaire() {
+		Session session = this.getSession();
+        session.beginTransaction(); 
+        List<Report> reports=session.createQuery("from Report as r where r.status=0").list();
+        session.getTransaction().commit();
+        Set<String>  questionnaireIdSet=new HashSet<String>();
+        for (int i=0;i<reports.size();i++){
+        	questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
+        }
+        List<ObjectId> idArray=new ArrayList<ObjectId>();
+        
+        Iterator<String> it = questionnaireIdSet.iterator();  
+        while (it.hasNext()) {  
+          idArray.add(new ObjectId(it.next())) ;
+        } 
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new BasicDBObject("$in",idArray));
+        
+        DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        DBCursor dbCursor = questionnaires.find(query);
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        while (dbCursor.hasNext()) {
+            list.add(new Questionnaire(dbCursor.next()));
+        }
+        return list;
+        
+	}
+	
+	public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize, CountUtils countUtils){
+		Session session = this.getSession();
+        session.beginTransaction(); 
+        List<Report> reports=session.createQuery("from Report as r where r.status=0").list();
+        session.getTransaction().commit();
+        Set<String>  questionnaireIdSet=new HashSet<String>();
+        for (int i=0;i<reports.size();i++){
+        	questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
+        }
+        List<ObjectId> idArray=new ArrayList<ObjectId>();
+        
+        Iterator<String> it = questionnaireIdSet.iterator();  
+        while (it.hasNext()) {  
+          idArray.add(new ObjectId(it.next())) ;
+        } 
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new BasicDBObject("$in",idArray));
+        
+        DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        DBCursor dbCursor = questionnaires.find(query).skip(page * pageSize).limit(pageSize);
+        Integer count = questionnaires.find(query).size();
+        countUtils.setCount(count);
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        while (dbCursor.hasNext()) {
+            list.add(new Questionnaire(dbCursor.next()));
+        }
+        return list;
+	}
 }

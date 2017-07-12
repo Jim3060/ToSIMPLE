@@ -73,6 +73,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    public List<Questionnaire> getReportedQuestionnaire(){
+    	return questionnaireDao.getReportedQuestionnaire();
+    }
 
 
     @Override
@@ -147,5 +151,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
       }
       return result;
     }
+
+	@Override
+	public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize,CountUtils countUtils) {
+		
+		return questionnaireDao.getReportedQuestionnaireByPage(page,pageSize,countUtils);
+	}
 
 }

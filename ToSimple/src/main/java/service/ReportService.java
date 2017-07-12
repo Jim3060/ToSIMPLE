@@ -17,9 +17,15 @@ public interface ReportService {
 	
 	public List<Report> getReportsByUserId(long userid);
 	
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId);
+	
 	public int deleteReport(long id);
 	
 	public Long getUnhandledReportsNum();
 	
 	public Long getAllReportsNum();
+	
+	public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId);
+	
+	public int setReportHandledByQuestionnaire(String questionnaireId);
 }

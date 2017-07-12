@@ -56,7 +56,9 @@ public interface QuestionnaireDao {
      */
     public List<Questionnaire> searchQuestionnaireByName(String name,CountUtils countUtils);
 
-
+    public List<Questionnaire> getReportedQuestionnaire();
+    
+    public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize, CountUtils countUtils);
 
     /**
      * find questionnaires by status

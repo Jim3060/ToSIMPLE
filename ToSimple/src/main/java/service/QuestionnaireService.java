@@ -64,6 +64,10 @@ public interface QuestionnaireService {
 
 	public List<Questionnaire> findQuestionnaireByStatus(Integer status, CountUtils countUtils);
 	
-	public List<Questionnaire> findQuestionnairesByUser(Long userid); 
+	public List<Questionnaire> findQuestionnairesByUser(Long userid);
+	
+	public List<Questionnaire> getReportedQuestionnaire();
+	
+	public List<Questionnaire> getReportedQuestionnaireByPage(int page , int pageSize,CountUtils countUtils);
 
 }

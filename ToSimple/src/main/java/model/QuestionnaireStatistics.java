@@ -57,13 +57,15 @@ public class QuestionnaireStatistics {
 			QuestionnaireResultGSON.Answer atmp;
 			for (int j=0;j<questionnaireResultGSON.answers.size();j++){
 				atmp=questionnaireResultGSON.answers.get(j);
-				if (questions.get(j).type==2){
+				if (atmp.blank!=null&&!atmp.blank.equals("")){
 					
 					questions.get(j).blanks.add(new Blank(atmp.blank,questionnaireResultGSON.questionnaireResultId));
 				}
 				else{
 					for (int k=0;k<atmp.choice.size();k++){
-						questions.get(j).choices.get(atmp.choice.get(k)).number++;
+						if (atmp.choice.get(k)!=null){
+							questions.get(j).choices.get(atmp.choice.get(k)).number++;
+						}
 					}
 				}
 			}

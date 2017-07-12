@@ -63,6 +63,27 @@ public class ReportServiceImpl implements ReportService{
 		// TODO Auto-generated method stub
 		return reportDao.getAllReportsNum();
 	}
+	@Override
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId) {
+		// TODO Auto-generated method stub
+		return reportDao.getAllUnhandledReportsByQuestionnaireId(page, pageSize, questionnaireId);
+	}
+	@Override
+	public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId) {
+		// TODO Auto-generated method stub
+		return reportDao.getUnhandledReportsNumByQuestionnaireId(questionnaireId);
+	}
+	@Override
+	public int setReportHandledByQuestionnaire(String questionnaireId) {
+		List<Report> reports=reportDao.getReportsByQuestionnaireId(questionnaireId);
+		Report tmp;
+		for (int i=0; i<reports.size();i++){
+			tmp=reports.get(i);
+			tmp.setStatus(1);
+			reportDao.update(tmp);
+		}
+		return 1;
+	}
 	
 
 }
