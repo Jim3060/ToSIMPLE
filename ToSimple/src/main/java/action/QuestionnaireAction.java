@@ -7,7 +7,6 @@ import model.User;
 
 import java.io.OutputStream;
 import java.net.URLEncoder;
-
 import java.util.*;
 
 
@@ -111,10 +110,11 @@ public class QuestionnaireAction extends BaseAction {
         	response.getWriter().print(result);
         	return null;
         }
-        System.out.println(questionnaire);
+        
+        
+        //check user equals author
         Questionnaire questionnaireTest=new Questionnaire(questionnaire);
-        System.out.println(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")));
-        System.out.println(String.valueOf(((User)session.getAttribute("user")).getId()));
+        
         if (questionnaireTest.questionnaireJSON.has("authorId")&&!(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User)session.getAttribute("user")).getId())))){
         	JSONObject result = new JSONObject();
         	result.put("valid",0);
