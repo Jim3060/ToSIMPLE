@@ -13,6 +13,8 @@
     <import resource="spring-mongodb-config.xml"/>
     <import resource="springmvc.xml"/>
 
+
+
     <!-- Bean -->
     <!-- NEED TO BE MODIFIED -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
@@ -28,20 +30,19 @@
 			<list>	
 				<value>model/User.hbm.xml</value>
 				<value>model/Report.hbm.xml</value>
+
 			</list>
 		</property>
 		<!-- Hibernate SessionFactory -->
 		<property name="hibernateProperties">
 			<value>
 				hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
-				hibernate.hbm2ddl.auto=update
+				hibernate.hbm2ddl.auto=create
 				hibernate.show_sql=true
 				hibernate.format_sql=true
 			</value>
 		</property>
 	</bean>
-
-
 
     <!-- DAO Bean -->
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import ToolUtils.CountUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.google.gson.Gson;
@@ -104,30 +105,41 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name, Integer size) {
-        return questionnaireDao.searchQuestionnaireByName(name, size);
+    public List<Questionnaire>  searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils) {
+        return questionnaireDao.searchQuestionnaireByName(page,pageSize,name,countUtils);
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name) {
-        return questionnaireDao.searchQuestionnaireByName(name);
+    public List<Questionnaire> searchQuestionnaireByName(String name, CountUtils countUtils) {
+        return questionnaireDao.searchQuestionnaireByName(name, countUtils);
     }
 
 
     @Override
-    public List<Questionnaire> findQuestionnaireByStatus(Integer status) {
-        return questionnaireDao.findQuestionnaireByStatus(status);
+    public List<Questionnaire> findQuestionnaireByStatus(Integer status,CountUtils countUtils) {
+        return questionnaireDao.findQuestionnaireByStatus(status, countUtils);
     }
 
-	@Override
-	public List<Questionnaire> findQuestionnairesByUser(Long userid) {
-		List<Questionnaire> raw=questionnaireDao.findQuestionnaireByUser(userid);
-		List<Questionnaire> result=new ArrayList<Questionnaire>();
-		//Questionnaire tmp=new Questionnaire();
-		for (int  i=0;i<raw.size();i++){
-			raw.get(i).questionnaireJSON.remove("questions");
-			result.add(new Questionnaire(raw.get(i).getQuestionnaire()));
-		}
-		return result;
-	}
+    @Override
+    public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils) {
+        return questionnaireDao.fetchAll(page,pageSize, countUtils);
+    }
+
+    @Override
+    public List<Questionnaire> randomQuestionnaire(Integer size) {
+        return questionnaireDao.randomQuestionnaire(size);
+    }
+  
+    @Override
+    public List<Questionnaire> findQuestionnairesByUser(Long userid) {
+      List<Questionnaire> raw=questionnaireDao.findQuestionnaireByUser(userid);
+      List<Questionnaire> result=new ArrayList<Questionnaire>();
+      //Questionnaire tmp=new Questionnaire();
+      for (int  i=0;i<raw.size();i++){
+        raw.get(i).questionnaireJSON.remove("questions");
+        result.add(new Questionnaire(raw.get(i).getQuestionnaire()));
+      }
+      return result;
+    }
+
 }

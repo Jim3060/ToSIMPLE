@@ -18,7 +18,6 @@ public class QuestionnaireResult {
 		if (this.questionnaireResultJSON.get("questionnaireResultId")==null){
 			questionnaireResultJSON.put("questionnaireResultId", "");
 		}
-		
 	}
 	
 	public QuestionnaireResult(String questionnaireResult, HttpServletRequest request) {

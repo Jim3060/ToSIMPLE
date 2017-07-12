@@ -1,7 +1,7 @@
 <template>
     <div class="create">
         <div>
-            问题类型: 
+            问题类型:
             <!--<select v-model="type">
                 <option>单选</option>
                 <option>多选</option>
@@ -24,12 +24,20 @@
             <ul class="list-group">
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
                     <div v-show="edit==index">
-                        <input class="option" v-model="buffer"></input>
+                        <input class="option" v-model="buffer.text"></input>
+                        <el-checkbox v-model="pictureMode" style="font-weight:400">添加图片</el-checkbox>
                         <el-button size="small" type="primary" @click="save(index)">保存</el-button>
                         <el-button size="small" @click="can(index)">取消</el-button>
+                        <div v-if="pictureMode">
+                            <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/"
+                                    :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </div>
                     </div>
                     <div v-show="edit!=index">
-                        <label class="option">{{option}}</label>
+                        <label class="option">{{option.text}}</label>
                         <el-button size="small" type="primary" @click="change(index)">修改</el-button>
                         <el-button size="small" type="danger" @click="del(index)">删除</el-button>
                     </div>
@@ -53,7 +61,7 @@
                 <li v-if="newItem" class="list-group-item">
                     <!--第
                     <select v-model.number="newIdx">
-                        <option v-for="i in connectAccessable" :key="i">{{i}}</option>    
+                        <option v-for="i in connectAccessable" :key="i">{{i}}</option>
                     </select>
                     题-->
                     <el-select v-model.number="newIdx" size="small" style="width:150px" placeholder="请选择题号">
@@ -63,7 +71,7 @@
                     <el-button size="small" @click="newItem=false">取消</el-button>
                 </li>
                 <li v-show="connectAccessable.length > 0 && !newItem" @click="newItem=true" class="list-group-item">新增关联</li>
-            </ul> 
+            </ul>
         </div>
         <div>
             <el-button @click="submit()" type="primary">确认</el-button>
@@ -97,7 +105,9 @@ export default {
         connect: false,
         newItem: false,
         newIdx: 0,
-        connectAccessable:[]
+        connectAccessable:[],
+        imageUrl:"",
+        pictureMode: false
     }},
     methods:{
         del(index){
@@ -105,21 +115,25 @@ export default {
         },
         add(){
             this.options.push("");
-            this.buffer = "";
+            this.buffer = {text: ""};
             this.edit = this.options.length-1;
+            this.pictureMode = false;
         },
         can(index){
             this.edit = -1;
-            if(this.options.length-1 == index)
+            if(this.options.length-1 == index && this.options[index] == "")
                 this.options.splice(index, 1);
+            this.pictureMode = false;
         },
         change(index){
             this.buffer = this.options[index];
             this.edit = index;
+            this.pictureMode = this.buffer.photoId != undefined;
         },
         save(index){
             this.edit = -1;
             this.options[index] = this.buffer;
+            this.pictureMode = false;
         },
         cancel(){
             this.$emit("cancel");
@@ -132,7 +146,7 @@ export default {
             var idx = this.newIdx - 1;
             this.newItem = false;
             Vue.set(this.showAfter, idx, new Array());
-            Vue.delete(this.connectAccessable, this.connectAccessable.indexOf(idx+1)); 
+            Vue.delete(this.connectAccessable, this.connectAccessable.indexOf(idx+1));
         },
         update(idx, index, select){
             if(select.length > 0){
@@ -176,16 +190,32 @@ export default {
                 result.limit = this.limit;
             if(this.resultCheck(result))
                 this.$emit("submit", result);
+        },
+        handleAvatarSuccess(res, file) {
+            this.buffer.photoId = res;
+            this.imageUrl = URL.createObjectURL(file.raw);
+        },
+        beforeAvatarUpload(file) {
+            const isJPG = file.type === 'image/jpeg';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isJPG) {
+            this.$message.error('上传头像图片只能是 JPG 格式!');
+            }
+            if (!isLt2M) {
+            this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+            return isJPG && isLt2M;
         }
     },
-    created(){ 
+    created(){
         if( Object.keys(this.questionnaire).length > 0 && this.index > -1){
             this.title = this.questionnaire.questions[this.index].questionTitle;
             this.type = this.types[this.questionnaire.questions[this.index].type];
             this.limit = this.questionnaire.questions[this.index].limit==undefined?0:this.questionnaire.questions[this.index].limit;
             this.options = this.questionnaire.questions[this.index].choices == undefined?{}:this.questionnaire.questions[this.index].choices;
             this.showAfter = this.questionnaire.questions[this.index].showAfter == undefined?{}:this.questionnaire.questions[this.index].showAfter;
-            this.connect = Object.keys(this.showAfter).length > 0; 
+            this.connect = Object.keys(this.showAfter).length > 0;
         }
         var questions = this.questionnaire.questions;
         for(var i in questions){
@@ -193,12 +223,36 @@ export default {
                 this.connectAccessable.push(parseInt(i)+1);
         }
     }
-    
+
 }
 </script>
 
 <style>
     .create, .create>div, .create>input{margin:10px;}
     .limit{width:50px;}
-    .option{width:300px;}
+    .option{width:240px;}
+    .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  input.el-upload__input{display:none!important;}
 </style>

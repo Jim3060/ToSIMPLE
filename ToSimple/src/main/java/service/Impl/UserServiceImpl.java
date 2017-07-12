@@ -168,7 +168,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Long getValidUserNumber() {
 		return userDao.getValidUserNumber();
-		
 	}
 
 }

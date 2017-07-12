@@ -3,21 +3,34 @@ package model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.*;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import dao.Impl.QuestionnaireDaoImpl;
+import edu.emory.mathcs.backport.java.util.Arrays;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
+import org.springframework.expression.spel.ast.Projection;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.persistence.criteria.CriteriaBuilder;
+
 import static com.mongodb.client.model.Filters.*;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
@@ -81,7 +94,7 @@ public class test {
 //        while (iterator.hasNext()){
 //            System.out.print(iterator.next().questionnaireJSON);
 //        }
-        questionnaireDao.delete("595c8504074a131e1d0fe7fd");
+//        questionnaireDao.delete("595c8504074a131e1d0fe7fd");
 
 //        DB db = mongoTemplate.getDb();
 //        DBCollection questionnaires = db.getCollection("Questionnaires");
@@ -91,7 +104,102 @@ public class test {
 //        while (dbCursor.hasNext()) {
 //            list.add(new Questionnaire(dbCursor.next()));
 //        }
+
+
+        String name = "";
+        DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        BasicDBObject query = new BasicDBObject();
+        Pattern regName = Pattern.compile(name, CASE_INSENSITIVE);
+        query.put("status", new BasicDBObject("$eq", 1));
+        query.put("paperTitle", regName);
+        BasicDBObject fields = new BasicDBObject("paperTitle", true).append("_id", true);
+        DBCursor dbCursor = questionnaires.find(query, fields);
+
+
+        while (dbCursor.hasNext()) {
+            DBObject o = dbCursor.next();
+            System.out.println(o.toString());
+        }
+
     }
 
+    @Test
+    public void testRandom() {
+        List<Questionnaire> list = questionnaireDao.randomQuestionnaire(3);
+        Iterator<Questionnaire> iterator = list.iterator();
+        while(iterator.hasNext()){
+            System.out.print(iterator.next().questionnaireJSON.toString());
+        }
+//        DB db = mongoTemplate.getDb();
+//        DBCollection questionnaires = db.getCollection("Questionnaires");
+//        BasicDBObject sample = new BasicDBObject("$sample", new BasicDBObject("size", 2));
+//        BasicDBObject match = new BasicDBObject("$match", new BasicDBObject("status", 1));
+//        BasicDBObject project = new BasicDBObject("$project", new BasicDBObject("paperTitle", true));
+////        ProjectionOperation projectionOperation = Aggregation.project(String.valueOf(Projections.fields(Projections.include("_id"),
+////                Projections.include("paperTitle"))));
+//        List<BasicDBObject> li = new LinkedList<>();
+//        li.add(match);
+//        li.add(sample);
+//        li.add(project);
+////        li.add(projectionOperation);
+//        AggregationOutput aggregationOutput = questionnaires.aggregate(li);
+////        AggregationOutput aggregationOutput = questionnaires.aggregate(Arrays.asList(
+////                new Bson[]{Aggregates.match(Filters.eq("categories", "Bakery"))},
+////                Aggregates.group("$stars", Accumulators.sum("count", 1))));
+//        Iterable<DBObject> result = aggregationOutput.results();
+//        Iterator it = result.iterator();
+//        while (it.hasNext()) {
+//            System.out.print(it.next());
+////            list.add(new Questionnaire(it.next()));
+//        }
+    }
+
+    @Test
+    public void testYM(){
+        StringBuffer stringBuffer = new StringBuffer("Hello");
+//        Integer i = 20;
+        System.out.print(stringBuffer.toString());
+        change(stringBuffer);
+        System.out.print(stringBuffer.toString());
+
+        Integer i = 20;
+        System.out.print(i);
+        change1(i);
+        System.out.print(i);
+
+        INT k = new INT(5);
+        System.out.print(k.getI());
+        change3(k);
+        System.out.print(k.getI());
+
+
+    }
+    class INT{
+        private Integer i;
+
+        public INT(Integer i) {
+            this.i = i;
+        }
+
+        public Integer getI() {
+            return i;
+        }
+
+        public void setI(Integer i) {
+            this.i = i;
+        }
+    }
+
+    private void change3(INT i){
+        i.setI(30);
+    }
+    private void change(StringBuffer stringBuffer){
+        stringBuffer.append("world");
+    }
+
+    private void change1(Integer i){
+        i += 5;
+    }
 
 }

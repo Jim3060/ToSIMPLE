@@ -82,12 +82,14 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 	@Override
 	public List<User> getValidUsersByPage(Integer page, Integer pageSize) {
 		// TODO Auto-generated method stub
-		Session session = this.getSession();
+		    Session session = this.getSession();
         session.beginTransaction(); 
         List<User> list=session.createQuery("from User as u where u.valid=1").setMaxResults(pageSize).setFirstResult(page*pageSize).list();
         session.getTransaction().commit();
-		return list;
+		    return list;
 	}
+
+
 
 	@Override
 	public Long getValidUserNumber() {
@@ -98,6 +100,7 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
         return num;
 		
 	}
+
 
 //	
 }
