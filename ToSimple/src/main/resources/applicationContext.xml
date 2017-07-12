@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Spring Schema -->
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	http://www.springframework.org/schema/tx 
@@ -14,34 +14,33 @@
     <import resource="springmvc.xml"/>
 
 
-
     <!-- Bean -->
     <!-- NEED TO BE MODIFIED -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close" p:driverClass="com.mysql.jdbc.Driver"
-		p:jdbcUrl="jdbc:mysql://localhost:3306/questionnaireServey" p:user="root"
-		p:password="Ljy970714" p:maxPoolSize="40" p:minPoolSize="1"
-		p:initialPoolSize="1" p:maxIdleTime="20" />
+          destroy-method="close" p:driverClass="com.mysql.jdbc.Driver"
+          p:jdbcUrl="jdbc:mysql://localhost:3306/questionnaireServey" p:user="root"
+          p:password="Ljy970714" p:maxPoolSize="40" p:minPoolSize="1"
+          p:initialPoolSize="1" p:maxIdleTime="20"/>
 
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
-		p:dataSource-ref="dataSource">
-		<property name="mappingResources">
-			<list>	
-				<value>model/User.hbm.xml</value>
-				<value>model/Report.hbm.xml</value>
-			</list>
-		</property>
-		<!-- Hibernate SessionFactory -->
-		<property name="hibernateProperties">
-			<value>
-				hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
-				hibernate.hbm2ddl.auto=update
-				hibernate.show_sql=true
-				hibernate.format_sql=true
-			</value>
-		</property>
-	</bean>
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+          p:dataSource-ref="dataSource">
+        <property name="mappingResources">
+            <list>
+                <value>model/User.hbm.xml</value>
+                <value>model/Report.hbm.xml</value>
+            </list>
+        </property>
+        <!-- Hibernate SessionFactory -->
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+                hibernate.hbm2ddl.auto=update
+                hibernate.show_sql=true
+                hibernate.format_sql=true
+            </value>
+        </property>
+    </bean>
 
     <!-- DAO Bean -->
 
@@ -56,11 +55,11 @@
     <bean id="questionnaireResultDao" class="dao.Impl.QuestionnaireResultDaoImpl">
         <property name="mongoTemplate" ref="mongoTemplate"/>
     </bean>
-    
+
     <bean id="fileDao" class="dao.Impl.FileDaoImpl">
         <property name="mongoTemplate" ref="mongoTemplate"/>
     </bean>
-    
+
     <bean id="reportDao" class="dao.Impl.ReportDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
@@ -71,28 +70,28 @@
         <!-- DAO -->
         <property name="userDao" ref="userDao"></property>
     </bean>
-   
+
     <bean id="statisticsService" class="service.Impl.StatisticsServiceImpl">
         <property name="questionnaireDao" ref="questionnaireDao"></property>
         <property name="questionnaireResultDao" ref="questionnaireResultDao"></property>
     </bean>
-    
+
     <bean id="questionnaireService" class="service.Impl.QuestionnaireServiceImpl">
         <!-- DAO -->
         <property name="questionnaireDao" ref="questionnaireDao"></property>
         <property name="questionnaireResultDao" ref="questionnaireResultDao"></property>
     </bean>
-    
+
     <bean id="fileService" class="service.Impl.FileServiceImpl">
         <!-- DAO -->
         <property name="fileDao" ref="fileDao"></property>
-        
+
     </bean>
-    
+
     <bean id="reportService" class="service.Impl.ReportServiceImpl">
         <!-- DAO -->
         <property name="reportDao" ref="reportDao"></property>
-        
+
     </bean>
 
 

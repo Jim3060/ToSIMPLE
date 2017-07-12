@@ -1,25 +1,25 @@
 package service;
 
-import java.util.List;
-
 import model.Report;
 
+import java.util.List;
+
 public interface ReportService {
-	public int setReportStatus(Long id, int status);
-	
-	public List<Report> getAllReports();
-	
-	public List<Report> getAllReportsBypage(int page, int pageSize);
-	
-	public List<Report> getAllUnhandledReportsBypage(int page, int pageSize);
-	
-	public List<Report> getReportsByQuestionnaireId(String questionnaireId);
-	
-	public List<Report> getReportsByUserId(long userid);
-	
-	public int deleteReport(long id);
-	
-	public Long getUnhandledReportsNum();
-	
-	public Long getAllReportsNum();
+    int setReportStatus(Long id, int status);
+
+    List<Report> getAllReports();
+
+    List<Report> getAllReportsBypage(int page, int pageSize);
+
+    List<Report> getAllUnhandledReportsBypage(int page, int pageSize);
+
+    List<Report> getReportsByQuestionnaireId(String questionnaireId);
+
+    List<Report> getReportsByUserId(long userid);
+
+    int deleteReport(long id);
+
+    Long getUnhandledReportsNum();
+
+    Long getAllReportsNum();
 }

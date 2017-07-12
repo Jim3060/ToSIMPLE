@@ -10,12 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.html.HTMLDocument;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * Created by tbxsx on 17-7-11.
@@ -32,7 +29,7 @@ public class IndexAction {
     @Autowired
     private MongoDbFactory mongoDbFactory;
 
-    @RequestMapping(value = "backup",method = RequestMethod.GET)
+    @RequestMapping(value = "backup", method = RequestMethod.GET)
     public void backUp(HttpServletResponse response) throws IOException {
         Properties prop = new Properties();
         InputStream in = getClass().getResourceAsStream("/setting.properties");
@@ -42,7 +39,7 @@ public class IndexAction {
         Process p = Runtime.getRuntime().exec(command);
     }
 
-    @RequestMapping(value = "restore",method = RequestMethod.GET)
+    @RequestMapping(value = "restore", method = RequestMethod.GET)
     public void restore() throws IOException {
         Properties prop = new Properties();
         InputStream in = getClass().getResourceAsStream("/setting.properties");
@@ -51,14 +48,6 @@ public class IndexAction {
                 + " -d " + prop.getProperty("spring.data.mongodb.dbname") + "/home/tbxsx/backup" + "\"";
         Process p = Runtime.getRuntime().exec(command);
     }
-
-
-
-
-
-
-
-
 
 
 }

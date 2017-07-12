@@ -1,37 +1,31 @@
 package dao.Impl;
 
 import ToolUtils.CountUtils;
-import java.util.*;
-import java.util.regex.Pattern;
-
-
 import com.mongodb.*;
-import model.QuestionnaireStatistics;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-
-import com.mongodb.util.JSON;
-import org.bson.types.ObjectId;
-
 import dao.QuestionnaireDao;
 import model.Questionnaire;
-import net.sf.json.JSONObject;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.MongoTemplate;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static java.lang.Math.min;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 
-
 public class QuestionnaireDaoImpl implements QuestionnaireDao {
     protected MongoTemplate mongoTemplate;
 
-    public void setMongoTemplate(MongoTemplate template) {
-        this.mongoTemplate = template;
-    }
-
     public MongoTemplate getMongoTemplate() {
         return this.mongoTemplate;
+    }
+
+    public void setMongoTemplate(MongoTemplate template) {
+        this.mongoTemplate = template;
     }
 
     public String save(Questionnaire questionnaire) {
@@ -118,7 +112,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name,CountUtils countUtils) {
+    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils) {
 
         pageSize = min(pageSize, 30);
 
@@ -140,7 +134,7 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> fetchAll(Integer page, Integer pageSize,CountUtils countUtils) {
+    public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils) {
         pageSize = min(pageSize, 30);
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
@@ -178,13 +172,13 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name,CountUtils countUtils) {
-        return searchQuestionnaireByName(0, 30, name,countUtils);
+    public List<Questionnaire> searchQuestionnaireByName(String name, CountUtils countUtils) {
+        return searchQuestionnaireByName(0, 30, name, countUtils);
     }
 
 
     @Override
-    public List<Questionnaire> findQuestionnaireByStatus(Integer status,CountUtils countUtils) {
+    public List<Questionnaire> findQuestionnaireByStatus(Integer status, CountUtils countUtils) {
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();

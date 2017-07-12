@@ -1,91 +1,23 @@
 package service.Impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import ToolUtils.CountUtils;
-import org.apache.struts2.ServletActionContext;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mongodb.DBObject;
-import com.mongodb.util.JSON;
-
 import dao.QuestionnaireDao;
 import dao.QuestionnaireResultDao;
 import model.Questionnaire;
 import model.QuestionnaireGSON;
 import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
-import net.sf.json.JSONObject;
 import service.QuestionnaireService;
 
+import java.util.ArrayList;
+import java.util.List;
 
-
-	
-	
 
 public class QuestionnaireServiceImpl implements QuestionnaireService {
     private QuestionnaireDao questionnaireDao;
-
-    public void setQuestionnaireDao(QuestionnaireDao questionnaireDao) {
-        this.questionnaireDao = questionnaireDao;
-    }
-
     private QuestionnaireResultDao questionnaireResultDao;
-
-    public void setQuestionnaireResultDao(QuestionnaireResultDao questionnaireResultDao) {
-        this.questionnaireResultDao = questionnaireResultDao;
-    }
-
-    @Override
-    public Integer deleteQuestionnaire(String id) {
-        return questionnaireDao.delete(id);
-        // TODO Auto-generated method stub
-
-    }
-
-
-    @Override
-    public Questionnaire findQuestionnaireById(String id) {
-        // TODO Auto-generated method stub
-        return questionnaireDao.findQuestionnaireById(id);
-
-    }
-    
-    @Override
-	public QuestionnaireResult getQuestionnaireResultByid(String id) {
-		return questionnaireResultDao.getQuestionnaireResultById(id);
-	}
-
-
-    @Override
-    public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult) {
-        questionnaireResultDao.save(questionnaireResult);
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-
-    @Override
-    public String addOrUpdateQuestionnaire(Questionnaire questionnaire) {
-        String questionnaireId;
-        if (questionnaire.getQuestionnaireId().equals("")) {//add
-            questionnaireId = questionnaireDao.save(questionnaire);
-        } else {//update
-            questionnaireId = questionnaireDao.update(questionnaire.getQuestionnaireId(), questionnaire);
-        }
-        return questionnaireId;
-    }
-
-
-    public QuestionnaireStatistics getQuestionnaireStatisticsById(String id) {
-        Questionnaire questionnaire = questionnaireDao.findQuestionnaireById(id);
-        List<QuestionnaireResult> questionnaireResults = questionnaireResultDao.getAllQuestionnaireResultById(id);
-        return new QuestionnaireStatistics(questionnaire, questionnaireResults);
-    }
 
     public static void main(String[] args) {
 
@@ -103,10 +35,60 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         System.out.println(p);
     }
 
+    public void setQuestionnaireDao(QuestionnaireDao questionnaireDao) {
+        this.questionnaireDao = questionnaireDao;
+    }
+
+    public void setQuestionnaireResultDao(QuestionnaireResultDao questionnaireResultDao) {
+        this.questionnaireResultDao = questionnaireResultDao;
+    }
 
     @Override
-    public List<Questionnaire>  searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils) {
-        return questionnaireDao.searchQuestionnaireByName(page,pageSize,name,countUtils);
+    public Integer deleteQuestionnaire(String id) {
+        return questionnaireDao.delete(id);
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public Questionnaire findQuestionnaireById(String id) {
+        // TODO Auto-generated method stub
+        return questionnaireDao.findQuestionnaireById(id);
+
+    }
+
+    @Override
+    public QuestionnaireResult getQuestionnaireResultByid(String id) {
+        return questionnaireResultDao.getQuestionnaireResultById(id);
+    }
+
+    @Override
+    public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult) {
+        questionnaireResultDao.save(questionnaireResult);
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String addOrUpdateQuestionnaire(Questionnaire questionnaire) {
+        String questionnaireId;
+        if (questionnaire.getQuestionnaireId().equals("")) {//add
+            questionnaireId = questionnaireDao.save(questionnaire);
+        } else {//update
+            questionnaireId = questionnaireDao.update(questionnaire.getQuestionnaireId(), questionnaire);
+        }
+        return questionnaireId;
+    }
+
+    public QuestionnaireStatistics getQuestionnaireStatisticsById(String id) {
+        Questionnaire questionnaire = questionnaireDao.findQuestionnaireById(id);
+        List<QuestionnaireResult> questionnaireResults = questionnaireResultDao.getAllQuestionnaireResultById(id);
+        return new QuestionnaireStatistics(questionnaire, questionnaireResults);
+    }
+
+    @Override
+    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils) {
+        return questionnaireDao.searchQuestionnaireByName(page, pageSize, name, countUtils);
     }
 
     @Override
@@ -116,30 +98,30 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
 
     @Override
-    public List<Questionnaire> findQuestionnaireByStatus(Integer status,CountUtils countUtils) {
+    public List<Questionnaire> findQuestionnaireByStatus(Integer status, CountUtils countUtils) {
         return questionnaireDao.findQuestionnaireByStatus(status, countUtils);
     }
 
     @Override
     public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils) {
-        return questionnaireDao.fetchAll(page,pageSize, countUtils);
+        return questionnaireDao.fetchAll(page, pageSize, countUtils);
     }
 
     @Override
     public List<Questionnaire> randomQuestionnaire(Integer size) {
         return questionnaireDao.randomQuestionnaire(size);
     }
-  
+
     @Override
     public List<Questionnaire> findQuestionnairesByUser(Long userid) {
-      List<Questionnaire> raw=questionnaireDao.findQuestionnaireByUser(userid);
-      List<Questionnaire> result=new ArrayList<Questionnaire>();
-      //Questionnaire tmp=new Questionnaire();
-      for (int  i=0;i<raw.size();i++){
-        raw.get(i).questionnaireJSON.remove("questions");
-        result.add(new Questionnaire(raw.get(i).getQuestionnaire()));
-      }
-      return result;
+        List<Questionnaire> raw = questionnaireDao.findQuestionnaireByUser(userid);
+        List<Questionnaire> result = new ArrayList<Questionnaire>();
+        //Questionnaire tmp=new Questionnaire();
+        for (int i = 0; i < raw.size(); i++) {
+            raw.get(i).questionnaireJSON.remove("questions");
+            result.add(new Questionnaire(raw.get(i).getQuestionnaire()));
+        }
+        return result;
     }
 
 }

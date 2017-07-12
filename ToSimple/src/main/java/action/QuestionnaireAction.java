@@ -1,38 +1,29 @@
 package action;
 
-import java.io.IOException;
-
 import ToolUtils.CountUtils;
-import model.User;
-
-import java.io.OutputStream;
-import java.net.URLEncoder;
-
-import java.util.*;
-
-
-import java.text.ParseException;
-
-
-import javax.servlet.ServletOutputStream;
-
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
+import model.User;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.springframework.web.bind.annotation.*;
-import service.StatisticsService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import service.QuestionnaireService;
+import service.StatisticsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 
 @RestController
@@ -41,23 +32,21 @@ public class QuestionnaireAction extends BaseAction {
 
     @Autowired
     private QuestionnaireService questionnaireService;
-
-    public void setQuestionnaireService(QuestionnaireService questionnaireService) {
-        this.questionnaireService = questionnaireService;
-    }
-
     @Autowired
     private StatisticsService statisticsService;
-
-    public void setStatisticsService(StatisticsService statisticsService) {
-        this.statisticsService = statisticsService;
-    }
-
     private String OBJtest;
     private String questionnaireId;
     private String questionnaire;
     private String answerPaper;
     private int status;
+
+    public void setQuestionnaireService(QuestionnaireService questionnaireService) {
+        this.questionnaireService = questionnaireService;
+    }
+
+    public void setStatisticsService(StatisticsService statisticsService) {
+        this.statisticsService = statisticsService;
+    }
 
     /**
      * Save or update the questionnaire.
@@ -79,8 +68,8 @@ public class QuestionnaireAction extends BaseAction {
             response.getWriter().print(result);
             return null;
         }
-        
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,((User)session.getAttribute("user")).getId()));
+
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire, ((User) session.getAttribute("user")).getId()));
         JSONObject result = new JSONObject();
         if (questionnaireId == null) {
             result.put("valid", -1);
@@ -97,32 +86,32 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
-    
-    @RequestMapping(value = "questionnaire/{questionnaireId}", method =  RequestMethod.POST)
-    public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
+
+    @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.POST)
+    public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session, HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
         //check for author
-    	System.out.print(questionnaire);
-        if (session.getAttribute("user")==null){
-        	JSONObject result = new JSONObject();
-        	result.put("valid",0);
-        	response.setCharacterEncoding("utf-8");
+        System.out.print(questionnaire);
+        if (session.getAttribute("user") == null) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.setCharacterEncoding("utf-8");
             response.setContentType("application/json");
-        	response.getWriter().print(result);
-        	return null;
+            response.getWriter().print(result);
+            return null;
         }
         System.out.println(questionnaire);
-        Questionnaire questionnaireTest=new Questionnaire(questionnaire);
+        Questionnaire questionnaireTest = new Questionnaire(questionnaire);
         System.out.println(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")));
-        System.out.println(String.valueOf(((User)session.getAttribute("user")).getId()));
-        if (questionnaireTest.questionnaireJSON.has("authorId")&&!(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User)session.getAttribute("user")).getId())))){
-        	JSONObject result = new JSONObject();
-        	result.put("valid",0);
-        	response.setCharacterEncoding("utf-8");
+        System.out.println(String.valueOf(((User) session.getAttribute("user")).getId()));
+        if (questionnaireTest.questionnaireJSON.has("authorId") && !(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User) session.getAttribute("user")).getId())))) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.setCharacterEncoding("utf-8");
             response.setContentType("application/json");
-        	response.getWriter().print(result);
-        	return null;
+            response.getWriter().print(result);
+            return null;
         }
-        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire,((User)session.getAttribute("user")).getId()));
+        questionnaireId = questionnaireService.addOrUpdateQuestionnaire(new Questionnaire(questionnaire, ((User) session.getAttribute("user")).getId()));
 
         JSONObject result = new JSONObject();
         if (questionnaireId == null) {
@@ -183,7 +172,7 @@ public class QuestionnaireAction extends BaseAction {
         List<Questionnaire> list = questionnaireService.fetchAll(page, pageSize, countUtils);
         JSONArray jsonArray = toJSONArray(list);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("items",jsonArray);
+        jsonObject.put("items", jsonArray);
         jsonObject.put("count", countUtils.getCount());
         response.getWriter().print(jsonObject);
         return;
@@ -248,7 +237,7 @@ public class QuestionnaireAction extends BaseAction {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("items",jsonArray);
+        jsonObject.put("items", jsonArray);
         jsonObject.put("count", countUtils.getCount());
         response.getWriter().print(jsonObject);
         return null;
@@ -284,7 +273,7 @@ public class QuestionnaireAction extends BaseAction {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("items",jsonArray);
+        jsonObject.put("items", jsonArray);
         jsonObject.put("count", countUtils.getCount());
         response.getWriter().print(jsonObject);
         return null;
@@ -312,8 +301,8 @@ public class QuestionnaireAction extends BaseAction {
     public String setQuestionnaireStatus(Integer status, String questionnaireId, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         String valid = "1";
-        if(status>4 || status <0){
-            valid="0";
+        if (status > 4 || status < 0) {
+            valid = "0";
             response.getWriter().print(valid);
             return null;
         }
@@ -398,7 +387,7 @@ public class QuestionnaireAction extends BaseAction {
         QuestionnaireStatistics s = statisticsService.getQuestionnaireStatisticsById(questionnaireId);
         JSONObject result = new JSONObject();
         result.put("questionStatistics", s.getQuestionsJSON());
-        result.put("answerNumber", s.questionnaireResults.size());
+        result.put("answerNumber", QuestionnaireStatistics.questionnaireResults.size());
         response.getWriter().print(result);
         return null;
     }

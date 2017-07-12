@@ -1,27 +1,30 @@
 <html>
-    <head>
-        <title>test</title>
-        <script src="./jquery-3.1.1.min.js"></script>    
-        <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
-        <!--<link href="/bootstrap/bootstrap-vue.css" rel="stylesheet" type="text/css"></link>-->
-        <meta charset="UTF-8"/>         
-    </head>
-    <body>
-        <p><script type="text/javascript">getContextPath()</script><p>
-        <div id="app">
-            <navbar></navbar>
-            <message></message>
-            <router-view></router-view>
-        </div>    
-        <script src="./bundle.js"></script>
-    </body>
+<head>
+    <title>test</title>
+    <script src="./jquery-3.1.1.min.js"></script>
+    <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          type="text/css"></link>
+    <!--<link href="/bootstrap/bootstrap-vue.css" rel="stylesheet" type="text/css"></link>-->
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<p>
+    <script type="text/javascript">getContextPath()</script>
+<p>
+<div id="app">
+    <navbar></navbar>
+    <message></message>
+    <router-view></router-view>
+</div>
+<script src="./bundle.js"></script>
+</body>
 </html>
 
 <script type="text/javascript">
-    function getContextPath(){ 
-        var pathName = document.location.pathname; 
-        var index = pathName.substr(1).indexOf("/"); 
-        var result = pathName.substr(0,index+1); 
-        return result; 
+    function getContextPath() {
+        var pathName = document.location.pathname;
+        var index = pathName.substr(1).indexOf("/");
+        var result = pathName.substr(0, index + 1);
+        return result;
     }
 </script>

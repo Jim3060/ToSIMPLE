@@ -1,21 +1,17 @@
 package service.Impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-
-import org.apache.struts2.ServletActionContext;
-
 import ToolUtils.MD5Utils;
 import ToolUtils.MailUtils;
 import dao.UserDao;
 import model.User;
 import service.UserService;
+
+import javax.mail.MessagingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserServiceImpl implements UserService {
     private UserDao userDao;
@@ -52,11 +48,15 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Long registerRequest(User user) throws AddressException, MessagingException {
-      if (validateEmail(user.getEmail())==0){return  -1L;}
-      if (validateUserName(user.getUserName())==0){return 0L;}
-      user.setValid(0);
-      return userDao.save(MailUtils.activateMail(user));
+    public Long registerRequest(User user) throws MessagingException {
+        if (validateEmail(user.getEmail()) == 0) {
+            return -1L;
+        }
+        if (validateUserName(user.getUserName()) == 0) {
+            return 0L;
+        }
+        user.setValid(0);
+        return userDao.save(MailUtils.activateMail(user));
     }
 
 
@@ -67,107 +67,114 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public User getUserByEmail(String email) {
+        // TODO Auto-generated method stub
+        return userDao.getUserByEmail(email);
+
+    }
+
+    @Override
+    public int registerValidate(String email, String token) {
+        User userFetch = getUserByEmail(email);
+        if (userFetch.getToken().equals(token)) {
+            Date now = new Date();
+            if (now.getTime() <= userFetch.getCreateTime().getTime()) {
+                userFetch.setValid(1);
+                String to = userFetch.getEmail();
+                Long curTime = System.currentTimeMillis();
+                String token2 = to + curTime;
+                userFetch.setToken(MD5Utils.getEncoded(token2));
+                updateUser(userFetch);
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+        return -2;
+    }
+
+    @Override
+    public User loginByUserName(String userName, String password) {
+        User user = userDao.getUserByUserName(userName);
+        if (user == null) {
+            return null;
+        }
+        if (user.getPassword().equals(password) && user.getValid() == 1) {
+            return user;
+        }
+        return null;
+    }
+
+    @Override
+    public User loginByEmail(String email, String password) {
+        User user = userDao.getUserByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        if (user.getPassword().equals(password) && user.getValid() == 1) {
+            return user;
+        }
+        return null;
+    }
 
 
-	@Override
-	public User getUserByEmail(String email) {
-		// TODO Auto-generated method stub
-		return userDao.getUserByEmail(email);
-		
-	}
+    @Override
+    public int validateUserName(String userName) {
+        // TODO Auto-generated method stub
+        User user = userDao.getUserByUserName(userName);
+        if (user == null) {
+            return 1;
+        }
+        if (user.getValid() == 0) {
+            Date now = new Date();
+            if (now.getTime() > user.getCreateTime().getTime()) {
+                userDao.delete(user);
+                return 1;
+            }
+        }
+        return 0;
+    }
 
-	@Override
-	public int registerValidate(String email, String token) {
-		User userFetch=getUserByEmail(email);
-		if (userFetch.getToken().equals(token)){
-			Date now=new Date();
-			if (now.getTime()<=userFetch.getCreateTime().getTime()){
-				userFetch.setValid(1);
-				String to  = userFetch.getEmail();
-		        Long curTime = System.currentTimeMillis();
-		        String token2 = to+curTime;
-		        userFetch.setToken(MD5Utils.getEncoded(token2));
-				updateUser(userFetch);
-				return 1;
-			}
-			else {return -1;}
-		}
-		return -2;
-	}
-
-	@Override
-	public User loginByUserName(String userName, String password) {
-		User user=userDao.getUserByUserName(userName);
-		if (user==null){return null;}
-		if (user.getPassword().equals(password)&&user.getValid()==1){
-			return user;
-		}
-		return null;
-	}
-
-	@Override
-	public User loginByEmail(String email, String password){
-		User user=userDao.getUserByEmail(email);
-		if (user==null){return null;}
-		if (user.getPassword().equals(password)&&user.getValid()==1){
-			return user;
-		}
-		return null;
-	}
-
-
-	@Override
-	public int validateUserName(String userName) {
-		// TODO Auto-generated method stub
-		User user=userDao.getUserByUserName(userName);
-		if (user==null){return 1;}
-		if (user.getValid()==0){
-			Date now=new Date();
-			if (now.getTime()>user.getCreateTime().getTime()){
-				userDao.delete(user);
-				return 1;
-			}
-		}
-		return 0;
-	}
-
-	@Override
-	public int validateEmail(String email) {
-		//format check
-		String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+    @Override
+    public int validateEmail(String email) {
+        //format check
+        String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern regex = Pattern.compile(check);
         Matcher matcher = regex.matcher(email);
-        if  (!matcher.matches()){
-        	return 0;
+        if (!matcher.matches()) {
+            return 0;
         }
-		//db check
-		User user=userDao.getUserByEmail(email);
-		if (user==null){return 1;}
-		if (user.getValid()==0){
-			Date now=new Date();
-			if (now.getTime()>user.getCreateTime().getTime()){
-				userDao.delete(user);
-				return 1;
-			}
-		}
-		return 0;
-	}
+        //db check
+        User user = userDao.getUserByEmail(email);
+        if (user == null) {
+            return 1;
+        }
+        if (user.getValid() == 0) {
+            Date now = new Date();
+            if (now.getTime() > user.getCreateTime().getTime()) {
+                userDao.delete(user);
+                return 1;
+            }
+        }
+        return 0;
+    }
 
-	@Override
-	public List<User> getUsersByPage(Integer page, Integer pageSize) {
-		List<User> raw=userDao.getValidUsersByPage(page, pageSize);
-		List<User> result=new ArrayList<User>();
-		for (int i=0;i<raw.size();i++){
-			raw.get(i).setPassword("");
-			raw.get(i).setToken("");
-			result.add(raw.get(i));
-		}
-		return result;
-	}
+    @Override
+    public List<User> getUsersByPage(Integer page, Integer pageSize) {
+        List<User> raw = userDao.getValidUsersByPage(page, pageSize);
+        List<User> result = new ArrayList<User>();
+        for (int i = 0; i < raw.size(); i++) {
+            raw.get(i).setPassword("");
+            raw.get(i).setToken("");
+            result.add(raw.get(i));
+        }
+        return result;
+    }
 
-	@Override
-	public Long getValidUserNumber() {
-		return userDao.getValidUserNumber();
-	}
+    @Override
+    public Long getValidUserNumber() {
+        return userDao.getValidUserNumber();
+    }
 
 }
