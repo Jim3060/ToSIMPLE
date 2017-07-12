@@ -27,6 +27,7 @@
 		<property name="mappingResources">
 			<list>	
 				<value>model/User.hbm.xml</value>
+				<value>model/Report.hbm.xml</value>
 			</list>
 		</property>
 		<!-- Hibernate SessionFactory -->
@@ -59,6 +60,10 @@
     <bean id="fileDao" class="dao.Impl.FileDaoImpl">
         <property name="mongoTemplate" ref="mongoTemplate"/>
     </bean>
+    
+    <bean id="reportDao" class="dao.Impl.ReportDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
 
 
     <!-- Service -->
@@ -81,6 +86,12 @@
     <bean id="fileService" class="service.Impl.FileServiceImpl">
         <!-- DAO -->
         <property name="fileDao" ref="fileDao"></property>
+        
+    </bean>
+    
+    <bean id="reportService" class="service.Impl.ReportServiceImpl">
+        <!-- DAO -->
+        <property name="reportDao" ref="reportDao"></property>
         
     </bean>
 
