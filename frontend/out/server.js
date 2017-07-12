@@ -74,6 +74,8 @@ http.createServer(function (request, response) {
                 }
             };
 
+            console.log(request.method, `http://${address}:${port}${url.parse(request.url).path}`);
+
             const req = http.request(options, (res) => {
                 res.setEncoding('utf8');
                 response.writeHead(res.statusCode, res.headers)
@@ -90,7 +92,6 @@ http.createServer(function (request, response) {
             });
 
             // 写入数据到请求主体
-            console.log(post);
             req.write(post);
             req.end();
         }
