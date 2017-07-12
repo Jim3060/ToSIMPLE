@@ -20,9 +20,9 @@
                     <th>{{data_item.userName}}</th>
                     <th>{{data_item.email}}</th>
                     <th>
-                        <el-button v-if="data_item.role == 2" type="warning" @click="unban(data_item.id, index)">解封用户</el-button>
-                        <el-button v-if="data_item.role==0" type="danger" @click="ban(data_item.id, index)">封禁用户</el-button>
-                        <el-button v-if="data_item.role==0" type="warning" @click="set_manager(data_item.id, index)">设管理员</el-button>
+                        <el-button v-if="data_item.role == 2" type="text" @click="unban(data_item.id, index)">解封用户</el-button>
+                        <el-button v-if="data_item.role==0" type="text" @click="ban(data_item.id, index)">封禁用户</el-button>
+                        <el-button v-if="data_item.role==0" type="text" @click="set_manager(data_item.id, index)">设管理员</el-button>
                     </th>
                 </tr>
             </tbody>
