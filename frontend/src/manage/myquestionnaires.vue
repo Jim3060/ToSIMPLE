@@ -18,6 +18,13 @@
                 <td>
                     <a :href="'#/n/'+questionnaire.questionnaireId">查看问卷</a>
                     <a :href="'#/s/'+questionnaire.questionnaireId">查看统计</a>
+                    <el-tooltip effect="light">
+                        <div slot="content">
+                            <input onfocus="this.select()" style="width:150px" :value="'http://localhost:8080/ToSimple/#/q/'+questionnaire.questionnaireId">
+                            <qrcode style="margin-left:11px; margin-top:5px" :size="128" :value="'http://localhost:8080/ToSimple/#/q/'+questionnaire.questionnaireId"></qrcode>
+                        </div>
+                        <a>分享</a>
+                    </el-tooltip>
                 </td>
             </tr>
             </tbody>
@@ -26,7 +33,10 @@
 </template>
 
 <script>
+    import qrcode from "qrcode.vue"
+
     export default{
+        components:{qrcode},
         data(){return {
             questionnaires:[]
         }},

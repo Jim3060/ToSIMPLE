@@ -14,7 +14,7 @@
                         <a>
                             <el-dropdown menu-align="start">
                                 <span class="el-dropdown-link">
-                                    问卷 ▼
+                                    问卷<i class="el-icon-caret-bottom el-icon--right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
                                     <el-dropdown-item><a href="#/q">随便看看</a></el-dropdown-item>

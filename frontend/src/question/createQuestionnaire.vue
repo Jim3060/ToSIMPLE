@@ -1,5 +1,36 @@
 <template>
     <div v-show="!invalid" class="creator">
+        <div class="buttons">
+            <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0 && $route.name=='n'">发布问卷</el-button>
+            <!--<el-button type="warning" @click="publish(0)" v-show="questionnaire.status == 1">取消发布</el-button>-->
+            <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
+            <!--<el-button v-if="$route.name=='n'" @click="jumpToAnswer()">前往回答页</el-button>-->
+            <el-tooltip v-if="$route.name=='n'&&questionnaire.status==1" effect="light">
+                <div slot="content">
+                    <input onfocus="this.select()" style="width:150px" :value="'http://localhost:8080/ToSimple/#/q/'+$route.params.id">
+                    <qrcode style="margin-left:11px; margin-top:5px" :size="128" :value="'http://localhost:8080/ToSimple/#/q/'+$route.params.id"></qrcode>
+                </div>
+                <el-button>分享</el-button>
+            </el-tooltip>
+            <el-dropdown v-if="$route.name=='n'&&questionnaire.status==1" menu-align="start">
+                <el-button>
+                    更多 <i class="el-icon-caret-bottom el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item><a :href="'#/q/'+$route.params.id">前往回答</a></el-dropdown-item>
+                    <el-dropdown-item><a :href="'#/s/'+$route.params.id">查看统计</a></el-dropdown-item>
+                    <el-dropdown-item><a :href="'questionnaireResult/download/'+$route.params.id">下载回答</a></el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <!--<a v-if="$route.name=='n'" :href="'questionnaireResult/download/'+$route.params.id">
+                <el-button>下载回答</el-button>
+            </a>
+            <el-butto v-if="$route.name=='n'" @click="jumpToStatistic()">查看统计</el-button>-->
+        </div>
+        <!--<div v-show="questionnaire.status==0">
+            <span class="edit-switch">编辑模式 </span>
+            <el-switch v-model="editMode"></el-switch>
+        </div>-->
         <div v-show="questionnaire.status==0">
             <span class="edit-title">问卷标题: </span>
             <input class="edit-title" :disabled="!editMode" v-model="title"></input>
@@ -9,21 +40,6 @@
                 <textarea class="edit-briefing" :disabled="!editMode" v-model="briefing"></textarea>
             </div>
         </div>
-        <div class="buttons">
-            <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0 && $route.name=='n'">发布问卷</el-button>
-            <!--<el-button type="warning" @click="publish(0)" v-show="questionnaire.status == 1">取消发布</el-button>-->
-            <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
-            <el-button v-if="$route.name=='n'" @click="jumpToAnswer()">前往回答页</el-button>
-            <a v-if="$route.name=='n'" :href="'questionnaireResult/download/'+$route.params.id">
-                <el-button>下载回答</el-button>
-            </a>
-            <el-button v-if="$route.name=='n'" @click="jumpToStatistic()">查看统计</el-button>
-        </div>
-        <div v-show="questionnaire.status==0">
-            <span class="edit-switch">编辑模式 </span>
-            <el-switch v-model="editMode"></el-switch>
-        </div>
-        <p id="questionnaireId" type="hidden"> </p>
         <questionnaire :questionnaire="questionnaire" :edit="questionnaire.status==0&&editMode" @delete="del($event)" @edit="edit($event)"></questionnaire>
         <div v-show="questionnaire.status==0" class="buttons">
             <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
@@ -47,6 +63,7 @@ import create from "./createQuestion.vue"
 import questionnaire from "./questionnaire.vue"
 import { modal } from "vue-strap"
 import bus from "../bus.js"
+import qrcode from "qrcode.vue"
 
 export default {
     data() {
@@ -62,7 +79,7 @@ export default {
             recovered: false
         }
     },
-    components: { modal, questionnaire, create },
+    components: { modal, questionnaire, create, qrcode },
     methods: {
         add(data) {
             if (this.idx == -1)
@@ -104,6 +121,8 @@ export default {
             })
         },
         recover() {
+            this.title = "";
+            this.briefing = "";
             if (localStorage.questionnaire != undefined) {
                 this.$confirm("检测到本地有暂存的问卷，是否恢复？", "信息", {
                     confirmButtonText: "恢复",
@@ -205,6 +224,7 @@ export default {
         },
         loadQuestionnaire() {
             if (this.$route.name == "n") {
+                this.questionnaire = {questions:[], status:1};
                 var id = this.$route.params.id;
                 var self = this;
                 $.get("questionnaire/" + id, data => {
@@ -228,7 +248,7 @@ export default {
     watch: {
         '$route'(to, from) {
             if (to.path == "/n") {
-                this.questionnaire = { questions: [] };
+                this.questionnaire = { questions: [], status:0 };
                 this.invalid = false;
                 this.recover();
             } else
@@ -236,8 +256,9 @@ export default {
         }
     },
     created() {
-        if (localStorage.questionnaire == undefined || this.$route.name == 'n')
+        if (localStorage.questionnaire == undefined || this.$route.name == 'n'){
             this.loadQuestionnaire();
+        }
         else
             this.recover();
     }
