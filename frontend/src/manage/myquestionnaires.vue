@@ -6,6 +6,7 @@
             <tr>
                 <th>问卷标题</th>
                 <th>状态</th>
+                <th>创建日期</th>
                 <th>已回答人数</th>
                 <th>操作</th>
             </tr>
@@ -14,6 +15,7 @@
             <tr v-for="questionnaire in questionnaires" :key="questionnaire">
                 <td>{{questionnaire.paperTitle}}</td>
                 <td>{{questionnaire.status==1?'已发布':'未发布'}}</td>
+                <td>{{new Date(questionnaire.createDate).toLocaleDateString()}}</td>
                 <td>{{questionnaire.answerNumber || '--'}}</td>
                 <td>
                     <a :href="'#/n/'+questionnaire.questionnaireId">查看问卷</a>

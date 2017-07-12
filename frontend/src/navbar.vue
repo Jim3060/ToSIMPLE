@@ -10,7 +10,7 @@
                     <li :class="{active:$route.path=='/index'}">
                         <a href="#">首页</a>
                     </li>
-                    <li>
+                    <li :class="{active:$route.path=='/n'||$route.path=='/q'||$route.name=='n'||$route.name=='q'||$route.name=='s'||$route.path=='/m/q'}">
                         <a>
                             <el-dropdown menu-align="start">
                                 <span class="el-dropdown-link">
