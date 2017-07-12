@@ -1,6 +1,6 @@
 <template>
     <div id="tb">
-        <h1>用户管理中心</h1>
+        <h3 style="width:100%;text-align:center">用户管理中心</h3>
         <table class="table table-striped table-condensed table-bordered">
             <tbody>
                 <tr>
@@ -20,14 +20,14 @@
                     <th>{{data_item.userName}}</th>
                     <th>{{data_item.email}}</th>
                     <th>
-                        <el-button v-if="data_item.role == 2" type="text" @click="unban(data_item.id, index)">解封用户</el-button>
+                        <el-button v-if="data_item.role==2" type="text" @click="unban(data_item.id, index)">解封用户</el-button>
                         <el-button v-if="data_item.role==0" type="text" @click="ban(data_item.id, index)">封禁用户</el-button>
                         <el-button v-if="data_item.role==0" type="text" @click="set_manager(data_item.id, index)">设管理员</el-button>
                     </th>
                 </tr>
             </tbody>
         </table>
-        <div class="container">
+        <div class="container" style="width:85%;text-align:right">
             <el-pagination
                 @current-change="handleCurrentChange"
                 :current-page.sync="pageIndex"

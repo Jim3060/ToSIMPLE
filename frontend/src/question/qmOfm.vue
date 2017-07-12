@@ -1,6 +1,6 @@
 <template>
     <div id="tb">
-        <h1>问卷管理中心</h1>
+        <h3 style="width:100%;text-align:center">问卷管理中心</h3>
         <table class="table table-striped table-condensed table-bordered">
             <tbody>
                 <tr>
@@ -21,22 +21,13 @@
                     <th v-if="data_item.status==0">未发布</th>
                     <th v-else>已发布</th> 
                     <th>
-                        <el-button @click="viewContent(data_item.id)">查看问卷内容</el-button>
-                        <el-button v-if="data_item.status == 1">处理举报</el-button>
-                        <el-button v-else-if="data_item.status==2" @click="ban(data_item.id, index)">封禁问卷</el-button>
-                        <el-button v-else-if="data_item.status==3" @click="unban(data_item.id, index)">解封问卷</el-button>
+                        <el-button type="text" @click="viewContent(data_item.id)">查看内容</el-button>
+                        <el-button v-if="data.status==1" type="text" @click="selectStatus(data_item.id, index)">处理举报</el-button>
                     </th>
                 </tr>
             </tbody>
         </table>
-        <el-table :data="tableData" stripe border style="width: 100%">
-            <el-table-column prop="id" label="ID" width="180"></el-table-column>
-            <el-table-column prop="title" label="问卷标题" width="180"></el-table-column>
-            <el-table-column prop="date" label="创建时间" width="180"></el-table-column>
-            <el-table-column prop="date" label="创建用户" width="180"></el-table-column>
-            <el-table-column prop="date" label="状态" width="180"></el-table-column>
-        </el-table>
-        <div class="container">
+        <div class="container" style="width:85%;text-align:right">
             <el-pagination
                 @current-change="handleCurrentChange"
                 :current-page.sync="pageIndex"
@@ -45,27 +36,17 @@
             </el-pagination>
         </div>
         <el-dialog
-            title="操作"
-            :visible.sync="dialogVisible"
-            size="tiny"
-            :before-close="handleClose">
-            <span>请做出你的决定</span><br>
-            <el-radio class="radio" v-model="radio" label="1">举报通过</el-radio><br>
-            <el-radio class="radio" v-model="radio" label="2">举报不通过</el-radio>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="manageDecision()">确 定</el-button>
-            </span>
-        </el-dialog>
-        <el-dialog
-            title="问卷举报信息"
+            title="修改问卷状态"
             :visible.sync="infoVisible"
             size="tiny"
             :before-close="handleClose">
-            <span>以下为问卷举报信息</span><br>
-            <span>{{reportInfo}}</span>
+            <span>请做出你的决定</span><br>
+            <el-radio class="radio" v-model="status" label="1">发布问卷</el-radio><br>
+            <el-radio class="radio" v-model="status" label="2">回收问卷</el-radio><br>
+            <el-radio class="radio" v-model="status" label="3">删除问卷</el-radio>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="infoVisible=false">关 闭</el-button>
+                <el-button @click="infoVisible = false">取 消</el-button>
+                <el-button type="primary" @click="manageDecision()">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -85,8 +66,10 @@
             {"id" : 1, "title" : "interview", "date" : "2017-07-13", "user" : "Zhu", "status" : 1}],
             dialogVisible : false,
             infoVisible : false,
-            reportInfo : {},
-            radio : 1
+            questionnaireId : {},
+            /* The status of the questionnaire */
+            status : {},
+            pageLength : {}
         }},
         methods:{
             ban(ID, index) {
@@ -113,45 +96,14 @@
             },
 
             viewContent(id) {
-                
+
+                this.$router.push({path:"/index"});
             },
 
             manageDecision() {
                 var self = this;
                 self.dialogVisible = false;
                 console.log(self.radio);
-            },
-
-            ban(data, index){
-                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
-                }).then(() => {
-                    $.ajax({
-                        type:"PUT",
-                        url: "user/ID=" + ID,
-                        data: {"role" : 1},
-                        success: data=>{
-                            if(data == '1' || data == 1) {
-                                var self = this;
-                                this.$message.success("封禁成功！");
-                            }
-                            else
-                                this.$message.warning("网络传输异常！");
-                        }
-                    });
-                })
-            },
-
-            unban(id, index) {
-                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
-                }).then(() => {
-
-                });
             },
 
             handleCurrentChange(val) {
