@@ -29,9 +29,9 @@
                         <el-button size="small" type="primary" @click="save(index)">保存</el-button>
                         <el-button size="small" @click="can(index)">取消</el-button>
                         <div v-if="pictureMode">
-                            <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/"
+                            <el-upload class="avatar-uploader" action="file"
                                     :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                <img v-if="buffer.photoId!=undefined" :src="'file/'+buffer.photoId" class="avatar">
                                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                             </el-upload>
                         </div>
@@ -192,11 +192,11 @@ export default {
                 this.$emit("submit", result);
         },
         handleAvatarSuccess(res, file) {
-            this.buffer.photoId = res;
+            Vue.set(this.buffer, "photoId", res.fileId);
             this.imageUrl = URL.createObjectURL(file.raw);
         },
         beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg';
+            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {

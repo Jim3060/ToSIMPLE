@@ -30,14 +30,13 @@
 			<list>	
 				<value>model/User.hbm.xml</value>
 				<value>model/Report.hbm.xml</value>
-
 			</list>
 		</property>
 		<!-- Hibernate SessionFactory -->
 		<property name="hibernateProperties">
 			<value>
 				hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
-				hibernate.hbm2ddl.auto=create
+				hibernate.hbm2ddl.auto=update
 				hibernate.show_sql=true
 				hibernate.format_sql=true
 			</value>

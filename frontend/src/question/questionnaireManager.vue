@@ -57,6 +57,17 @@
                 <el-button type="primary" @click="manageDecision()">确 定</el-button>
             </span>
         </el-dialog>
+        <el-dialog
+            title="问卷举报信息"
+            :visible.sync="infoVisible"
+            size="tiny"
+            :before-close="handleClose">
+            <span>以下为问卷举报信息</span><br>
+            <span>{{reportInfo}}</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="infoVisible=false">关 闭</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -72,7 +83,9 @@
         data(){return {
             questionnaires : [{"id" : 1, "title" : "investigation", "date" : "2017-07-12", "user" : "Zhu", "status" : 0},
             {"id" : 1, "title" : "interview", "date" : "2017-07-13", "user" : "Zhu", "status" : 1}],
-            dialogVisible : true,
+            dialogVisible : false,
+            infoVisible : false,
+            reportInfo : {},
             radio : 1
         }},
         methods:{

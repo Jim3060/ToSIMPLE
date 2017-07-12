@@ -1,12 +1,13 @@
-var fs   = require("fs"  );
+var fs = require("fs");
 var http = require("http");
-var url  = require("url" );
+var url = require("url");
 var path = require("path");
 var sendRequest = require("request");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
-var address = "192.168.1.116:8080";
+var address = "192.168.1.30";
+var port = 8080;
 
 var mime = {
     "html": "text/html",
@@ -33,63 +34,83 @@ var mime = {
 
 }
 
-http.createServer(function(request,response){
-    if(!allowExternalRequest&&request.headers["host"]!="127.0.0.1:8080"&&request.headers["host"]!="localhost:8080"){
+http.createServer(function (request, response) {
+    if (!allowExternalRequest && request.headers["host"] != "127.0.0.1:8080" && request.headers["host"] != "localhost:8080") {
         response.writeHead(403);
         response.end("<h1>403 Forbidden</h1>")
         return;
     }
-    
+
     /*console.log("-------------------------------------");
     console.log(request.method+":"+url.parse(request.url).pathname);
     console.log(url.parse(request.url,true).query);
     console.log("user-agent:"+request.headers["user-agent"]);*/
 
-    var post='';      
-    request.on('data',function(chunk){  
-        post += chunk;  
-    });   
+    var post = '';
+    request.on('data', function (chunk) {
+        post += chunk;
+    });
 
     //console.log(request.headers.cookie);
 
     var fpath = path.join(root, url.parse(request.url).pathname);
-    fs.stat(fpath,function(err, stat){
-        if(fpath == root+"/"){
-            response.writeHead(200,{"Content-type":"text/html; charset=utf-8"});
+    fs.stat(fpath, function (err, stat) {
+        if (fpath == root + "/") {
+            response.writeHead(200, { "Content-type": "text/html; charset=utf-8" });
             fs.createReadStream("index.html").pipe(response);
         }
-        else if(err||!stat.isFile()){
-            //TODO
-            //console.log(url.parse(request.url));
-            var target = "http://" + address + url.parse(request.url).path;
-            console.log( request.method + " " + target);
-            if(request.method == "GET" || request.method == "DELETE"){
-                var options = {url: target, method: request.method, headers:{Cookie: request.headers.cookie}};
-                sendRequest(options).pipe(response);
-            }
-            else{
-                var options = {url: target, method: request.method, headers:{Cookie: request.headers.cookie}};
-                //console.log(options);
-                sendRequest(options/*, {form: post}*/).form(post).pipe(response);
-            }
+        else if (err || !stat.isFile()) {
+            
+            const options = {
+                hostname: address,
+                port: port,
+                path: url.parse(request.url).path,
+                method: request.method,
+                headers: {
+                    'Content-Type': request.headers["Content-Type"] || request.headers["content-type"] || "" , 
+                    'Content-Length': Buffer.byteLength(post),
+                    'Cookie': request.headers["Cookie"] || request.headers["cookie"] || "",
+                    "Connection": "keep-alive"
+                }
+            };
+
+            const req = http.request(options, (res) => {
+                res.setEncoding('utf8');
+                response.writeHead(res.statusCode, res.headers)
+                res.on('data', (chunk) => {
+                    response.write(chunk);
+                });
+                res.on('end', () => {
+                    response.end("");
+                });
+            });
+
+            req.on('error', (e) => {
+                console.error(`ERROR: ${e.message}`);
+            });
+
+            // 写入数据到请求主体
+            console.log(post);
+            req.write(post);
+            req.end();
         }
-        else{
+        else {
             var extname = path.extname(fpath);
             extname = extname ? extname.slice(1) : 'unknown';
             var resContentType = mime[extname] || 'text/plain';
 
-            response.writeHead(200, {'Content-type': resContentType});
-            if(extname == "woff" || extname == "woff2"){
-                fs.readFile(fpath,"binary",function(err,data){
-                    var rsp = data ;
+            response.writeHead(200, { 'Content-type': resContentType });
+            if (extname == "woff" || extname == "woff2") {
+                fs.readFile(fpath, "binary", function (err, data) {
+                    var rsp = data;
                     response.end(rsp, "binary");
                 })
-            }else{
-                fs.readFile(fpath,"utf-8",function(err,data){
-                    var rsp = data ;
+            } else {
+                fs.readFile(fpath, "utf-8", function (err, data) {
+                    var rsp = data;
                     response.end(rsp);
                 })
             }
         }
-    });    
-}).listen(8080, ()=>{console.log("listen on 8080");});
+    });
+}).listen(8080, () => { console.log("listen on 8080"); });
