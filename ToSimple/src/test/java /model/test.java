@@ -1,10 +1,9 @@
 package model;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.InputStream;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
@@ -153,6 +152,15 @@ public class test {
 //            System.out.print(it.next());
 ////            list.add(new Questionnaire(it.next()));
 //        }
+    }
+
+    @Test
+    public void testBackUp() throws IOException {
+        Properties prop = new Properties();
+        File file = new File("setting.properties");
+        InputStream in = getClass().getResourceAsStream("/setting.properties");
+        prop.load(in);
+        System.out.print(prop.get("spring.data.mongodb.host"));
     }
 
     @Test
