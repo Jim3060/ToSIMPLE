@@ -22,8 +22,9 @@ public class Questionnaire {
     }
 
     public Questionnaire(String questionnaireStr) {
+    	System.out.println(questionnaireStr);
         this.questionnaireJSON = JSONObject.fromObject(questionnaireStr);
-        if (this.questionnaireJSON.get("questionnaireId") == null) {
+        if (!this.questionnaireJSON.has("questionnaireId") ) {
             questionnaireJSON.put("questionnaireId", "");
         }
     }

@@ -2,10 +2,12 @@ import Vue from "vue";
 import VueRouter from "vue-router"
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+
 import VCharts from "v-charts"
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.use(VCharts)
+
 
 import test from "./test.vue"
 import index from "./index.vue"
@@ -13,10 +15,11 @@ import navbar from "./navbar.vue"
 import message from "./message.vue"
 import questionnaire from "./question/questionnaire.vue"
 import create from "./question/createQuestionnaire.vue"
-import statistic from "./statistics/questionnaire.vue"
-import qView from "./question/questionnairesView.vue"
 import userManager from "./question/userManager.vue"
 import questionnaireManager from "./question/questionnaireManager.vue"
+import statistic from "./statistics/questionnaire.vue"
+import qView from "./question/questionnairesView.vue"
+
 
 const routes = [
     {path:'/index',component: index},

@@ -1,6 +1,12 @@
 <template>
     <div v-show="!invalid" class="creator">
-        <span class="edit-title">问卷标题: </span><input class="edit-title" :disabled="!editMode" v-model="title"></input>
+        <span class="edit-title">问卷标题: </span>
+        <input class="edit-title" :disabled="!editMode" v-model="title"></input>
+        <div></div>
+        <div>
+            <span class="edit-briefing" style="float:left">简介: </span>
+            <textarea class="edit-briefing" :disabled="!editMode" v-model="briefing"></textarea>
+        </div>
         <div class="buttons">
             <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0" >发布问卷</el-button>
             <el-button type="warning" @click="publish(0)" v-show="questionnaire.status == 1">取消发布</el-button>
@@ -9,7 +15,7 @@
             <a v-if="$route.name=='n'" :href="'questionnaireResult/download/'+$route.params.id"><el-button>下载回答</el-button></a>
             <el-button v-if="$route.name=='n'" @click="jumpToStatistic()">查看统计</el-button>
         </div>
-        <span>编辑模式 </span><el-switch v-model="editMode"></el-switch>
+        <span class="edit-switch">编辑模式 </span><el-switch v-model="editMode"></el-switch>
         <p id="questionnaireId" type="hidden"> </p>
         <questionnaire :questionnaire="questionnaire" :edit="editMode" @delete="del($event)" @edit="edit($event)"></questionnaire>
         <div class="buttons">
@@ -39,6 +45,7 @@ export default {
         question:{},
         idx: -1,
         title:"",
+        briefing:"",
         questionnaire:{questions:[]},
         editMode: true,
         invalid: false,
@@ -79,6 +86,7 @@ export default {
                 type: "danger"
             }).then(()=>{
                 this.questionnaire.paperTitle = this.title;
+                this.questionnaire.briefing = this.briefing;
                 localStorage.questionnaire = JSON.stringify(this.questionnaire)
                 this.$message.success("问卷已暂存，请记得及时提交");
                 this.recovered = false;
@@ -93,6 +101,7 @@ export default {
                 }).then(()=>{
                     this.questionnaire = JSON.parse(localStorage.questionnaire);
                     this.title = this.questionnaire.paperTitle;
+                    this.briefing = this.questionnaire.briefing || "";
                     this.recovered = true;
                 })
             }
@@ -129,13 +138,14 @@ export default {
         submit(){
             var self = this;
             this.questionnaire["paperTitle"] = this.title;
+            this.questionnaire["briefing"] = this.briefing;
             this.questionnaire["createDate"] = new Date();
             this.questionnaire["status"] = 0;
 
             if(this.$route.name == "n"){
                 var id = this.$route.params.id;
                 $.ajax({
-                    type: 'PUT',
+                    type: 'POST',
                     url: "questionnaire/" + id,
                     data: {questionnaire: JSON.stringify(this.questionnaire)},
                     dataType: "json",
@@ -183,6 +193,7 @@ export default {
                     if(data.valid == "1"){
                         self.questionnaire = data.questionnaire;
                         self.title = data.questionnaire.paperTitle;
+                        self.briefing = data.questionnaire.briefing || "";
                         this.invalid = false;
                     }else{
                         this.$message.warning("问卷不存在"); 
@@ -216,8 +227,7 @@ export default {
 </script>
 
 <style>
-    .edit-title{font-size:20px;}
-    .creator>span {margin-left:20px;}
+    .edit-title, .edit-switch{font-size:20px; margin:15px}
+    .edit-briefing{font-size:14px; margin:15px;}
     .creator>.buttons{margin:15px;}
-    .creator>span{font-size:20px;}
 </style>

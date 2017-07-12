@@ -1,6 +1,8 @@
 <template>
     <div class="questionnaire">
         <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
+        <div v-if="!edit&&questionnaire!=undefined&&questionnaire.briefing!=undefined" class="questionnaire-briefing">{{questionnaire.briefing}}</div>
+        <div></div>
         <div>
             <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
                 <el-button v-if="edit" type="primary" size="small" @click="change(index)">修改</el-button>
@@ -57,6 +59,10 @@ export default {
                 }else if(typeof temp === "number"){
                     postBody.answers.push({choice:[temp], blank:""})
                 }else if(typeof temp === "object"){
+                    if(temp.length == 0){
+                        this.$message.warning("请记得回答第"+ (i+1) +"题");
+                        return;
+                    }
                     postBody.answers.push({choice: temp, blank:""});
                 }else{
                     if(temp == ""){
@@ -119,9 +125,9 @@ export default {
         if(Object.keys(this.questionnaire) == 0){
             var id = this.$route.params.id;
             var self = this;
-            $.get("questionnaire?page=1&size=30", data=>{
+            $.get("questionnaire/"+id, data=>{
                 if(data.valid == "1"){
-                    self.questionnaire = data.questionnaire;
+                    this.questionnaire = data.questionnaire;
                     for(var i = 0; i < this.questionnaire.questions.length; i++){
                         this.hidden[i] = !this.ifShow(i);
                     }
@@ -138,6 +144,7 @@ export default {
 </script>
 
 <style>
-    .questionnaire-title{font-size:24px; margin-bottom: 30px;}
+    .questionnaire-title{font-size:24px; margin-bottom: 10px;}
+    .questionnaire-briefing{margin-bottom: 30px;}
     .questionnaire{margin:20px;}
 </style>
