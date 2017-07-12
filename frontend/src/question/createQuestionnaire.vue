@@ -135,7 +135,7 @@ export default {
             if(this.$route.name == "n"){
                 var id = this.$route.params.id;
                 $.ajax({
-                    type: 'PUT',
+                    type: 'POST',
                     url: "questionnaire/" + id,
                     data: {questionnaire: JSON.stringify(this.questionnaire)},
                     dataType: "json",

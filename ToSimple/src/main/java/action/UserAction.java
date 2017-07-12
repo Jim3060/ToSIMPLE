@@ -15,7 +15,11 @@ import javax.servlet.http.HttpSession;
 
 import com.sun.org.apache.regexp.internal.RE;
 
+
 import ToolUtils.RSAUtils;
+
+
+import net.sf.json.JSON;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -142,8 +146,12 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
+        System.out.print(userName);
+        System.out.print("HEREEE");
+        System.out.print(passwordSECURE);
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
         String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
+        System.out.print("HEREEE2");
         System.out.println(passwordInput);
         Integer loginSuccess = 1;
         User user = userService.loginByEmail(userName, passwordInput);
@@ -168,8 +176,9 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "logout", method = RequestMethod.GET)
-    public String logout(HttpSession session) {
+    public String logout(HttpServletResponse response, HttpSession session) throws IOException {
         session.removeAttribute("user");
+        response.getWriter().print(1);
         return null;
     }
 
@@ -193,6 +202,18 @@ public class UserAction extends BaseAction {
         int flag = userService.registerValidate(email, token);
         response.getWriter().print(flag);
         return null;
+    }
+
+    @RequestMapping(value = "user/role",method = RequestMethod.POST)
+    public void changeRole(Long userId,Integer role,HttpServletResponse response) throws IOException {
+        Integer integer = userService.changRole(userId,role);
+        response.setContentType("application/json;charset=UTF-8");
+        
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success",1);
+        jsonObject.put("oldRole",integer);
+        System.out.print(jsonObject.toString());
+        response.getWriter().print(jsonObject);
     }
 
     public int getId() {

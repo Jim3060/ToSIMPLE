@@ -123,7 +123,7 @@ export default {
         if(Object.keys(this.questionnaire) == 0){
             var id = this.$route.params.id;
             var self = this;
-            $.get("questionnaire?page=1&size=30", data=>{
+            $.get("questionnaire/"+id, data=>{
                 if(data.valid == "1"){
                     self.questionnaire = data.questionnaire;
                     for(var i = 0; i < this.questionnaire.questions.length; i++){
