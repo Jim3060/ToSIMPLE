@@ -19,10 +19,13 @@
                     <th>{{data_item.date}}</th>
                     <th>{{data_item.user}}</th>
                     <th v-if="data_item.status==0">未发布</th>
-                    <th v-else>已发布</th> 
+                    <th v-else-if="data_item.status==1">已发布</th>
+                    <th v-else-if="data_item.status==2">未发布</th>
+                    <th v-else-if="data_item.status==3">被举报</th>
+                    <th v-else-if="data_item.status==4">违规</th>
                     <th>
                         <el-button type="text" @click="viewContent(data_item.id)">查看内容</el-button>
-                        <el-button v-if="data.status==1" type="text" @click="selectStatus(data_item.id, index)">处理举报</el-button>
+                        <el-button v-if="data_item.status==3" type="text" @click="ViewReport(data_item.id, index)">处理举报</el-button>
                     </th>
                 </tr>
             </tbody>
@@ -36,14 +39,15 @@
             </el-pagination>
         </div>
         <el-dialog
-            title="修改问卷状态"
+            title="问卷举报信息"
             :visible.sync="infoVisible"
             size="tiny"
             :before-close="handleClose">
-            <span>请做出你的决定</span><br>
-            <el-radio class="radio" v-model="status" label="1">发布问卷</el-radio><br>
-            <el-radio class="radio" v-model="status" label="2">回收问卷</el-radio><br>
-            <el-radio class="radio" v-model="status" label="3">删除问卷</el-radio>
+            <h5>举报内容</h5><br>
+            <p>{{reportInfo}}</p>
+            <h5>请做出你的决定</h5><br>
+            <el-radio class="radio" v-model="status" label="4">举报通过</el-radio><br>
+            <el-radio class="radio" v-model="status" label="2">举报不通过</el-radio>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="infoVisible = false">取 消</el-button>
                 <el-button type="primary" @click="manageDecision()">确 定</el-button>
@@ -62,22 +66,52 @@
 
     export default {
         data(){return {
-            questionnaires : [{"id" : 1, "title" : "investigation", "date" : "2017-07-12", "user" : "Zhu", "status" : 0},
-            {"id" : 1, "title" : "interview", "date" : "2017-07-13", "user" : "Zhu", "status" : 1}],
+            questionnaires : [{"id" : 3, "title" : "investigation", "date" : "2017-07-12", "user" : "Zhu", "status" : 3},
+            {"id" : 1, "title" : "interview", "date" : "2017-07-13", "user" : "Zhu", "status" : 4}],
             dialogVisible : false,
             infoVisible : false,
             questionnaireId : {},
             /* The status of the questionnaire */
             status : {},
-            pageLength : {}
+            pageLength : {},
+            reportInfo : "fdsfdsfdsfdsfdsds"
         }},
         methods:{
-            ban(ID, index) {
-                this.$confirm('此操作会改变用户的状态, 您确定继续吗?', '警告', {
+
+            ViewReport(ID, index) {
+                var self = this;
+                self.infoVisible = true;
+                $.ajax({
+                    type:"GET",
+                    url: "user/userId=" + ID,
+                    data: {"role" : 2},
+                    success: data=>{
+                        if(data == '1' || data == 1) {
+                            var self = this;
+                            this.data[index].role = 2;
+                            this.$message.success("处理问卷举报成功！");
+                        }
+                        else
+                            this.$message.warning("网络传输异常！");
+                    }
+                });
+            },
+
+            viewContent(ID) {
+                this.$router.push({path:"/index"});
+            },
+
+            manageDecision() {
+                var self = this;
+                this.$confirm('此操作会改变的状态, 您确定继续吗?', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'danger'
                 }).then(() => {
+                    self.dialogVisible = false;
+                    Vue.set(self.questionnaires[index], "status", self.status);
+                    self.status = -1;
+                    /*
                     $.ajax({
                         type:"PUT",
                         url: "user/userId=" + ID,
@@ -86,24 +120,13 @@
                             if(data == '1' || data == 1) {
                                 var self = this;
                                 this.data[index].role = 2;
-                                this.$message.success("封禁用户成功");
+                                this.$message.success("处理问卷举报成功！");
                             }
                             else
                                 this.$message.warning("网络传输异常！");
                         }
-                    });
-                })  
-            },
-
-            viewContent(id) {
-
-                this.$router.push({path:"/index"});
-            },
-
-            manageDecision() {
-                var self = this;
-                self.dialogVisible = false;
-                console.log(self.radio);
+                    });*/
+                }); 
             },
 
             handleCurrentChange(val) {
@@ -111,7 +134,7 @@
                 self.pageIndex = val;
                 $.ajax({
                     type:"GET",
-                    url:"allUser/page=" + (self.pageIndex - 1) + "&size=" + self.pageSize,
+                    url:"allQuestionnaire/page=" + (self.pageIndex - 1) + "&pageSize=" + self.pageSize,
                     success: data=>{
                         
                     }
@@ -125,9 +148,10 @@
 
             $.ajax({
                 type:"GET",
-                url:"allUser?page=" + self.pageIndex + "&size=" + self.pageSize,
+                url:"allQuestionnaire?page=" + self.pageIndex + "&pageSize=" + self.pageSize,
+                dataType : "json",
                 success: data=>{
-                    self.users = data.users;
+                    self.questionnaires = data.questionnaires;
                     self.userNum = data.userNum;
                     self.pageLength = self.userNum / self.pageSize + 1;
                 }
