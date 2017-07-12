@@ -7,8 +7,8 @@
             <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
                 <el-button v-if="edit" type="primary" size="small" @click="change(index)">修改</el-button>
                 <el-button v-if="edit" type="danger" size="small" @click="del(index)">删除</el-button>
-                <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" @update="update(index, $event)"></single>
-                <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" @update="update(index, $event)"></multiple>
+                <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" @update="update(index, $event)"></single>
+                <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" @update="update(index, $event)"></multiple>
                 <blank v-if="question.type==2" :index="index" :title="question.questionTitle" @update="update(index, $event)"></blank>
             </div>
         </div>
@@ -56,21 +56,12 @@ export default {
                     //postBody.answers.push({choice:[], blank:""});
                     this.$message.warning("请记得回答第"+ (i+1) +"题");
                     return;
-                }else if(typeof temp === "number"){
-                    postBody.answers.push({choice:[temp], blank:""})
-                }else if(typeof temp === "object"){
-                    if(temp.length == 0){
-                        this.$message.warning("请记得回答第"+ (i+1) +"题");
-                        return;
-                    }
-                    postBody.answers.push({choice: temp, blank:""});
                 }else{
-                    if(temp == ""){
+                    if((temp.choice == undefined || temp.choice.length == 0) && temp.blank == ""){
                         this.$message.warning("请记得回答第"+ (i+1) +"题");
                         return;
                     }
-                    else
-                        postBody.answers.push({choice:[], blank: temp});
+                    postBody.answers.push(temp);
                 }
             }
             postBody.questionnaireId = this.questionnaire.questionnaireId;
@@ -144,7 +135,7 @@ export default {
 </script>
 
 <style>
-    .questionnaire-title{font-size:24px; margin-bottom: 10px;}
-    .questionnaire-briefing{margin-bottom: 30px;}
+    .questionnaire-title{font-size:32px; margin-bottom: 10px; text-align:center;}
+    .questionnaire-briefing{font-size:16px; margin-bottom: 30px; text-align:center;}
     .questionnaire{margin:20px;}
 </style>

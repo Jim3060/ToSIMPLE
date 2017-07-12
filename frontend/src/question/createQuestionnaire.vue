@@ -150,7 +150,7 @@ export default {
                         if (data.deleteSuccess == '1' || data.deleteSuccess == 1) {
                             this.$message.success("删除成功，即将离开此页...");
                             setTimeout(() => {
-                                this.$router.push({ path: "/index" });
+                                this.$router.push({ path: "/m/q" });
                             }, 2000)
                         }
                         else
