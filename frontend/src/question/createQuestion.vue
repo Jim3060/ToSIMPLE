@@ -20,7 +20,8 @@
             最多可以选择<input class="limit" v-model.number="limit"></input>项
         </div>
         <div v-if="type!='填空'">
-            选项:
+            选项: <el-checkbox v-model="mix" style="font-weight:400">允许其他选项</el-checkbox>
+            <div></div>
             <ul class="list-group">
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
                     <div v-show="edit==index">
@@ -107,7 +108,8 @@ export default {
         newIdx: 0,
         connectAccessable:[],
         imageUrl:"",
-        pictureMode: false
+        pictureMode: false,
+        mix:false
     }},
     methods:{
         del(index){
@@ -184,8 +186,10 @@ export default {
                 result.showAfter = this.showAfter;
             else
                 result.showAfter = {};
-            if(result.type < 2)
+            if(result.type < 2){
                 result.choices = this.options;
+                result.mix = this.mix;
+            }
             if(result.type == 1)
                 result.limit = this.limit;
             if(this.resultCheck(result))

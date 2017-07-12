@@ -8,6 +8,9 @@
                     <div v-if="option.photoId!=undefined&&option.photoId!=''" ><img :src="'file/'+option.photoId" /></div>
                 </el-radio>
             </li>
+            <li v-if="mix" class="list-group-item">
+                <el-radio v-model="select" style="margin:2px"><input :disabled="select<options.length" placeholder="其他"></el-radio>
+            </li>
         </ul>
     </div>
 </template>
@@ -15,14 +18,23 @@
 <script>
     export default{
         name: "single",
-        props:{options:{required: true}, title:{required: true}, index:{}},
+        props:{options:{required: true}, title:{required: true}, index:{}, mix:{default: false}},
         data(){return {
-            select:""
+            select:"",
+            blank:""
         }},
-        watch:{
-            select:function(){
-                this.$emit("update", this.select);
+        methods:{
+            update(){
+                if(this.select == this.options.length){
+                    this.$emit("update", {choice:[], blank: this.blank});
+                }else{
+                    this.$emit("update", {choice:[this.select], blank:""});
+                }
             }
+        },
+        watch:{
+            select(){this.update();},
+            blank(){this.update();}
         }
     }
 </script>

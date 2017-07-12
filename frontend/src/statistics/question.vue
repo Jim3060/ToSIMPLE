@@ -5,7 +5,7 @@
             <el-radio-group style="float: right" v-model="type" size="small">
                 <el-radio-button label="饼图" style="font-weight:400"></el-radio-button>
                 <el-radio-button label="条形图" style="font-weight:400"></el-radio-button>
-                <el-radio-button v-if="questionType==2" label="详细信息" style="font-weight:400"></el-radio-button>
+                <el-radio-button label="详细信息" style="font-weight:400"></el-radio-button>
             </el-radio-group>
         </div>
         <ve-pie v-if="type=='饼图'" height="300px" :data="chartData" :settings="chartSettingsPie"></ve-pie>

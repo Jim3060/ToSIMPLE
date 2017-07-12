@@ -18,7 +18,7 @@
         }},
         watch:{
             value:function(){
-                this.$emit("update", this.value);
+                this.$emit("update", {choices:[], blank:this.value});
             }
         }
     }
