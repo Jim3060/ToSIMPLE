@@ -176,9 +176,8 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "logout", method = RequestMethod.GET)
-    public String logout(HttpServletResponse response, HttpSession session) throws IOException {
+    public String logout(HttpSession session) {
         session.removeAttribute("user");
-        response.getWriter().print(1);
         return null;
     }
 
@@ -208,7 +207,6 @@ public class UserAction extends BaseAction {
     public void changeRole(Long userId,Integer role,HttpServletResponse response) throws IOException {
         Integer integer = userService.changRole(userId,role);
         response.setContentType("application/json;charset=UTF-8");
-        
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("success",1);
         jsonObject.put("oldRole",integer);
