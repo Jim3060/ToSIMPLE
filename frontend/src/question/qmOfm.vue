@@ -157,6 +157,7 @@
                         self.title = "查看所有问卷";
                         self.pageIndex = page;
                         self.pageLength = data.num / pageSize + 1;
+                        self.dataType = 0;
                         this.$message.success("加载成功！");
                     }
                 });
@@ -166,7 +167,7 @@
                 var self = this;
                 $.ajax({
                     type : "GET",
-                    url : "questionnaireReported?page=" + (page-1) + "&pageSize=" + (pageSize),
+                    url : "allUnhandledReports?page=" + (page-1) + "&pageSize=" + (pageSize),
                     data : "",
                     dataType : "json",
                     suceess : data=>{
@@ -177,6 +178,7 @@
                         self.title = "查看被举报问卷";
                         self.pageIndex = page;
                         self.pageLength = data.num / pageSize + 1;
+                        self.dataType = 1;
                         this.$message.success("加载成功！");
                     }
                 });
