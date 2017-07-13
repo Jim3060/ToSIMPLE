@@ -7,7 +7,6 @@ import model.User;
 
 import java.io.OutputStream;
 import java.net.URLEncoder;
-
 import java.util.*;
 
 
@@ -110,10 +109,11 @@ public class QuestionnaireAction extends BaseAction {
         	response.getWriter().print(result);
         	return null;
         }
-        System.out.println(questionnaire);
+        
+        
+        //check user equals author
         Questionnaire questionnaireTest=new Questionnaire(questionnaire);
-        System.out.println(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")));
-        System.out.println(String.valueOf(((User)session.getAttribute("user")).getId()));
+        
         if (questionnaireTest.questionnaireJSON.has("authorId")&&!(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User)session.getAttribute("user")).getId())))){
         	JSONObject result = new JSONObject();
         	result.put("valid",0);
@@ -402,6 +402,35 @@ public class QuestionnaireAction extends BaseAction {
         response.getWriter().print(result);
         return null;
     }
+    
+    @RequestMapping(value = "questionnaireReported", method = RequestMethod.GET)
+    public String getReportedQuestionnaire( HttpServletResponse response) throws IOException {
+        //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+        response.setContentType("application/json;charset=UTF-8");
+        List<Questionnaire> questionnaires = questionnaireService.getReportedQuestionnaire();
+        JSONArray jsonArray = toJSONArray(questionnaires);
+        JSONObject result = new JSONObject();
+        result.put("questionnaires", jsonArray);
+        //result.put("answerNumber", s.questionnaireResults.size());
+        response.getWriter().print(result);
+        return null;
+    }
+    
+    @RequestMapping(value = "questionnaireReportedPaged", method = RequestMethod.GET)
+    public String getReportedQuestionnaire( HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws IOException {
+        //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+        response.setContentType("application/json;charset=UTF-8");
+        CountUtils countUtils=new CountUtils(0);
+        List<Questionnaire> questionnaires = questionnaireService.getReportedQuestionnaireByPage(page,pageSize,countUtils);
+        JSONArray jsonArray = toJSONArray(questionnaires);
+        JSONObject result = new JSONObject();
+        result.put("questionnaires", jsonArray);
+        result.put("questionnaireNum",countUtils.getCount() );
+        //result.put("answerNumber", s.questionnaireResults.size());
+        response.getWriter().print(result);
+        return null;
+    }
+    
 
     //helper
     public String getAnswerPaper() {

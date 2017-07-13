@@ -23,7 +23,13 @@ public interface ReportDao {
 	
 	public List<Report> getAllUnhandledReportsBypage(int page, int pageSize);
 	
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId);
+	
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(String questionnaireId);
+	
 	public Long getUnhandledReportsNum();
 	
 	public Long getAllReportsNum();
+	
+	public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId);
 }

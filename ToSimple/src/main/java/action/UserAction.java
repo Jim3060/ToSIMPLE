@@ -81,19 +81,6 @@ public class UserAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "picture", method = RequestMethod.POST)
-    public void savePicture(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException{
-        System.out.println("here");
-        System.out.println(file);
-        InputStream fileContent =file.getInputStream();
-//        String url = fileService.saveFile(fileContent);
-        String url = "url";
-
-        JSONObject result = new JSONObject();
-        result.put("imgUrl", url);
-        response.getWriter().print(result);
-        return;
-    }
 
     @RequestMapping(value = "user/userId", method = RequestMethod.DELETE)
     public String delete(@PathVariable("userId") Long userId) {

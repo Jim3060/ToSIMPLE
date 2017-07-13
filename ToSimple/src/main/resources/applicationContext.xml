@@ -47,10 +47,12 @@
 
     <bean id="userDao" class="dao.Impl.UserDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
+       
     </bean>
 
     <bean id="questionnaireDao" class="dao.Impl.QuestionnaireDaoImpl">
         <property name="mongoTemplate" ref="mongoTemplate"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <bean id="questionnaireResultDao" class="dao.Impl.QuestionnaireResultDaoImpl">

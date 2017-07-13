@@ -79,7 +79,7 @@ public class EXELUtils {
         		else if (questionnaireGSON.questions.get(j).type==1){
         			String tmp="";
         			for (int k=0;k<questionnaireResultGSON.answers.get(j).choice.size();k++){
-        				tmp+=questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k))+", ";
+        				tmp+=questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text+", ";
         			}
         			cell.setCellValue(tmp);
         		}
