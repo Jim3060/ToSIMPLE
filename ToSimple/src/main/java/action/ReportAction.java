@@ -1,18 +1,5 @@
 package action;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-
 import model.Report;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +20,7 @@ public class ReportAction {
     public void setReportService(ReportService reportService) {
         this.reportService = reportService;
     }
-    
+
     @RequestMapping(value = "allUnhandledReports", method = RequestMethod.GET)
     public String getUnhandledReportsByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
         //get users
@@ -73,7 +60,7 @@ public class ReportAction {
     	response.getWriter().print(result);
     	return null;
     }
-    
+
 
     @RequestMapping(value = "report/{reportId}", method = RequestMethod.POST)
     public String edit(@PathVariable("reportId") Long reportId, Integer status, HttpServletResponse response) throws IOException {
@@ -86,7 +73,7 @@ public class ReportAction {
         reportService.deleteReport(reportId);
         return null;
     }
-    
+
 
     @RequestMapping(value = "reportHandled/{questionnaireId}", method = RequestMethod.POST)
     public String setReportHandledByQuestionnaire(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException{

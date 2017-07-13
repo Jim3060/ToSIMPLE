@@ -28,7 +28,6 @@ public class FileDaoImpl implements FileDao {
         GridFSInputFile gfsFile = gfsPhoto.createFile(fileContent);
         gfsFile.save();
         return gfsFile.getId().toString();
-
         //return 0;
     }
 
