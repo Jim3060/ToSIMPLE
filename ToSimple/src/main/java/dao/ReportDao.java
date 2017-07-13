@@ -1,29 +1,35 @@
 package dao;
 
-import model.Report;
-
 import java.util.List;
 
+import model.Report;
+
 public interface ReportDao {
-    Long save(Report report);
+	public Long save(Report report);
+	
+	public void update(Report report);
+	
+	public void delete(long id);
+	
+	public List<Report> getAllReports();
+	
+	public Report getReportById(Long id);
+	
+	public List<Report> getReportsByQuestionnaireId(String questionnaireId);
+	
+	public List<Report> getReportsByUserId(Long userId);
+	
+	public List<Report> getAllReportsBypage(int page, int pageSize);
+	
+	public List<Report> getAllUnhandledReportsBypage(int page, int pageSize);
+	
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId);
 
-    void update(Report report);
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(String questionnaireId);
 
-    void delete(long id);
+	public Long getUnhandledReportsNum();
 
-    List<Report> getAllReports();
+	public Long getAllReportsNum();
 
-    Report getReportById(Long id);
-
-    List<Report> getReportsByQuestionnaireId(String questionnaireId);
-
-    List<Report> getReportsByUserId(Long userId);
-
-    List<Report> getAllReportsBypage(int page, int pageSize);
-
-    List<Report> getAllUnhandledReportsBypage(int page, int pageSize);
-
-    Long getUnhandledReportsNum();
-
-    Long getAllReportsNum();
+	public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId);
 }

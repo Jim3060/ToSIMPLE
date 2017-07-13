@@ -94,4 +94,29 @@ public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao {
         return num;
     }
 
+	@Override
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId) {
+		Session session = this.getSession();
+        session.beginTransaction(); 
+        List<Report> list=session.createQuery("from Report as r where r.status=0 and r.questionnaireId="+questionnaireId).setMaxResults(pageSize).setFirstResult(page*pageSize).list();
+        session.getTransaction().commit();
+		return list;
+		
+	}
+	
+	public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId) {
+		Long num =  (Long)getHibernateTemplate().find("select count(*) from Report  where r.status=0 and r.questionnaireId="+questionnaireId).listIterator().next();
+	       
+		return num;
+	}
+
+	@Override
+	public List<Report> getAllUnhandledReportsByQuestionnaireId(String questionnaireId) {
+		Session session = this.getSession();
+        session.beginTransaction(); 
+        List<Report> list=session.createQuery("from Report as r where r.status=0 and r.questionnaireId="+questionnaireId).list();
+        session.getTransaction().commit();
+		return list;
+	}
+
 }

@@ -65,8 +65,18 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     @Override
     public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult) {
         questionnaireResultDao.save(questionnaireResult);
+        //update answer number
+        String questionnaireId=(String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
+        Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
+        System.out.println((int)questionnaire.questionnaireJSON.get("answerNumber"));
+        questionnaire.questionnaireJSON.put("answerNumber",((int)questionnaire.questionnaireJSON.get("answerNumber")+1));
+        questionnaireDao.update(questionnaireId, questionnaire);
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    public List<Questionnaire> getReportedQuestionnaire(){
+    	return questionnaireDao.getReportedQuestionnaire();
     }
 
     @Override
@@ -123,5 +133,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         }
         return result;
     }
+
+	@Override
+	public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize,CountUtils countUtils) {
+		
+		return questionnaireDao.getReportedQuestionnaireByPage(page,pageSize,countUtils);
+	}
 
 }

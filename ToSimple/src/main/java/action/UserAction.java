@@ -1,6 +1,29 @@
 package action;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyPair;
+
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.List;
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.sun.org.apache.regexp.internal.RE;
+
+
 import ToolUtils.RSAUtils;
+
+
+import net.sf.json.JSON;
+
+import org.apache.struts2.ServletActionContext;
+
+
 import model.User;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +32,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import service.UserService;
 
@@ -27,7 +52,7 @@ import java.util.List;
 @Controller
 public class UserAction extends BaseAction {
     private static final long serialVersionUID = 1L;
-    public List<User> users = new ArrayList<User>();
+
     @Autowired
     private UserService userService;
     private Long userId;
@@ -38,6 +63,7 @@ public class UserAction extends BaseAction {
     private String password;
     private Integer role;
     private String email;
+    public List<User> users = new ArrayList<User>();
 
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -189,13 +215,13 @@ public class UserAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "user/role", method = RequestMethod.POST)
-    public void changeRole(Long userId, Integer role, HttpServletResponse response) throws IOException {
-        Integer integer = userService.changRole(userId, role);
+    @RequestMapping(value = "user/role",method = RequestMethod.POST)
+    public void changeRole(Long userId,Integer role,HttpServletResponse response) throws IOException {
+        Integer integer = userService.changRole(userId,role);
         response.setContentType("application/json;charset=UTF-8");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("success", 1);
-        jsonObject.put("oldRole", integer);
+        jsonObject.put("success",1);
+        jsonObject.put("oldRole",integer);
         System.out.print(jsonObject.toString());
         response.getWriter().print(jsonObject);
     }

@@ -1,7 +1,10 @@
 package dao;
 
 import ToolUtils.CountUtils;
+import com.mongodb.DBObject;
+
 import model.Questionnaire;
+import net.sf.json.JSONObject;
 
 import java.util.List;
 
@@ -14,53 +17,51 @@ public interface QuestionnaireDao {
      * @param id
      * @return 1 if was delete success,else return 0
      */
-    Integer delete(String id);
+    public Integer delete(String id);
 
-    String update(String id, Questionnaire questionnaire);
+    public String update(String id, Questionnaire questionnaire);
 
-    Questionnaire findQuestionnaireById(String id);
+    public Questionnaire findQuestionnaireById(String id);
 
-    List<Questionnaire> findQuestionnaireByUser(Long id);
+    public List<Questionnaire> findQuestionnaireByUser(Long id);
 
     /**
      * fetch all questionnaires.
-     *
      * @param page
      * @param pageSize
      * @return
      */
-    List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils);
+    public List<Questionnaire> fetchAll(Integer page,Integer pageSize,CountUtils countUtils);
 
     /**
      * get a sample of questionnaires. The questionnaire status must be 1
-     *
      * @param size the max size of the questionnaires.
      * @return
      */
-    List<Questionnaire> randomQuestionnaire(Integer size);
+    public List<Questionnaire> randomQuestionnaire(Integer size);
 
     /**
      * search questionnaires by name.(fuzzy search) Only return the questionnaire with status equals 1
-     *
-     * @param page     the page num.begin with 0.
-     * @param name     the name
+     * @param page the page num.begin with 0.
+     * @param name the name
      * @param pageSize the number of questionnaire not allowed bigger than 30.
-     * @return the list of questionnaires
+     * @return  the list of questionnaires
      */
-    List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils);
+    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils);
 
     /**
      * search questionnaires by name.(fuzzy search)
-     *
      * @param name the name
-     * @return the list of questionnaires
+     * @return  the list of questionnaires
      */
-    List<Questionnaire> searchQuestionnaireByName(String name, CountUtils countUtils);
+    public List<Questionnaire> searchQuestionnaireByName(String name,CountUtils countUtils);
 
+    public List<Questionnaire> getReportedQuestionnaire();
+
+    public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize, CountUtils countUtils);
 
     /**
      * find questionnaires by status
-     *
      * @param status the status of the questionnaire
      * @return the list of questionnaire
      */
@@ -74,6 +75,7 @@ public interface QuestionnaireDao {
 //     * @return the list of questionnaire
 //     */
 //    public List<Questionnaire> findQuestionnaireByStatus(Integer status,Integer size);
+
 
 
 //	public User getQuestionnaireById(int id);
