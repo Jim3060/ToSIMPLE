@@ -173,7 +173,7 @@ export default {
             this.questionnaire["status"] = 0;
             this.questionnaire["answerNumber"] = 0;
 
-            if (this.$route.name == "n") {
+            /*if (this.$route.name == "n") {
                 var id = this.$route.params.id;
                 $.ajax({
                     type: 'POST',
@@ -187,7 +187,7 @@ export default {
                     }
                 });
             }
-            else
+            else*/
                 $.post("questionnaire", { questionnaire: JSON.stringify(this.questionnaire) }, data => {
                     if (data.valid == 1) {
                         self.questionnaire["questionnaireId"] = data.questionnaireId;

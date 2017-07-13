@@ -134,6 +134,9 @@ export default {
         },
         save(index){
             this.edit = -1;
+            if(this.pictureMode == false){
+                Vue.delete(this.buffer, "photoId");
+            }
             this.options[index] = this.buffer;
             this.pictureMode = false;
         },

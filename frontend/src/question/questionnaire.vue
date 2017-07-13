@@ -47,6 +47,13 @@ export default {
             this.$emit("edit", index);
         },
         submit(){
+            if(localStorage.answered != undefined){
+                let answered = JSON.parse(localStorage.answered);
+                if(answered.indexOf(this.$route.params.id) != -1){
+                    this.$message.warning("请勿重复回答该问题！");
+                    return;
+                }
+            }
             var postBody = {answers: []};
             for(var i = 0; i < this.questionnaire.questions.length; i++){
                 var temp = this.answer[i];
@@ -71,6 +78,9 @@ export default {
             $.post("questionnaireResult", {answerPaper:JSON.stringify(postBody)}, (data)=>{
                 if(data == "1" || data == 1){
                     this.$message.success("提交成功"); 
+                    let answered = JSON.parse(localStorage.answered || "[]");
+                    answered.push(this.$route.params.id);
+                    localStorage.answered = JSON.stringify(answered);
                 }
             }).fail(()=>{
                 this.$message.error("网络异常")

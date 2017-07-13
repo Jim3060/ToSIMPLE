@@ -6,7 +6,7 @@ var sendRequest = require("request");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
-var address = "192.168.1.30";
+var address = "192.168.1.116";
 var port = 8080;
 
 var mime = {
@@ -77,7 +77,7 @@ http.createServer(function (request, response) {
             console.log(request.method, `http://${address}:${port}${url.parse(request.url).path}`);
 
             const req = http.request(options, (res) => {
-                res.setEncoding('utf8');
+                //res.setEncoding('utf8');
                 response.writeHead(res.statusCode, res.headers)
                 res.on('data', (chunk) => {
                     response.write(chunk);
