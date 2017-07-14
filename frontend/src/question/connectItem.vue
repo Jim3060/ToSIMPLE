@@ -12,7 +12,10 @@
             <label>{{questionnaire.questions[idx].choices[i-1]}}</label>
         </div>-->
         <el-checkbox-group v-model="select">
-            <el-checkbox v-for="i in num" :key="i" :label="i-1">{{questionnaire.questions[idx].choices[i-1]}}</el-checkbox>
+            <el-checkbox v-for="i in num" :key="i" :label="i-1">
+                <span>{{questionnaire.questions[idx].choices[i-1].text}}</span>
+                <img v-if="questionnaire.questions[idx].choices[i-1].photoId!=undefined" :src="`file/+${questionnaire.questions[idx].choices[i-1].photoId}`" />
+            </el-checkbox>
         </el-checkbox-group>
     </div>
 </template>
