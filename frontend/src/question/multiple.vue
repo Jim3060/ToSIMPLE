@@ -1,7 +1,7 @@
 <template>
     <div>
         <ul class="question list-group">
-            <li class="list-group-item">[多选, 最多能选{{limit}}项] <span class="question-title">{{index+1}}. {{title}}</span></li>
+            <li class="list-group-item">[多选{{limit>0?`, 最多能选${limit}项`:''}}{{forced?", 必答":""}}] <span class="question-title">{{index+1}}. {{title}}</span></li>
             <!--<li class="list-group-item" v-for="(option, index) in options" :key="option">
                 <input type="checkbox" v-model="select" :value="index" :disabled="select.length>=limit&&select.indexOf(index)==-1"></input>
                 <label>{{option}}</label>
@@ -27,7 +27,7 @@
 <script>
     export default{
         name: "multiple",
-        props:{options:{required: true}, title:{required: true}, limit:{required: true}, index:{}, mix:{default:false}},
+        props:{options:{required: true}, title:{required: true}, limit:{required: true}, index:{}, mix:{default:false}, forced:{}},
         data(){return {
             select:[],
             blank:""

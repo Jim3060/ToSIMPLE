@@ -15,6 +15,7 @@
         </div>
         <div>
             题目: <input v-model="title"></input>
+            <el-checkbox v-model="forced">必答题</el-checkbox>
         </div>
         <div v-if="type=='多选'">
             最多可以选择<input class="limit" v-model.number="limit"></input>项
@@ -109,7 +110,8 @@ export default {
         connectAccessable:[],
         imageUrl:"",
         pictureMode: false,
-        mix:false
+        mix:false,
+        forced: false
     }},
     methods:{
         del(index){
@@ -185,6 +187,7 @@ export default {
             var result = {};
             result.questionTitle = this.title;
             result.type = this.types.indexOf(this.type);
+            result.forced = this.forced;
             if(this.connect)
                 result.showAfter = this.showAfter;
             else
@@ -222,6 +225,7 @@ export default {
             this.limit = this.questionnaire.questions[this.index].limit==undefined?0:this.questionnaire.questions[this.index].limit;
             this.options = this.questionnaire.questions[this.index].choices == undefined?{}:this.questionnaire.questions[this.index].choices;
             this.showAfter = this.questionnaire.questions[this.index].showAfter == undefined?{}:this.questionnaire.questions[this.index].showAfter;
+            this.forced = this.questionnaire.questions[this.index].forced || false;
             this.connect = Object.keys(this.showAfter).length > 0;
         }
         var questions = this.questionnaire.questions;

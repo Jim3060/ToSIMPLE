@@ -14,7 +14,9 @@ http.createServer(function(request,response){
     }
     console.log(`Head: ${JSON.stringify(request.headers)}`);
     response.writeHead(200);
-    response.end(`Head: ${JSON.stringify(request.headers)}`);
+    setTimeout(()=>{
+        response.end(`Head: ${JSON.stringify(request.headers)}`);
+    }, 1000)
     
     let buffer = "";
     request.on("data", data=>{

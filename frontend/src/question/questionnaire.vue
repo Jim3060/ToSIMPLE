@@ -7,9 +7,9 @@
             <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
                 <el-button v-if="edit" type="primary" size="small" @click="change(index)">修改</el-button>
                 <el-button v-if="edit" type="danger" size="small" @click="del(index)">删除</el-button>
-                <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" @update="update(index, $event)"></single>
-                <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" @update="update(index, $event)"></multiple>
-                <blank v-if="question.type==2" :index="index" :title="question.questionTitle" @update="update(index, $event)"></blank>
+                <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></single>
+                <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></multiple>
+                <blank v-if="question.type==2" :index="index" :title="question.questionTitle" :forced="question.forced" @update="update(index, $event)"></blank>
             </div>
         </div>
         <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
@@ -59,6 +59,10 @@ export default {
                 var temp = this.answer[i];
                 if(this.hidden[i])
                     continue;
+                if(this.questionnaire.questions[i].forced = false){
+                    postBody.answers.push(temp);
+                    continue;
+                }
                 if(typeof temp === "undefined"){
                     //postBody.answers.push({choice:[], blank:""});
                     this.$message.warning("请记得回答第"+ (i+1) +"题");
@@ -102,9 +106,8 @@ export default {
                 if(typeof ans == "number" && showAfter[k].indexOf(ans) > -1)
                     return true;
                 if(typeof ans == "object"){
-                    for(var v in ans){
-                        console.log(v);
-                        if(showAfter[k].indexOf(ans[v]) > -1)
+                    for(var v in ans.choice){
+                        if(showAfter[k].indexOf(ans.choice[v]) > -1)
                             return true;
                     }
                 }
