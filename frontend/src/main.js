@@ -25,7 +25,7 @@ import myQuestionnaire from "./manage/myquestionnaires.vue"
 const routes = [
     {path:'/index',component: index},
     {path:"/", redirect:"/index"},
-    {path:"/q", component: test},
+    {path:"/q", component: qView},
     {path:"/q/:id", name:"q", component: questionnaire},
     {path:"/n", component:create},
     {path:"/n/:id", name:"n", component: create},
