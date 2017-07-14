@@ -1,15 +1,11 @@
 package service;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import ToolUtils.CountUtils;
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
-import model.User;
-import net.sf.json.JSONObject;
+
+import java.util.List;
 
 public interface QuestionnaireService {
 	public String addOrUpdateQuestionnaire(Questionnaire questionnaireJSON);
@@ -22,8 +18,8 @@ public interface QuestionnaireService {
 	public Integer deleteQuestionnaire(String id);
 
 	/**
-	 * fetch all questionnaires.
-	 * @param page
+     * fetch all questionnaires. only id and papertitle
+     * @param page
 	 * @param pageSize
 	 * @return
 	 */
@@ -52,6 +48,17 @@ public interface QuestionnaireService {
 	 * @return
 	 */
 	public List<Questionnaire> searchQuestionnaireByName(String name, CountUtils countUtils);
+
+
+    /**
+     * fetch all questionnaires.
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<Questionnaire> fetchAllWithInfo(Integer page, Integer pageSize, CountUtils countUtils);
+
 
 	/**
 	 * search questionnaire by name. max num is 30

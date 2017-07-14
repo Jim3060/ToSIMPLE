@@ -22,7 +22,7 @@ public class ReportAction {
     }
 
     @RequestMapping(value = "allUnhandledReports", method = RequestMethod.GET)
-    public String getUnhandledReportsByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
+    public String getUnhandledReportsByPage(HttpServletResponse response, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize) throws Exception {
         //get users
         List<Report> reports = reportService.getAllUnhandledReportsBypage(page, pageSize);
         JSONObject result = new JSONObject();
@@ -49,7 +49,7 @@ public class ReportAction {
 
 
     @RequestMapping(value = "allReports", method = RequestMethod.GET)
-    public String getAllReportsByPage(HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws Exception {
+    public String getAllReportsByPage(HttpServletResponse response, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize) throws Exception {
         //get users
         List<Report> reports = reportService.getAllReportsBypage(page, pageSize);
         JSONObject result = new JSONObject();
@@ -60,7 +60,6 @@ public class ReportAction {
     	response.getWriter().print(result);
     	return null;
     }
-
 
     @RequestMapping(value = "report/{reportId}", method = RequestMethod.POST)
     public String edit(@PathVariable("reportId") Long reportId, Integer status, HttpServletResponse response) throws IOException {
@@ -81,8 +80,5 @@ public class ReportAction {
     	response.getWriter().print(1);
     	return null;
     }
-
-
-
 
 }

@@ -1,34 +1,17 @@
 package dao.Impl;
 
 import ToolUtils.CountUtils;
-import java.util.*;
-import java.util.regex.Pattern;
-
-
 import com.mongodb.*;
-import model.QuestionnaireStatistics;
-import model.Report;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-
-import com.mongodb.util.JSON;
-import org.bson.types.ObjectId;
-import org.hibernate.Session;
-
 import dao.QuestionnaireDao;
 import model.Questionnaire;
+import model.Report;
 import org.bson.types.ObjectId;
+import org.hibernate.Session;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-import net.sf.json.JSONObject;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 import static java.lang.Math.min;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -159,6 +142,22 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         BasicDBObject query = new BasicDBObject();
         BasicDBObject fields = new BasicDBObject("paperTitle", true).append("_id", true);
         DBCursor dbCursor = questionnaires.find(query, fields).skip(page * pageSize).limit(pageSize);
+        Integer count = questionnaires.find(query).size();
+        countUtils.setCount(count);
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        while (dbCursor.hasNext()) {
+            list.add(new Questionnaire(dbCursor.next()));
+        }
+        return list;
+    }
+
+    @Override
+    public List<Questionnaire> fetchAllWithAllInfo(Integer page, Integer pageSize, CountUtils countUtils) {
+        pageSize = min(pageSize, 30);
+        DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        BasicDBObject query = new BasicDBObject();
+        DBCursor dbCursor = questionnaires.find(query).skip(page * pageSize).limit(pageSize);
         Integer count = questionnaires.find(query).size();
         countUtils.setCount(count);
         List<Questionnaire> list = new ArrayList<Questionnaire>();

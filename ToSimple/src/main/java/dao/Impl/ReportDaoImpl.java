@@ -2,6 +2,7 @@ package dao.Impl;
 
 import dao.ReportDao;
 import model.Report;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -16,8 +17,6 @@ public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao {
 
     public void update(Report report) {
         getHibernateTemplate().merge(report);
-
-
     }
 
 
@@ -71,18 +70,18 @@ public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao {
 
     @Override
     public List<Report> getAllUnhandledReportsBypage(int page, int pageSize) {
-        Session session = this.getSession();
-        session.beginTransaction();
-        List<Report> list = session.createQuery("from Report as r where r.status=0").setMaxResults(pageSize).setFirstResult(page * pageSize).list();
-        session.getTransaction().commit();
-        return list;
+//        Session session = this.getSession();
+//        session.beginTransaction();
+//        List<Report> list = session.createQuery("from Report as r where r.status=0").setMaxResults(pageSize).setFirstResult(page * pageSize).list();
+//        session.getTransaction().commit();
+        return getReportsByStatus(page, pageSize, 3);
 
     }
 
     @Override
     public Long getUnhandledReportsNum() {
         @SuppressWarnings("unchecked")
-        Long num = (Long) getHibernateTemplate().find("select count(*) from Report as u where u.status=0").listIterator().next();
+        Long num = (Long) getHibernateTemplate().find("select count(*) from Report as u where u.status=3").listIterator().next();
 
         return num;
     }
@@ -94,29 +93,43 @@ public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao {
         return num;
     }
 
-	@Override
-	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId) {
-		Session session = this.getSession();
-        session.beginTransaction(); 
-        List<Report> list=session.createQuery("from Report as r where r.status=0 and r.questionnaireId="+questionnaireId).setMaxResults(pageSize).setFirstResult(page*pageSize).list();
+    @Override
+    public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId) {
+        Session session = this.getSession();
+        session.beginTransaction();
+        List<Report> list = session.createQuery("from Report as r where r.status=3 and r.questionnaireId=" + questionnaireId).setMaxResults(pageSize).setFirstResult(page * pageSize).list();
         session.getTransaction().commit();
-		return list;
-		
-	}
-	
-	public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId) {
-		Long num =  (Long)getHibernateTemplate().find("select count(*) from Report  where r.status=0 and r.questionnaireId="+questionnaireId).listIterator().next();
-	       
-		return num;
-	}
+        return list;
 
-	@Override
-	public List<Report> getAllUnhandledReportsByQuestionnaireId(String questionnaireId) {
-		Session session = this.getSession();
-        session.beginTransaction(); 
-        List<Report> list=session.createQuery("from Report as r where r.status=0 and r.questionnaireId="+questionnaireId).list();
+    }
+
+    public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId) {
+        Long num = (Long) getHibernateTemplate().find("select count(*) from Report r where r.status=3 and r.questionnaireId=" + questionnaireId).listIterator().next();
+        return num;
+    }
+
+    @Override
+    public List<Report> getAllUnhandledReports(Integer page, Integer pageSize) {
+        return getReportsByStatus(page, pageSize, 3);
+    }
+
+    private List<Report> getReportsByStatus(Integer page, Integer pageSize, Integer status) {
+        Session session = this.getSession();
+        session.beginTransaction();
+        Query query = session.createQuery("from Report as r where r.status=?");
+        query.setParameter(0, status);
+        List<Report> list = query.setMaxResults(pageSize).setFirstResult(page * pageSize).list();
         session.getTransaction().commit();
-		return list;
-	}
+        return list;
+    }
+
+    @Override
+    public List<Report> getAllUnhandledReportsByQuestionnaireId(String questionnaireId) {
+        Session session = this.getSession();
+        session.beginTransaction();
+        List<Report> list = session.createQuery("from Report as r where r.status=3 and r.questionnaireId=" + questionnaireId).list();
+        session.getTransaction().commit();
+        return list;
+    }
 
 }

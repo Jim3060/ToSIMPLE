@@ -1,10 +1,7 @@
 package dao;
 
 import ToolUtils.CountUtils;
-import com.mongodb.DBObject;
-
 import model.Questionnaire;
-import net.sf.json.JSONObject;
 
 import java.util.List;
 
@@ -26,12 +23,23 @@ public interface QuestionnaireDao {
     public List<Questionnaire> findQuestionnaireByUser(Long id);
 
     /**
-     * fetch all questionnaires.
+     * fetch all questionnaires. only return the _id and paperTitle.
      * @param page
      * @param pageSize
      * @return
      */
     public List<Questionnaire> fetchAll(Integer page,Integer pageSize,CountUtils countUtils);
+
+
+    /**
+     * fetch all questionnaires. only return the _id and paperTitle.
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public List<Questionnaire> fetchAllWithAllInfo(Integer page, Integer pageSize, CountUtils countUtils);
+
 
     /**
      * get a sample of questionnaires. The questionnaire status must be 1

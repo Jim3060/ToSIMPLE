@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.*;
 import dao.Impl.QuestionnaireDaoImpl;
+import dao.ReportDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class test {
 
     @Autowired
     QuestionnaireDaoImpl questionnaireDao;
+
+    @Autowired
+    ReportDao reportDao;
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -183,6 +187,15 @@ public class test {
         i += 5;
     }
 
+    @Test
+    public void testReport() {
+//        List<Report> list = reportDao.getAllUnhandledReports(new Integer(0),new Integer(30),new Integer(3));
+//        Iterator<Report> iterator = list.iterator();
+//        while (iterator.hasNext()){
+//            System.out.print(iterator.next().getContent());
+//        }
+    }
+
     class INT {
         private Integer i;
 
@@ -198,5 +211,6 @@ public class test {
             this.i = i;
         }
     }
+
 
 }

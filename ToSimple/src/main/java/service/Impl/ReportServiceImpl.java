@@ -1,17 +1,34 @@
 package service.Impl;
 
-import java.util.List;
-
+import dao.QuestionnaireDao;
 import dao.ReportDao;
 import model.Report;
 import service.ReportService;
 
+import java.util.List;
+
 public class ReportServiceImpl implements ReportService{
 	private ReportDao reportDao;
+    private QuestionnaireDao questionnaireDao;
+
+    public ReportDao getReportDao() {
+        return reportDao;
+    }
 
     public void setReportDao(ReportDao reportDao) {
         this.reportDao = reportDao;
     }
+
+    public QuestionnaireDao getQuestionnaireDao() {
+        return questionnaireDao;
+    }
+
+    public void setQuestionnaireDao(QuestionnaireDao questionnaireDao) {
+        this.questionnaireDao = questionnaireDao;
+    }
+
+//    private
+
 	@Override
 	public int setReportStatus(Long id, int status) {
 		Report report=reportDao.getReportById(id);
@@ -22,19 +39,16 @@ public class ReportServiceImpl implements ReportService{
 
 	@Override
 	public List<Report> getAllReports() {
-		// TODO Auto-generated method stub
 		return reportDao.getAllReports();
 	}
 
 	@Override
 	public List<Report> getReportsByQuestionnaireId(String questionnaireId) {
-		// TODO Auto-generated method stub
 		return reportDao.getReportsByQuestionnaireId(questionnaireId);
 	}
 
 	@Override
 	public List<Report> getReportsByUserId(long userId) {
-		// TODO Auto-generated method stub
 		return reportDao.getReportsByUserId(userId);
 	}
 
@@ -45,32 +59,26 @@ public class ReportServiceImpl implements ReportService{
 	}
 	@Override
 	public List<Report> getAllReportsBypage(int page, int pageSize) {
-		
 		return reportDao.getAllReportsBypage(page, pageSize);
 	}
 	@Override
 	public List<Report> getAllUnhandledReportsBypage(int page, int pageSize) {
-		// TODO Auto-generated method stub
 		return reportDao.getAllUnhandledReportsBypage(page, pageSize);
 	}
 	@Override
 	public Long getUnhandledReportsNum() {
-		// TODO Auto-generated method stub
 		return reportDao.getUnhandledReportsNum();
 	}
 	@Override
 	public Long getAllReportsNum() {
-		// TODO Auto-generated method stub
 		return reportDao.getAllReportsNum();
 	}
 	@Override
 	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId) {
-		// TODO Auto-generated method stub
 		return reportDao.getAllUnhandledReportsByQuestionnaireId(page, pageSize, questionnaireId);
 	}
 	@Override
 	public Long getUnhandledReportsNumByQuestionnaireId(String questionnaireId) {
-		// TODO Auto-generated method stub
 		return reportDao.getUnhandledReportsNumByQuestionnaireId(questionnaireId);
 	}
 	@Override

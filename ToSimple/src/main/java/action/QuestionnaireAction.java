@@ -1,25 +1,6 @@
 package action;
 
-import java.io.IOException;
-
 import ToolUtils.CountUtils;
-import model.User;
-
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.*;
-
-
-import java.text.ParseException;
-
-
-import javax.servlet.ServletOutputStream;
-
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.struts2.ServletActionContext;
-
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
@@ -198,6 +179,20 @@ public class QuestionnaireAction extends BaseAction {
         return;
     }
 
+
+    @RequestMapping(value = "allQuestionnaireFullInfo", method = RequestMethod.GET)
+    public void fetchAllQuestionnaireFullInfo(@RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        CountUtils countUtils = new CountUtils(0);
+        List<Questionnaire> list = questionnaireService.fetchAllWithInfo(page, pageSize, countUtils);
+        JSONArray jsonArray = toJSONArray(list);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("items", jsonArray);
+        jsonObject.put("count", countUtils.getCount());
+        response.getWriter().print(jsonObject);
+        return;
+    }
+
     @RequestMapping(value = "questionnaire", method = RequestMethod.GET)
     public String findQuestionnairesByUser(HttpServletResponse response, HttpSession session) throws IOException {
         //questionnaireId="5954b29d37fac38fdc65727c";
@@ -359,8 +354,11 @@ public class QuestionnaireAction extends BaseAction {
             response.getWriter().print('0');
             return null;
         }
+        System.out.print("Result");
+        System.out.print(answerPaper);
         questionnaireService.addQuestionnaireResult(new QuestionnaireResult(answerPaper, request));
         response.getWriter().print('1');//success
+        System.out.print("TTTTTTTT");
         return null;
     }
 
@@ -426,7 +424,7 @@ public class QuestionnaireAction extends BaseAction {
     }
 
     @RequestMapping(value = "questionnaireReportedPaged", method = RequestMethod.GET)
-    public String getReportedQuestionnaire( HttpServletResponse response,@RequestParam("page") Integer page,@RequestParam("pageSize") Integer pageSize ) throws IOException {
+    public String getReportedQuestionnaire(HttpServletResponse response, @RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "pageSize", defaultValue = "30") Integer pageSize) throws IOException {
         //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
         response.setContentType("application/json;charset=UTF-8");
         CountUtils countUtils=new CountUtils(0);
@@ -481,5 +479,4 @@ public class QuestionnaireAction extends BaseAction {
     public void setStatus(int status) {
         this.status = status;
     }
-
 }

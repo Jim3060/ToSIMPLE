@@ -46,13 +46,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     @Override
     public Integer deleteQuestionnaire(String id) {
         return questionnaireDao.delete(id);
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public Questionnaire findQuestionnaireById(String id) {
-        // TODO Auto-generated method stub
         return questionnaireDao.findQuestionnaireById(id);
 
     }
@@ -66,12 +64,12 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult) {
         questionnaireResultDao.save(questionnaireResult);
         //update answer number
+        System.out.print("TTTUUUU");
         String questionnaireId=(String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
         Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
         System.out.println((int)questionnaire.questionnaireJSON.get("answerNumber"));
         questionnaire.questionnaireJSON.put("answerNumber",((int)questionnaire.questionnaireJSON.get("answerNumber")+1));
         questionnaireDao.update(questionnaireId, questionnaire);
-        // TODO Auto-generated method stub
         return null;
     }
     
@@ -134,8 +132,13 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return result;
     }
 
-	@Override
-	public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize,CountUtils countUtils) {
+    @Override
+    public List<Questionnaire> fetchAllWithInfo(Integer page, Integer pageSize, CountUtils countUtils) {
+        return questionnaireDao.fetchAllWithAllInfo(page, pageSize, countUtils);
+    }
+
+    @Override
+    public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize,CountUtils countUtils) {
 		
 		return questionnaireDao.getReportedQuestionnaireByPage(page,pageSize,countUtils);
 	}

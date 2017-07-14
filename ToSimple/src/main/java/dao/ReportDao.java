@@ -1,8 +1,8 @@
 package dao;
 
-import java.util.List;
-
 import model.Report;
+
+import java.util.List;
 
 public interface ReportDao {
 	public Long save(Report report);
@@ -26,6 +26,8 @@ public interface ReportDao {
 	public List<Report> getAllUnhandledReportsByQuestionnaireId(int page, int pageSize, String questionnaireId);
 
 	public List<Report> getAllUnhandledReportsByQuestionnaireId(String questionnaireId);
+
+	public List<Report> getAllUnhandledReports(Integer page, Integer pageSize);
 
 	public Long getUnhandledReportsNum();
 

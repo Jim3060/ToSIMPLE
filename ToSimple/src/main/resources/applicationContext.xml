@@ -93,7 +93,7 @@
     <bean id="reportService" class="service.Impl.ReportServiceImpl">
         <!-- DAO -->
         <property name="reportDao" ref="reportDao"></property>
-
+        <property name="questionnaireDao" ref="questionnaireDao"/>
     </bean>
 
 

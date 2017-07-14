@@ -11,7 +11,7 @@ var address = "192.168.1.30:8080/ToSimple";
 http.createServer(function (request, response) {
     if (!allowExternalRequest && request.headers["host"] != "127.0.0.1:8080" && request.headers["host"] != "localhost:8080") {
         response.writeHead(403);
-        response.end("<h1>403 Forbidden</h1>");
+        response.end("<h1>403 Forbidden</h1>")
         return;
     }
 
@@ -23,7 +23,7 @@ http.createServer(function (request, response) {
     var post = '';
     request.on('data', function (chunk) {
         post += chunk;
-    });
+    });   
 
 
     var fpath = path.join(root, url.parse(request.url).pathname);
@@ -48,4 +48,4 @@ http.createServer(function (request, response) {
     });
 }).listen(8080, () = > {console.log("listen on 8080");
 })
-
+;
