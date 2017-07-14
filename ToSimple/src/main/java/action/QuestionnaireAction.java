@@ -3,6 +3,7 @@ package action;
 import java.io.IOException;
 
 import ToolUtils.CountUtils;
+import ToolUtils.SojumpParser;
 import model.User;
 
 import java.io.OutputStream;
@@ -22,6 +23,7 @@ import org.apache.struts2.ServletActionContext;
 
 import model.Questionnaire;
 import model.QuestionnaireResult;
+import model.QuestionnaireSpider;
 import model.QuestionnaireStatistics;
 import net.sf.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
@@ -134,6 +136,38 @@ public class QuestionnaireAction extends BaseAction {
         result.put("questionnaireId", questionnaireId);
         response.getWriter().print(result);
         return null;
+    }
+
+    
+    @RequestMapping(value = "questionnaireSojump/{questionnaireId}", method =  RequestMethod.POST)
+    public String forkSojumpQuestionnaire( HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
+    	response.setContentType("application/json;charset=UTF-8");
+    	int flag=questionnaireService.saveSojumpQuestionnaire(questionnaireId);
+    	JSONObject result = new JSONObject();
+    	result.put("valid", flag);
+        response.getWriter().print(result);
+//    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
+//    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
+		return null;
+    }
+    
+    @RequestMapping(value = "questionnaireSojump/{questionnaireId}", method =  RequestMethod.GET)
+    public String getSojumpQuestionnaire( HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
+    	response.setContentType("application/json;charset=UTF-8");
+    	Questionnaire q=questionnaireService.getSojumpQuestionnaire(questionnaireId);
+    	if (q==null){
+    		JSONObject result = new JSONObject();
+    		result.put("valid", 0);
+    		response.getWriter().print(result);
+    		return null;
+    	}
+    	JSONObject result = new JSONObject();
+    	result.put("valid", 1);
+    	result.put("questionnaire", (q.questionnaireJSON));
+        response.getWriter().print(result);
+//    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
+//    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
+		return null;
     }
 
 

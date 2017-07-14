@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import ToolUtils.CountUtils;
+import ToolUtils.SojumpParser;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.google.gson.Gson;
@@ -18,6 +20,7 @@ import dao.QuestionnaireResultDao;
 import model.Questionnaire;
 import model.QuestionnaireGSON;
 import model.QuestionnaireResult;
+import model.QuestionnaireSpider;
 import model.QuestionnaireStatistics;
 import net.sf.json.JSONObject;
 import service.QuestionnaireService;
@@ -156,6 +159,29 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize,CountUtils countUtils) {
 		
 		return questionnaireDao.getReportedQuestionnaireByPage(page,pageSize,countUtils);
+	}
+
+	@Override
+	public Questionnaire getSojumpQuestionnaire(String sojumpId) {
+		SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+sojumpId+".aspx");
+		QuestionnaireSpider q=parser.parseSojump();
+		if (q==null){return null;}
+		Questionnaire result=QuestionnaireSpider.toQuestionnaire(q);
+    	return result;
+		
+	}
+
+	@Override
+	public int saveSojumpQuestionnaire(String sojumpId) {
+		SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+sojumpId+".aspx");
+		QuestionnaireSpider q=parser.parseSojump();
+		if (q==null){return 0;}
+		Questionnaire result=QuestionnaireSpider.toQuestionnaire(q);
+		
+		
+		questionnaireDao.save(result);
+		
+		return 1;
 	}
 
 }
