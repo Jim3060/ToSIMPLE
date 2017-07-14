@@ -6,7 +6,7 @@ var sendRequest = require("request");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
-var address = "192.168.1.116";
+var address = "192.168.1.30";
 var port = 8080;
 
 var mime = {

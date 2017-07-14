@@ -2,12 +2,15 @@ let http = require("http");
 let config = require("./config.json");
 
 let reports = [];
-let count = 0
+let count = 0;
+const timeout = config.timeout;
 
 function sendRequest(option, body, expect){
     return new Promise((resolve, reject)=>{
         let buffer = "";
         const startTime = new Date();
+        if (body != "")
+            option.headers["Content-Length"] = Buffer.byteLength(body);
         const req = http.request(option, res=>{
             let statusCode = res.statusCode;
             res.on("data", data=>{
@@ -23,6 +26,13 @@ function sendRequest(option, body, expect){
                 }
             });
         })
+
+        req.on('socket', function (socket) {
+            socket.setTimeout(timeout);  
+            socket.on('timeout', function() {
+                req.abort();
+            });
+        });
 
         req.on("error", e=>{
             resolve(["error", 0, "fail"]);
@@ -63,7 +73,7 @@ function printStatistics(reports){
     if(timeMin <= timeMax){
         console.log("");
         console.log("Time: ");
-        console.log(`   min: ${timeMin} ms, max: ${timeMax} ms, total: ${timeTotal} ms, average: ${timeTotal/count} ms`);
+        console.log(`   min: ${timeMin} ms, max: ${timeMax} ms, average: ${timeTotal/count} ms`);
 
         if(reports[0].length == 3){
             console.log("");
@@ -76,7 +86,7 @@ function printStatistics(reports){
 function main(){
     const interval = config.interval;
     const times = config.times;
-    const option = config.sendOptions
+    const option = config.sendOptions;
     const body = config.sendBody;
     const expect = config.expectResponse;
 

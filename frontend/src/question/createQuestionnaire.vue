@@ -34,6 +34,17 @@
         <div v-show="questionnaire.status==0">
             <span class="edit-title">问卷标题: </span>
             <input class="edit-title" :disabled="!editMode" v-model="title"></input>
+            <el-button v-if="$route.path=='/n'" @click="forkMode=true">Fork</el-button>
+            <div></div>
+            <div v-if="forkMode" style="width:600px; margin-left:20px">
+                <el-input placeholder="请输入ID" v-model="forkId">
+                    <el-select style="width:120px" v-model="forkFrom" slot="prepend" placeholder="请选择来源">
+                        <el-option label="To Simple" value="1"></el-option>
+                        <el-option label="问卷星" value="2"></el-option>
+                    </el-select>
+                    <el-button @click="fork()" slot="append">Fork</el-button>
+                </el-input>
+            </div>
             <div></div>
             <div>
                 <span class="edit-briefing" style="float:left">简介: </span>
@@ -76,7 +87,10 @@ export default {
             questionnaire: { questions: [], status:0 },
             editMode: true,
             invalid: false,
-            recovered: false
+            recovered: false,
+            forkMode: false,
+            forkFrom: "",
+            forkId:""
         }
     },
     components: { modal, questionnaire, create, qrcode },
@@ -173,21 +187,7 @@ export default {
             this.questionnaire["status"] = 0;
             this.questionnaire["answerNumber"] = 0;
 
-            /*if (this.$route.name == "n") {
-                var id = this.$route.params.id;
-                $.ajax({
-                    type: 'POST',
-                    url: "questionnaire/" + id,
-                    data: { questionnaire: JSON.stringify(this.questionnaire) },
-                    dataType: "json",
-                    success: function (data) {
-                        this.$message.success("修改成功");
-                        if (this.recovered)
-                            localStorage.removeItem("questionnaire");
-                    }
-                });
-            }
-            else*/
+        
                 $.post("questionnaire", { questionnaire: JSON.stringify(this.questionnaire) }, data => {
                     if (data.valid == 1) {
                         self.questionnaire["questionnaireId"] = data.questionnaireId;
@@ -222,27 +222,47 @@ export default {
                 })
             })
         },
-        loadQuestionnaire() {
-            if (this.$route.name == "n") {
-                this.questionnaire = {questions:[], status:1};
-                var id = this.$route.params.id;
-                var self = this;
-                $.get("questionnaire/" + id, data => {
-                    if (data.valid == "1") {
-                        self.questionnaire = data.questionnaire;
-                        self.title = data.questionnaire.paperTitle;
-                        self.briefing = data.questionnaire.briefing || "";
-                        this.invalid = false;
-                    } else {
-                        this.$message.warning("问卷不存在");
-                        this.invalid = true;
-                    }
-                }, "json").fail(() => {
-                    //bus.$emit("showMsg", "danger", "错误: 网络异常!");
-                    this.$message.error("网络异常");
-                })
+        loadQuestionnaire(qid) {
+            this.questionnaire = {questions:[], status:1};
+            var id = qid || this.$route.params.id;
+            var self = this;
+            $.get("questionnaire/" + id, data => {
+                if (data.valid == "1") {
+                    self.questionnaire = data.questionnaire;
+                    self.title = data.questionnaire.paperTitle;
+                    self.briefing = data.questionnaire.briefing || "";
+                    this.invalid = false;
+                } else {
+                    this.$message.warning("问卷不存在");
+                    this.invalid = true;
+                }
+            }, "json").fail(() => {
+                this.$message.error("网络异常");
+            })
+        },
+        fork(){
+            let id = this.forkId;
+            let self = this;
+            if (this.forkFrom == ""){
+                this.$message.warning("请选择来源");
+                return;
             }
-
+            let url = this.forkFrom=='1'?"questionnaire/":"questionnaireSojump/";
+            $.get(url + id, data => {
+                if (data.valid == "1") {
+                    self.questionnaire = data.questionnaire;
+                    self.title = data.questionnaire.paperTitle;
+                    self.briefing = data.questionnaire.briefing || "";
+                    self.questionnaire.status = 0;
+                    delete self.questionnaire.questionnaireId;
+                    delete self.questionnaire._id;
+                    this.forkMode = false;
+                } else {
+                    this.$message.warning("问卷不存在");
+                }
+            }, "json").fail(() => {
+                this.$message.error("网络异常");
+            })
         }
     },
     watch: {
@@ -256,7 +276,7 @@ export default {
         }
     },
     created() {
-        if (localStorage.questionnaire == undefined || this.$route.name == 'n'){
+        if (/*localStorage.questionnaire == undefined || */this.$route.name == 'n'){
             this.loadQuestionnaire();
         }
         else
