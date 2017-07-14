@@ -105,7 +105,7 @@ export default {
         buffer:"",
         connect: false,
         newItem: false,
-        newIdx: 0,
+        newIdx: 1,
         connectAccessable:[],
         imageUrl:"",
         pictureMode: false,
