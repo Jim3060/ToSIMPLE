@@ -2,11 +2,6 @@
     <div class="create">
         <div>
             问题类型:
-            <!--<select v-model="type">
-                <option>单选</option>
-                <option>多选</option>
-                <option>填空</option>
-            </select>-->
             <el-radio-group v-model="type" size="small">
                 <el-radio-button label="单选" style="font-weight:400"></el-radio-button>
                 <el-radio-button label="多选" style="font-weight:400"></el-radio-button>
