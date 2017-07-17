@@ -55,7 +55,8 @@ function printStatistics(reports){
 
     for(let i in reports){
         let report = reports[i];
-        count++;
+        if(report[0] != 'error')
+            count++;
         status[report[0]] = (status[report[0]] || 0) + 1;
         timeTotal += report[1];
         timeMin = timeMin>report[1]&&report[0]!="error"?report[1]:timeMin;
@@ -105,7 +106,6 @@ function main(){
         }, i * interval)
     }
 
-    //setTimeout(()=>{console.log(report)}, times * interval + 5000)
 }
 
 main();

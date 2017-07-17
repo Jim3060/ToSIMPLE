@@ -1,16 +1,9 @@
 <template>
     <div class="connectItem">
         <span>第</span>
-        <!--<select v-model.number="idx_show">
-            <option v-for="i in options" :key="i">{{parseInt(i)+1}}</option>
-        </select>-->
         {{idx_show}}
         <span>题</span>
         <el-button type="danger" size="small" @click="cancel()" >删除</el-button>
-        <!--<div v-for="i in num" :key="i" class="options">
-            <input type="checkbox" v-model="select" :value="i-1" :disabled="!edit"></input>
-            <label>{{questionnaire.questions[idx].choices[i-1]}}</label>
-        </div>-->
         <el-checkbox-group v-model="select">
             <el-checkbox v-for="i in num" :key="i" :label="i-1">
                 <span>{{questionnaire.questions[idx].choices[i-1].text}}</span>
