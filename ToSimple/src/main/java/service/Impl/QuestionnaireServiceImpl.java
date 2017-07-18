@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import ToolUtils.CountUtils;
 import ToolUtils.SojumpParser;
+import ToolUtils.SpiderUtils;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -173,7 +174,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
 	@Override
 	public int saveSojumpQuestionnaire(String sojumpId) {
-		SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+sojumpId+".aspx");
+		SojumpParser parser=new SojumpParser(sojumpId);
 		QuestionnaireSpider q=parser.parseSojump();
 		if (q==null){return 0;}
 		Questionnaire result=QuestionnaireSpider.toQuestionnaire(q);
@@ -182,6 +183,14 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		questionnaireDao.save(result);
 		
 		return 1;
+	}
+	
+	public Questionnaire getQuestionnaireByKW(String kw){
+		List<String> ids=SpiderUtils.searchSojumpIdByKW(kw);
+		if(ids==null||ids.size()==0){return null;}
+		SojumpParser parser=new SojumpParser(ids.get(0));
+		QuestionnaireSpider q=parser.parseSojump();
+		return QuestionnaireSpider.toQuestionnaire(q);
 	}
 
 }

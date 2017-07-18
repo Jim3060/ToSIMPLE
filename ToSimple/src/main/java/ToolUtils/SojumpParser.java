@@ -22,9 +22,11 @@ public class SojumpParser {
 	}
 	
 	public SojumpParser(){;}
-	public SojumpParser(String url){
+	
+	
+	public SojumpParser(String id){
 		this.url=url;
-		Connection conn = Jsoup.connect(url);
+		Connection conn = Jsoup.connect("https://sojump.com/jq/"+id+".aspx");
         // 修改http包中的header,伪装成浏览器进行抓取
         conn.header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:54.0) Gecko/20100101 Firefox/54.0");
         try {
@@ -43,7 +45,7 @@ public class SojumpParser {
 	}
 	
 	public static String getQuestionnaireDescription(){
-		Elements titles=document.select("span[id$=QuestionnaireName]");
+		Elements titles=document.select("span[id$=QuestionnaireDescription]");
 		if (titles!=null&&titles.size()>0){
 			return titles.get(0).text();
 		}
@@ -89,6 +91,7 @@ public class SojumpParser {
 				choice=choices.child(j);
 				QuestionnaireSpider.Choice c=new QuestionnaireSpider.Choice();
 				if (choice.getElementsByTag("label")!=null&&choice.getElementsByTag("label").size()>0){
+					if (choice.getElementsByTag("input").size()>=2){continue;}
 					c.text=choice.getElementsByTag("label").get(0).text();
 					
 					result.add(c);

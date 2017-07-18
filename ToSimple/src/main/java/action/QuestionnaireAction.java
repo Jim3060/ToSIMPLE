@@ -170,6 +170,25 @@ public class QuestionnaireAction extends BaseAction {
 		return null;
     }
 
+    @RequestMapping(value = "questionnaireSojumpKW/{keyword}", method =  RequestMethod.GET)
+    public String getSojumpQuestionnaireByKeyword( HttpSession session,HttpServletResponse response, @PathVariable("keyword") String keyword) throws Exception {
+    	response.setContentType("application/json;charset=UTF-8");
+    	Questionnaire q=questionnaireService.getQuestionnaireByKW(keyword);
+    	if (q==null){
+    		JSONObject result = new JSONObject();
+    		result.put("valid", 0);
+    		response.getWriter().print(result);
+    		return null;
+    	}
+    	JSONObject result = new JSONObject();
+    	result.put("valid", 1);
+    	result.put("questionnaire", (q.questionnaireJSON));
+        response.getWriter().print(result);
+//    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
+//    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
+		return null;
+    }
+
 
     /**
      * Get a questionnaire of the specific questionnaireId

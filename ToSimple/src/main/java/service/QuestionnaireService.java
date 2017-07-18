@@ -74,5 +74,7 @@ public interface QuestionnaireService {
 	
 	public int saveSojumpQuestionnaire(String sojumpId);
 	
+	public Questionnaire getQuestionnaireByKW(String kw);
+	
 
 }
