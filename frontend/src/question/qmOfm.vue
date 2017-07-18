@@ -110,7 +110,7 @@
             },
 
             viewContent() {
-                
+                this.$router.push({ name: "q" + report[0].questionnaireId);
             }
         }
     }
