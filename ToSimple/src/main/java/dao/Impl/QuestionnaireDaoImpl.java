@@ -42,7 +42,6 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
 
     @Override
     public Integer delete(String id) {
-        // TODO Auto-generated method stub
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
@@ -57,7 +56,6 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         }
 
         DBObject object = questionnaires.findAndRemove(query);
-//        System.out.print(writeResult);
         return (object == null) ? 0 : 1;
 
     }
@@ -74,7 +72,6 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
             return null;
         }
         questionnaires.update(query, questionnaireDB);
-        // TODO Auto-generated method stub
         ObjectId newid = (ObjectId) dbObj.get("_id");
         return newid.toString();
     }
@@ -93,7 +90,6 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         if (dbObj == null) {
             return null;
         }
-        // TODO Auto-generated method stub
         return new Questionnaire(dbObj);
     }
 
@@ -116,7 +112,6 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
     public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name,CountUtils countUtils) {
 
         pageSize = min(pageSize, 30);
-
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();

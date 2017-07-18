@@ -65,7 +65,6 @@ public class ReportDaoImpl extends HibernateDaoSupport implements ReportDao {
         List<Report> list = session.createQuery("from Report ").setMaxResults(pageSize).setFirstResult(page * pageSize).list();
         session.getTransaction().commit();
         return list;
-
     }
 
     @Override
