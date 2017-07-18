@@ -1,10 +1,12 @@
 package model;
 
+import action.SecurityInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.*;
 import dao.Impl.QuestionnaireDaoImpl;
 import dao.ReportDao;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -194,6 +194,32 @@ public class test {
 //        while (iterator.hasNext()){
 //            System.out.print(iterator.next().getContent());
 //        }
+    }
+
+    @Test
+    public void testIn() {
+        final String[] userUrls = new String[]{
+                "admin", "yyk"
+        };
+        List<String> list1 = Arrays.asList(userUrls);
+
+        List<String> list = new LinkedList<String>() {{
+            add("ad");
+            add("sdf");
+        }};
+        ;
+        Assert.assertEquals(true, list1.contains("admin"));
+//        Integer i = 1;
+//        boolean b = (i ==1);
+//        System.out.print(b);
+//        Assert.assertEquals(true,(i == 1));
+    }
+
+    @Test
+    public void testSec() {
+        SecurityInterceptor securityInterceptor = new SecurityInterceptor();
+        System.out.print(securityInterceptor.needRole("allUsers", "GET"));
+        System.out.print(securityInterceptor.needRole("registerValidate", "GET"));
     }
 
     class INT {

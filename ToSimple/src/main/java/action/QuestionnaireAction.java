@@ -56,7 +56,6 @@ public class QuestionnaireAction extends BaseAction {
      * @return none
      * @throws Exception
      */
-    //TODO
     @RequestMapping(value = "questionnaire", method = {RequestMethod.POST, RequestMethod.PUT})
     public String addOrUpdateQuestionnaire(String questionnaire, HttpSession session, HttpServletResponse response) throws Exception {
         System.out.print(questionnaire);
@@ -223,8 +222,8 @@ public class QuestionnaireAction extends BaseAction {
      * @return none
      */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.DELETE)
-    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
-        // TODO delete a questionnaire
+    public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId,
+                                      HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         Integer integer = questionnaireService.deleteQuestionnaire(questionnaireId);
         JSONObject result = new JSONObject();
