@@ -3,7 +3,8 @@
         <h2 style="width:100%;text-align:center">问卷管理中心</h2>
         <h4 style="width:100%;text-align:center">未处理的举报</h4>
         <br>
-    </el-radio-group>
+        <el-radio-group>
+        </el-radio-group>
         <br>
         <table class="table table-striped table-condensed table-bordered">
             <tbody>
@@ -12,20 +13,20 @@
                     <th>举报信息</th>
                     <th>操作</th>
                 </tr>
-                <tr v-for="(data_item, index) in questionnaires" :key="data_item">
+                <tr v-for="(item, index) in report" :key="item">
+                    <th>{{item.questionnaireId}}</th>
+                    <th>{{item.content}}</th>
                     <th>
-                        <el-button type="text" size="small" @click="viewContent(data_item.questionnaireId)">查看内容</el-button>
-                        <el-button v-if="data_item.status==3 || data_item.status==5" type="text" 
-                            size="small" @click="handle(data_item.questionnaireId, index, 1, 2)">通过</el-button>
-                        <el-button v-if="data_item.status==3 || data_item.status==5" type="text" 
-                            size="small" @click="handle(data_item.questionnaireId, index, 1, 2)">不通过</el-button>
-                        <el-button v-if="data_item.status==3 || data_item.status==5" type="text" 
-                            style="width:100%;text-align:left" 
-                            size="small" @click="ViewReport(data_item.questionnaireId, 1, 1)">查看举报信息</el-button>
+                        <el-button type="text" size="small" @click="viewContent(item.questionnaireId)">查看内容</el-button>
+                        <el-button type="text" size="small" @click="pass(item.questionnaireId, item.id)">通过</el-button>
+                        <el-button type="text" size="small" @click="noPass(item.id)">不通过</el-button>
                     </th>
                 </tr>
             </tbody>
         </table>
+        <div class="container" style="width:80%;text-align:right">
+            <h4>总举报数量:{{reportNum}}</h4>
+        </div>
     </div>
 </template>
 
@@ -45,17 +46,72 @@
         }},
 
         created() {
-            var self = this;
-            self.pageSize = 30; // The defaul size of page is 30
-            self.pageIndex = 0;
-            this.ViewAllQuestionnaires(1, 30);
-        },
-
-        watch:{
-            'radio3': "handleTableChange"
+            this.getReport();
         },
 
         methods:{
+            getReport() {
+                var self = this;
+                $.ajax({
+                    type: "GET",
+                    url: "allUnhandledReports?page=0&pageSize=1",
+                    data: "",
+                    dataType : "json",
+                    success : data=>{
+                        self.report = data.reports;
+                        console.log(1);
+                        console.log(data.reportNum);
+                        self.reportNum = data.reportNum;
+                    }
+                });
+            },
+
+            pass(ID, reportId) {
+                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'danger'
+                    }).then(() => {
+                        var self = this;
+                        $.ajax({
+                            type: "POST",
+                            url: ("report/" + reportId),
+                            data : {"status" : 1, "questionnaireId" : ID},
+                            dataType : "json",
+                            success : data=>{
+                                console.log(data);
+                                this.getReport();
+                                this.$message.success("操作成功！");
+                            }
+                        });
+                });
+            },
+
+            noPass(reportId) {
+                var self = this;
+                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'danger'
+                    }).then(() => {
+                        var self = this;
+                        $.ajax({
+                            type: "POST",
+                            url: ("report/" + reportId),
+                            data : {"status" : 1, "questionnaireId" : ""},
+                            dataType : "json",
+                            success : data=>{
+                                console.log(data);
+                                this.getReport();
+                                this.$message.success("操作成功！");
+                            }
+                        });
+                });
+            },
+
+            viewContent() {
+                
+            }
         }
     }
 </script>
