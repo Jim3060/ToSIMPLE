@@ -48,7 +48,6 @@
                 <el-switch :disabled="connectAccessable.length==0 && Object.keys(showAfter).length==0" v-model="connect" ></el-switch>
              </el-tooltip>
         </div>
-        <!--<input type="checkbox" v-model="connect">题目关联</input>-->
         <div v-show="connect">
             <ul class="list-group">
                 <li class="list-group-item" v-for="(value, key) in showAfter" :key="key">
@@ -56,11 +55,6 @@
                     <connectItem @update="update" @cancel="delCon($event)" :questionnaire="questionnaire" :index="index" :idx="key"></connectItem>
                 </li>
                 <li v-if="newItem" class="list-group-item">
-                    <!--第
-                    <select v-model.number="newIdx">
-                        <option v-for="i in connectAccessable" :key="i">{{i}}</option>
-                    </select>
-                    题-->
                     <el-select v-model.number="newIdx" size="small" style="width:150px" placeholder="请选择题号">
                         <el-option v-for="i in connectAccessable" :key="i" :value="i" :label="'第'+i+'题'"></el-option>
                     </el-select>
@@ -78,15 +72,13 @@
 </template>
 
 <script>
-import connectItem from "./connectItem.vue"
-import Vue from "vue"
-import bus from "../bus.js"
-import Element from "element-ui"
+import connectItem from "./connectItem.vue";
+import Vue from "vue";
 
 export default {
     components:{connectItem},
     props:{
-        questionnaire:{default(){return{}}},
+        questionnaire:{default(){return{};}},
         index:{default:-1}
     },
     data(){return {
@@ -95,7 +87,7 @@ export default {
         question:{},
         title:"",
         options:[],
-        limit:'',
+        limit:"",
         showAfter:{},
         edit:-1,
         buffer:"",
@@ -107,7 +99,7 @@ export default {
         pictureMode: false,
         mix:false,
         forced: false
-    }},
+    };},
     methods:{
         del(index){
             this.options.splice(index, 1);
@@ -201,14 +193,14 @@ export default {
             this.imageUrl = URL.createObjectURL(file.raw);
         },
         beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+            const isJPG = file.type === "image/jpeg" || file.type === "image/png";
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {
-            this.$message.error('上传头像图片只能是 JPG 格式!');
+                this.$message.error("上传头像图片只能是 JPG 格式!");
             }
             if (!isLt2M) {
-            this.$message.error('上传头像图片大小不能超过 2MB!');
+                this.$message.error("上传头像图片大小不能超过 2MB!");
             }
             return isJPG && isLt2M;
         }
@@ -229,8 +221,7 @@ export default {
                 this.connectAccessable.push(parseInt(i)+1);
         }
     }
-
-}
+};
 </script>
 
 <style>

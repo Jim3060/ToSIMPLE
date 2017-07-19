@@ -3,3 +3,5 @@
 *.sql
 bundle.js
 *.idea
+.eslintrc.json
+.eslintignore

@@ -2,7 +2,6 @@ var fs = require("fs");
 var http = require("http");
 var url = require("url");
 var path = require("path");
-var sendRequest = require("request");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
@@ -32,12 +31,12 @@ var mime = {
 
     "woff": "application/x-font-woff"
 
-}
+};
 
 http.createServer(function (request, response) {
     if (!allowExternalRequest && request.headers["host"] != "127.0.0.1:8080" && request.headers["host"] != "localhost:8080") {
         response.writeHead(403);
-        response.end("<h1>403 Forbidden</h1>")
+        response.end("<h1>403 Forbidden</h1>");
         return;
     }
 
@@ -46,8 +45,8 @@ http.createServer(function (request, response) {
     console.log(url.parse(request.url,true).query);
     console.log("user-agent:"+request.headers["user-agent"]);*/
 
-    var post = '';
-    request.on('data', function (chunk) {
+    var post = "";
+    request.on("data", function (chunk) {
         post += chunk;
     });
 
@@ -67,9 +66,9 @@ http.createServer(function (request, response) {
                 path: url.parse(request.url).path,
                 method: request.method,
                 headers: {
-                    'Content-Type': request.headers["Content-Type"] || request.headers["content-type"] || "" , 
-                    'Content-Length': Buffer.byteLength(post),
-                    'Cookie': request.headers["Cookie"] || request.headers["cookie"] || "",
+                    "Content-Type": request.headers["Content-Type"] || request.headers["content-type"] || "" , 
+                    "Content-Length": Buffer.byteLength(post),
+                    "Cookie": request.headers["Cookie"] || request.headers["cookie"] || "",
                     "Connection": "keep-alive"
                 }
             };
@@ -78,16 +77,16 @@ http.createServer(function (request, response) {
 
             const req = http.request(options, (res) => {
                 //res.setEncoding('utf8');
-                response.writeHead(res.statusCode, res.headers)
-                res.on('data', (chunk) => {
+                response.writeHead(res.statusCode, res.headers);
+                res.on("data", (chunk) => {
                     response.write(chunk);
                 });
-                res.on('end', () => {
+                res.on("end", () => {
                     response.end("");
                 });
             });
 
-            req.on('error', (e) => {
+            req.on("error", (e) => {
                 console.error(`ERROR: ${e.message}`);
             });
 
@@ -97,20 +96,20 @@ http.createServer(function (request, response) {
         }
         else {
             var extname = path.extname(fpath);
-            extname = extname ? extname.slice(1) : 'unknown';
-            var resContentType = mime[extname] || 'text/plain';
+            extname = extname ? extname.slice(1) : "unknown";
+            var resContentType = mime[extname] || "text/plain";
 
-            response.writeHead(200, { 'Content-type': resContentType });
+            response.writeHead(200, { "Content-type": resContentType });
             if (extname == "woff" || extname == "woff2") {
                 fs.readFile(fpath, "binary", function (err, data) {
                     var rsp = data;
                     response.end(rsp, "binary");
-                })
+                });
             } else {
                 fs.readFile(fpath, "utf-8", function (err, data) {
                     var rsp = data;
                     response.end(rsp);
-                })
+                });
             }
         }
     });

@@ -67,11 +67,10 @@
 </template>
 
 <script>
-import create from "./createQuestion.vue"
-import questionnaire from "./questionnaire.vue"
-import { modal } from "vue-strap"
-import bus from "../bus.js"
-import qrcode from "qrcode.vue"
+import create from "./createQuestion.vue";
+import questionnaire from "./questionnaire.vue";
+import { modal } from "vue-strap";
+import qrcode from "qrcode.vue";
 
 export default {
     data() {
@@ -88,7 +87,7 @@ export default {
             forkMode: false,
             forkFrom: "",
             forkId: ""
-        }
+        };
     },
     components: { modal, questionnaire, create, qrcode },
     methods: {
@@ -126,10 +125,10 @@ export default {
             }).then(() => {
                 this.questionnaire.paperTitle = this.title;
                 this.questionnaire.briefing = this.briefing;
-                localStorage.questionnaire = JSON.stringify(this.questionnaire)
+                localStorage.questionnaire = JSON.stringify(this.questionnaire);
                 this.$message.success("问卷已暂存，请记得及时提交");
                 this.recovered = false;
-            })
+            });
         },
         recover() {
             this.title = "";
@@ -144,31 +143,31 @@ export default {
                     this.title = this.questionnaire.paperTitle;
                     this.briefing = this.questionnaire.briefing || "";
                     this.recovered = true;
-                })
+                });
             }
         },
         deleteQuestionnaire() {
-            this.$confirm('此操作将永久删除该问卷, 是否继续?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
+            this.$confirm("此操作将永久删除该问卷, 是否继续?", "警告", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "danger"
             }).then(() => {
                 $.ajax({
                     type: "DELETE",
                     url: "questionnaire/" + this.$route.params.id,
                     dataType: "json",
                     success: data => {
-                        if (data.deleteSuccess == '1' || data.deleteSuccess == 1) {
+                        if (data.deleteSuccess == "1" || data.deleteSuccess == 1) {
                             this.$message.success("删除成功，即将离开此页...");
                             setTimeout(() => {
                                 this.$router.push({ path: "/m/q" });
-                            }, 2000)
+                            }, 2000);
                         }
                         else
                             this.$message.warning("该问卷不存在，或您没有删除的权限");
                     }
                 });
-            })
+            });
         },
         jumpToStatistic() {
             this.$router.push({ name: "s", params: { id: this.$route.params.id } });
@@ -198,17 +197,16 @@ export default {
                 }
             }, "json").fail(() => {
                 this.$message.error("网络异常");
-            })
-
+            });
         },
         publish(status) {
-            this.$confirm('问卷一经发布无法修改, 是否继续?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
+            this.$confirm("问卷一经发布无法修改, 是否继续?", "警告", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "danger"
             }).then(() => {
                 $.post("setQuestionnaireStatus", { questionnaireId: this.questionnaire.questionnaireId, status: status }, data => {
-                    if (data == '1' || data == 1) {
+                    if (data == "1" || data == 1) {
                         this.$message.success("操作成功");
                         this.questionnaire.status = status;
                     }
@@ -216,8 +214,8 @@ export default {
                         this.$message.error("操作失败");
                 }).fail(() => {
                     this.$message.error("网络异常");
-                })
-            })
+                });
+            });
         },
         loadQuestionnaire(qid) {
             this.questionnaire = { questions: [], status: 1 };
@@ -235,7 +233,7 @@ export default {
                 }
             }, "json").fail(() => {
                 this.$message.error("网络异常");
-            })
+            });
         },
         fork() {
             let id = this.forkId;
@@ -244,7 +242,7 @@ export default {
                 this.$message.warning("请选择来源");
                 return;
             }
-            let url = this.forkFrom == '1' ? "questionnaire/" : "questionnaireSojump/";
+            let url = this.forkFrom == "1" ? "questionnaire/" : "questionnaireSojump/";
             $.get(url + id, data => {
                 if (data.valid == "1") {
                     self.questionnaire = data.questionnaire;
@@ -259,11 +257,11 @@ export default {
                 }
             }, "json").fail(() => {
                 this.$message.error("网络异常");
-            })
+            });
         }
     },
     watch: {
-        '$route'(to, from) {
+        "$route"(to) {
             if (to.path == "/n") {
                 this.questionnaire = { questions: [], status: 0 };
                 this.invalid = false;
@@ -273,13 +271,13 @@ export default {
         }
     },
     created() {
-        if (this.$route.name == 'n') {
+        if (this.$route.name == "n") {
             this.loadQuestionnaire();
         }
         else
             this.recover();
     }
-}
+};
 </script>
 
 <style>

@@ -35,29 +35,28 @@
 </template>
 
 <script>
-    import qrcode from "qrcode.vue"
+    import qrcode from "qrcode.vue";
 
     export default{
         components:{qrcode},
         data(){return {
             questionnaires:[]
-        }},
+        };},
         methods:{
             getMyQuestionnaires(){
-                var self = this;
                 $.get("questionnaire", data=>{
-                    if(data.valid == 1 || data.valid == '1'){
+                    if(data.valid == 1 || data.valid == "1"){
                         this.questionnaires = data.questionnaires;
                     }else{
                         this.$message.error("您还没有登录");
                     }
                 }, "json").fail(()=>{
                     this.$message.error("网络异常");
-                })
+                });
             }
         },
         created(){
             this.getMyQuestionnaires();
         }
-    }
+    };
 </script>

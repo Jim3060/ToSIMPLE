@@ -31,7 +31,7 @@
         data(){return {
             select:[],
             blank:""
-        }},
+        };},
         methods:{
             addOrRemove(index){
                 var i = this.select.indexOf(index);
@@ -45,7 +45,7 @@
             update(){
                 let idx = this.select.indexOf(this.options.length);
                 if(idx == -1){
-                   this.$emit("update", {choice:this.select, blank:""});
+                    this.$emit("update", {choice:this.select, blank:""});
                 }else{
                     let temp = this.select.slice();
                     temp.splice(idx, 1);
@@ -57,7 +57,7 @@
             select(){this.update();},
             blank(){this.update();}
         }
-    }
+    };
 </script>
 
 <style>

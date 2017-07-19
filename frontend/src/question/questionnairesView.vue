@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import simple from "./questionnaireSimple.vue"
+    import simple from "./questionnaireSimple.vue";
 
     export default{
         components:{simple},
@@ -26,9 +26,9 @@
             notFound: false,
             currentPage: 1,
             count: 1,
-        }},
+        };},
         watch:{
-            '$route'(to, from){
+            "$route"(to){
                 if(to.path == "/q"){
                     this.getRandom();
                 }else
@@ -37,8 +37,6 @@
         },
         methods:{
             getSearch(page){
-                if(page == NaN)
-                    return;
                 var self = this;
                 $.get(`questionnaire/search?name=${this.$route.params.name}&page=${page-1}&pageSize=25`, data=>{
                     self.questionnaires = data.items;
@@ -49,7 +47,7 @@
                         self.notFound = false;
                 }, "json").fail(()=>{
                     this.$message.error("网络异常");
-                })
+                });
             },
             getRandom(){
                 var self = this;
@@ -57,7 +55,7 @@
                     self.questionnaires = data;
                 }, "json").fail(()=>{
                     this.$message.error("网络异常");
-                })
+                });
             },
             handleCurrentChange(page){
                 this.currentPage = page;
@@ -73,5 +71,5 @@
                 this.getRandom();
             }
         }
-    }
+    };
 </script>

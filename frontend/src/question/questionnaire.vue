@@ -17,16 +17,16 @@
 </template>
 
 <script>
-import single from "./single.vue"
-import multiple from "./multiple.vue"
-import blank from "./blank.vue"
-import bus from "../bus.js"
-import Vue from "vue"
+import single from "./single.vue";
+import multiple from "./multiple.vue";
+import blank from "./blank.vue";
+import Vue from "vue";
+
 export default {
     name:"questionnaire",
     components:{single, multiple, blank},
     props:{
-        questionnaire:{default(){return {}}},
+        questionnaire:{default(){return {};}},
         edit:{default:false}
     },
     data(){return {
@@ -34,7 +34,7 @@ export default {
         hidden:[],
         dirty: false,
         beginTime:""
-    }},
+    };},
     methods:{
         update(index, data){
             this.answer[index] = data;
@@ -59,7 +59,7 @@ export default {
                 var temp = this.answer[i];
                 if(this.hidden[i])
                     continue;
-                if(this.questionnaire.questions[i].forced = false){
+                if(this.questionnaire.questions[i].forced == false){
                     postBody.answers.push(temp);
                     continue;
                 }
@@ -78,7 +78,6 @@ export default {
             postBody.questionnaireId = this.questionnaire.questionnaireId;
             postBody.beginTime = this.beginTime;
             postBody.endTime = new Date();
-            var self = this;
             $.post("questionnaireResult", {answerPaper:JSON.stringify(postBody)}, (data)=>{
                 if(data == "1" || data == 1){
                     this.$message.success("提交成功"); 
@@ -87,7 +86,7 @@ export default {
                     localStorage.answered = JSON.stringify(answered);
                 }
             }).fail(()=>{
-                this.$message.error("网络异常")
+                this.$message.error("网络异常");
             });
         },
         ifShow(index){
@@ -128,7 +127,6 @@ export default {
     created(){
         if(Object.keys(this.questionnaire) == 0){
             var id = this.$route.params.id;
-            var self = this;
             $.get("questionnaire/"+id, data=>{
                 if(data.valid == "1"){
                     this.questionnaire = data.questionnaire;
@@ -140,11 +138,11 @@ export default {
                 }
             }, "json").fail(()=>{
                 this.$message.error("网络异常");
-            })
+            });
         }
         this.beginTime = new Date();
     }
-}
+};
 </script>
 
 <style>

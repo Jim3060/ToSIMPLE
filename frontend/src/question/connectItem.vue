@@ -26,7 +26,7 @@ export default {
         select:[],
         idx_show:0,
         options:[]
-    }},
+    };},
     computed:{
         num(){
             try{
@@ -43,12 +43,12 @@ export default {
     watch:{
         idx(){
             if(this.index >= 0)
-            try{
-                this.select = this.questionnaire.questions[this.index].showAfter[this.idx];
-            }
-            catch(err){
-                this.select = {};
-            }
+                try{
+                    this.select = this.questionnaire.questions[this.index].showAfter[this.idx];
+                }
+                catch(err){
+                    this.select = {};
+                }
         },
         select(){
             this.$emit("update", this.idx, this.index, this.select);
@@ -75,11 +75,10 @@ export default {
             this.$emit("cancel", this.idx);
         }
     } 
-}
+};
 </script>
 
 <style>
-    /*.connectItem>*{float:left;}*/
     .connectItem>input{width:50px;}
     
 </style>
