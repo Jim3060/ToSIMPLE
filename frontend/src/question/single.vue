@@ -22,7 +22,7 @@
         data(){return {
             select:"",
             blank:""
-        }},
+        };},
         methods:{
             update(){
                 if(this.select == this.options.length){
@@ -36,7 +36,7 @@
             select(){this.update();},
             blank(){this.update();}
         }
-    }
+    };
 </script>
 
 <style>

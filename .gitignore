@@ -2,3 +2,5 @@
 /frontend/node_modules/
 *.sql
 bundle.js
+.eslintrc.json
+.eslintignore

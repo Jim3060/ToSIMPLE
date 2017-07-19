@@ -1,16 +1,16 @@
 module.exports = {
-    entry: __dirname + "/src/main.js",
-    output:{
-        path: __dirname + "/out",
-        filename: "bundle.js"
-    },
-    module: {
+  entry: __dirname + "/src/main.js",
+  output: {
+    path: __dirname + "/out",
+    filename: "bundle.js"
+  },
+  module: {
     rules: [
       {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
-                // other vue-loader options go here
+          // other vue-loader options go here
         }
       },
       {

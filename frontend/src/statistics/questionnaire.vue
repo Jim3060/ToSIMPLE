@@ -13,14 +13,14 @@
 </template>
 
 <script>
-import question from "./question.vue"
+import question from "./question.vue";
 
 export default {
     components:{question},
     data(){return {
         resultData:{"questionStatistics":[],"answerNumber":1},
         questionnaire:{questions:[]}
-    }},
+    };},
     methods:{
         goBack(){
             this.$router.push({name:"n", params:{id: this.$route.params.id}});
@@ -31,7 +31,7 @@ export default {
         var self = this;
         $.get("questionnaireStatistics/" + id, data=>{
             self.resultData = data;
-        }, "json")
+        }, "json");
         $.get("questionnaire/" + id, data=>{
             if(data.valid == "1"){
                 self.questionnaire = data.questionnaire;
@@ -40,9 +40,9 @@ export default {
             }
         }, "json").fail(()=>{
             this.$message.error("网络异常");
-        })
+        });
     }
-}
+};
 </script>
 
 <style>

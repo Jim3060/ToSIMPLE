@@ -12,16 +12,16 @@
 <script>
     export default{
         name: "blank",
-        props:{title:{required: true}, index:{}},
+        props:{title:{required: true}, index:{}, forced:{}},
         data(){return {
             value:""
-        }},
+        };},
         watch:{
             value:function(){
                 this.$emit("update", {choices:[], blank:this.value});
             }
         }
-    }
+    };
 </script>
 
 <style>

@@ -40,27 +40,22 @@
 
 <script>
     import Vue from "vue";
-    //import BootStrapVue from "bootstrap-vue";
-    //Vue.use(BootStrapVue);
-
-    //import {bAlert, bModal} from 'bootstrap-vue/lib/components'
-    import {modal, alert} from "vue-strap"
 
     export default {
         data(){return {
             users: [],
             datachanged:[],
-            pageIndex : {default(){return 1}},
-            pageLength : {default(){return 0}},
+            pageIndex : {default(){return 1;}},
+            pageLength : {default(){return 0;}},
             pageSize : {},
             userNum : {}
-        }},
+        };},
         methods:{
             ban(ID, index) {
-                this.$confirm('此操作会封禁此用户, 您确定继续吗?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
+                this.$confirm("此操作会封禁此用户, 您确定继续吗?", "警告", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "danger"
                 }).then(() => {
                     $.ajax({
                         type:"POST",
@@ -68,7 +63,7 @@
                         data: {"role" : 2, "userId" : ID},
                         dataType : "json",
                         success: data=>{
-                            if(data["success"] == '1' || data["success"] == 1) {
+                            if(data["success"] == "1" || data["success"] == 1) {
                                 var self = this;
                                 Vue.set(self.users[index], "role", 2);
                                 this.$message.success("封禁用户成功");
@@ -77,14 +72,14 @@
                                 this.$message.warning("网络传输异常！");
                         }
                     });
-                })  
+                });  
             },
 
             unban(ID, index){
-                this.$confirm('此操作会改变用户的状态, 您确定继续吗?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
+                this.$confirm("此操作会改变用户的状态, 您确定继续吗?", "警告", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "danger"
                 }).then(() => {
                     $.ajax({
                         type:"POST",
@@ -92,7 +87,7 @@
                         data: {"role" : 0, "userId" : ID},
                         dataType : "json",
                         success: data=>{
-                            if(data["success"] == '1' || data["success"] == 1) {
+                            if(data["success"] == "1" || data["success"] == 1) {
                                 var self = this;
                                 Vue.set(self.users[index], "role", 0);
                                 this.$message.success("解封用户成功！");
@@ -101,13 +96,13 @@
                                 this.$message.warning("网络传输异常！");
                         }
                     });
-                })
+                });
             },
             set_manager(ID, index){
-                this.$confirm('此操作会改变用户的状态, 您确定继续吗?', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'danger'
+                this.$confirm("此操作会改变用户的状态, 您确定继续吗?", "警告", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "danger"
                 }).then(() => {
                     $.ajax({
                         type:"POST",
@@ -115,7 +110,7 @@
                         data: {"role" : 1, "userId" : ID},
                         dataType : "json",
                         success: data=>{
-                            if(data["success"] == '1' || data["success"] == 1) {
+                            if(data["success"] == "1" || data["success"] == 1) {
                                 var self = this;
                                 Vue.set(self.users[index], "role", 1);
                                 this.$message.success("设置管理员用户成功！");
@@ -124,19 +119,12 @@
                                 this.$message.warning("网络传输异常！");
                         }
                     });
-                })
+                });
             },
             handleCurrentChange(val) {
                 console.log(val);
                 var self = this;
                 self.pageIndex = val;
-                /*$.ajax({
-                    type:"GET",
-                    url:"allUser/page=" + (self.pageIndex - 1) + "&pageSize=" + self.pageSize,
-                    success: data=>{
-                        
-                    }
-                });*/
             }
         },
         created() {
@@ -156,7 +144,7 @@
             });
             
         }
-    }
+    };
 </script>
 
 <style>
