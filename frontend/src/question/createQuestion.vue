@@ -9,7 +9,8 @@
             </el-radio-group>
         </div>
         <div>
-            题目: <input v-model="title"></input>
+            题目:<!--<input v-model="title"></input>-->
+            <questionTitle :questionnaireTitle="questionnaire.paperTitle" @update="title=$event"></questionTitle>
             <el-checkbox v-model="forced">必答题</el-checkbox>
         </div>
         <div v-if="type=='多选'">
@@ -74,9 +75,10 @@
 <script>
 import connectItem from "./connectItem.vue";
 import Vue from "vue";
+import questionTitle from "./questionTitle/questionTitle.vue";
 
 export default {
-    components:{connectItem},
+    components:{connectItem, questionTitle},
     props:{
         questionnaire:{default(){return{};}},
         index:{default:-1}

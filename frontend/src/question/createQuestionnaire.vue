@@ -268,6 +268,9 @@ export default {
                 this.recover();
             } else
                 this.loadQuestionnaire();
+        },
+        title(){
+            this.questionnaire.paperTitle = this.title;
         }
     },
     created() {
