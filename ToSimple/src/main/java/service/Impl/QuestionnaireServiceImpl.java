@@ -1,6 +1,7 @@
 package service.Impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import ToolUtils.CountUtils;
 import ToolUtils.SojumpParser;
 import ToolUtils.SpiderUtils;
+import ToolUtils.Spider.Algorithm;
+import ToolUtils.SpiderUtils.SojumpBrief;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -191,6 +194,43 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		SojumpParser parser=new SojumpParser(ids.get(0));
 		QuestionnaireSpider q=parser.parseSojump();
 		return QuestionnaireSpider.toQuestionnaire(q);
+	}
+
+	@Override
+	public String getQuestionByKW(String kw) {
+		List<String> ids=SpiderUtils.searchSojumpIdByKW(kw);
+		if(ids==null||ids.size()==0){return null;}
+		SojumpParser parser=new SojumpParser(ids.get(0));
+		QuestionnaireSpider q=parser.parseSojump();
+		Gson gson = new Gson();
+		QuestionnaireSpider.Question ques=q.getQuestionByKW(kw);
+		if (ques==null){return null;}
+		return gson.toJson(ques);
+	}
+
+	@Override
+	public String getQuestionByKW(String kwq, String kw) {
+		List<String> ids=SpiderUtils.searchSojumpIdByKW(kwq);
+		if(ids==null||ids.size()==0){return null;}
+		Comparator<QuestionnaireSpider.Question> cmps =  new Comparator<QuestionnaireSpider.Question>(){  
+            public int compare(QuestionnaireSpider.Question o1, QuestionnaireSpider.Question o2) {  
+            	return (Algorithm.getStringGap(o1.questionTitle, kw)-Algorithm.getStringGap(o2.questionTitle, kw)>0)?1:-1;
+            }  
+		};
+		List<QuestionnaireSpider.Question> quess=new ArrayList<QuestionnaireSpider.Question>();
+		for (int i=0;i<ids.size();i++){
+			SojumpParser parser=new SojumpParser(ids.get(i));
+			QuestionnaireSpider q=parser.parseSojump();
+			if(q==null){continue;}
+			List<QuestionnaireSpider.Question> ques=q.getQuestionsByKW(kw);
+			if (ques==null){System.out.println("error:"+q.paperTitle);continue;}
+			System.out.println("ques Size!!!:"+ques.size());
+			quess.addAll(ques);
+		}
+		quess.sort(cmps);
+		Gson gson = new Gson();
+		
+		return gson.toJson(quess);
 	}
 
 }

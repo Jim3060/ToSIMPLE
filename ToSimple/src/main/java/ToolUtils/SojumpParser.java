@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ToolUtils.Spider.Algorithm;
 import model.QuestionnaireSpider;
 
 public class SojumpParser {
@@ -152,4 +153,20 @@ public class SojumpParser {
 		questionnaire.questions=getQuestionnaireQuestions();
 		return questionnaire;
 	}
+	
+	public QuestionnaireSpider.Question getQuestionByKW(QuestionnaireSpider q,String kw){
+		List<QuestionnaireSpider.Question> questions= q.questions;
+		QuestionnaireSpider.Question result=null;
+		int distance=kw.length();
+		int len=0;
+		for (int i=0;i<questions.size();i++){
+			QuestionnaireSpider.Question qtmp=questions.get(i);
+			if ((len=Algorithm.getStringGap(kw, qtmp.questionTitle))<distance){
+				result=qtmp;distance=len;
+			}
+		}
+		return result;
+	}
+	
+	
 }

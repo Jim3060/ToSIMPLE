@@ -76,5 +76,9 @@ public interface QuestionnaireService {
 	
 	public Questionnaire getQuestionnaireByKW(String kw);
 	
+	public String getQuestionByKW(String kw);
+	
+	public String getQuestionByKW(String kwq,String kw);
+	
 
 }

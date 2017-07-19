@@ -73,14 +73,16 @@ public class SpiderUtils {
 	
 	public Questionnaire getQuestionnaireByKW(String kw){
 		List<String> ids=searchSojumpIdByKW(kw);
-		
 		SojumpParser parser=new SojumpParser(ids.get(0));
 		QuestionnaireSpider q=parser.parseSojump();
 		return QuestionnaireSpider.toQuestionnaire(q);
 	}
 	
 	public static void main(String[] args) throws IOException   {
-		searchSojumpIdByKW("上海交大选修课调查");
+		//searchSojumpIdByKW("上海交大选修课调查");
+		String keyword="aab";
+		String [] dataStr = keyword.split("-"); 
+		System.out.println(dataStr[0]);
 		
 			
 		

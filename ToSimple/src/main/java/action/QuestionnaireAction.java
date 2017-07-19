@@ -188,6 +188,29 @@ public class QuestionnaireAction extends BaseAction {
 //    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
 		return null;
     }
+    
+    @RequestMapping(value = "questionSojumpKW/{keyword}", method =  RequestMethod.GET)
+    public String getSojumpQuestionByKeyword( HttpSession session,HttpServletResponse response, @PathVariable("keyword") String keyword) throws Exception {
+    	response.setContentType("application/json;charset=UTF-8");
+    	String q;
+    	String [] dataStr = keyword.split("-"); 
+    	System.out.println(dataStr[0]);
+    	if (dataStr[0].equals(keyword)){q=questionnaireService.getQuestionByKW(keyword);}
+    	else{q=questionnaireService.getQuestionByKW(dataStr[0],dataStr[1]);}
+    	if (q==null){
+    		JSONObject result = new JSONObject();
+    		result.put("valid", 0);
+    		response.getWriter().print(result);
+    		return null;
+    	}
+    	JSONObject result = new JSONObject();
+    	result.put("valid", 1);
+    	result.put("question", (q));
+        response.getWriter().print(result);
+//    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
+//    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
+		return null;
+    }
 
 
     /**
