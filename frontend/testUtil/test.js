@@ -6,7 +6,7 @@ let count = 0;
 const timeout = config.timeout;
 
 function sendRequest(option, body, expect){
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve)=>{
         let buffer = "";
         const startTime = new Date();
         if (body != "")
@@ -22,26 +22,26 @@ function sendRequest(option, body, expect){
                 if (expect == ""){
                     resolve([statusCode, time]);
                 }else{
-                    resolve([statusCode, time, buffer==expect?'success':'fail']);
+                    resolve([statusCode, time, buffer==expect?"success":"fail"]);
                 }
             });
-        })
+        });
 
-        req.on('socket', function (socket) {
+        req.on("socket", function (socket) {
             socket.setTimeout(timeout);  
-            socket.on('timeout', function() {
+            socket.on("timeout", function() {
                 req.abort();
             });
         });
 
-        req.on("error", e=>{
+        req.on("error", () => {
             resolve(["error", 0, "fail"]);
-        })
+        });
 
         if (body != "")
             req.write(body);
         req.end();
-    })
+    });
 } 
 
 function printStatistics(reports){
@@ -55,7 +55,7 @@ function printStatistics(reports){
 
     for(let i in reports){
         let report = reports[i];
-        if(report[0] != 'error')
+        if(report[0] != "error")
             count++;
         status[report[0]] = (status[report[0]] || 0) + 1;
         timeTotal += report[1];
@@ -102,8 +102,8 @@ function main(){
                 }
             }, err=>{
                 console.log(err);
-            })
-        }, i * interval)
+            });
+        }, i * interval);
     }
 
 }
