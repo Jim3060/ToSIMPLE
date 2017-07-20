@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import login from "./login.vue"
+import login from "./login.vue";
 
 export default {
     name: "navbar",
@@ -65,7 +65,7 @@ export default {
     methods: {
 
     }
-}
+};
 </script>
     
 <style>

@@ -1,18 +1,14 @@
 <template>
     <div class="connectItem">
         <span>第</span>
-        <!--<select v-model.number="idx_show">
-            <option v-for="i in options" :key="i">{{parseInt(i)+1}}</option>
-        </select>-->
         {{idx_show}}
         <span>题</span>
         <el-button type="danger" size="small" @click="cancel()" >删除</el-button>
-        <!--<div v-for="i in num" :key="i" class="options">
-            <input type="checkbox" v-model="select" :value="i-1" :disabled="!edit"></input>
-            <label>{{questionnaire.questions[idx].choices[i-1]}}</label>
-        </div>-->
         <el-checkbox-group v-model="select">
-            <el-checkbox v-for="i in num" :key="i" :label="i-1">{{questionnaire.questions[idx].choices[i-1]}}</el-checkbox>
+            <el-checkbox v-for="i in num" :key="i" :label="i-1">
+                <span>{{questionnaire.questions[idx].choices[i-1].text}}</span>
+                <img v-if="questionnaire.questions[idx].choices[i-1].photoId!=undefined" :src="`file/+${questionnaire.questions[idx].choices[i-1].photoId}`" />
+            </el-checkbox>
         </el-checkbox-group>
     </div>
 </template>
@@ -30,7 +26,7 @@ export default {
         select:[],
         idx_show:0,
         options:[]
-    }},
+    };},
     computed:{
         num(){
             try{
@@ -47,12 +43,12 @@ export default {
     watch:{
         idx(){
             if(this.index >= 0)
-            try{
-                this.select = this.questionnaire.questions[this.index].showAfter[this.idx];
-            }
-            catch(err){
-                this.select = {};
-            }
+                try{
+                    this.select = this.questionnaire.questions[this.index].showAfter[this.idx];
+                }
+                catch(err){
+                    this.select = {};
+                }
         },
         select(){
             this.$emit("update", this.idx, this.index, this.select);
@@ -79,11 +75,10 @@ export default {
             this.$emit("cancel", this.idx);
         }
     } 
-}
+};
 </script>
 
 <style>
-    /*.connectItem>*{float:left;}*/
     .connectItem>input{width:50px;}
     
 </style>
