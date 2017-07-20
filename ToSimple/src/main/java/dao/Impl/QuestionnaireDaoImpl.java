@@ -17,7 +17,6 @@ import static java.lang.Math.min;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 
-
 public class QuestionnaireDaoImpl extends HibernateDaoSupport implements QuestionnaireDao {
     protected MongoTemplate mongoTemplate;
 
@@ -109,7 +108,7 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name,CountUtils countUtils) {
+    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils) {
 
         pageSize = min(pageSize, 30);
         DB db = mongoTemplate.getDb();
@@ -130,7 +129,7 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
     }
 
     @Override
-    public List<Questionnaire> fetchAll(Integer page, Integer pageSize,CountUtils countUtils) {
+    public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils) {
         pageSize = min(pageSize, 30);
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
@@ -184,13 +183,13 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name,CountUtils countUtils) {
-        return searchQuestionnaireByName(0, 30, name,countUtils);
+    public List<Questionnaire> searchQuestionnaireByName(String name, CountUtils countUtils) {
+        return searchQuestionnaireByName(0, 30, name, countUtils);
     }
 
 
     @Override
-    public List<Questionnaire> findQuestionnaireByStatus(Integer status,CountUtils countUtils) {
+    public List<Questionnaire> findQuestionnaireByStatus(Integer status, CountUtils countUtils) {
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
@@ -205,24 +204,24 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         return list;
     }
 
-	@Override
-	public List<Questionnaire> getReportedQuestionnaire() {
-		Session session = this.getSession();
+    @Override
+    public List<Questionnaire> getReportedQuestionnaire() {
+        Session session = this.getSession();
         session.beginTransaction();
-        List<Report> reports=session.createQuery("from Report as r where r.status=0").list();
+        List<Report> reports = session.createQuery("from Report as r where r.status=0").list();
         session.getTransaction().commit();
-        Set<String>  questionnaireIdSet=new HashSet<String>();
-        for (int i=0;i<reports.size();i++){
-        	questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
+        Set<String> questionnaireIdSet = new HashSet<String>();
+        for (int i = 0; i < reports.size(); i++) {
+            questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
         }
-        List<ObjectId> idArray=new ArrayList<ObjectId>();
+        List<ObjectId> idArray = new ArrayList<ObjectId>();
 
         Iterator<String> it = questionnaireIdSet.iterator();
         while (it.hasNext()) {
-          idArray.add(new ObjectId(it.next())) ;
+            idArray.add(new ObjectId(it.next()));
         }
         BasicDBObject query = new BasicDBObject();
-        query.put("_id", new BasicDBObject("$in",idArray));
+        query.put("_id", new BasicDBObject("$in", idArray));
 
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
@@ -233,25 +232,25 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         }
         return list;
 
-	}
+    }
 
-	public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize, CountUtils countUtils){
-		Session session = this.getSession();
+    public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize, CountUtils countUtils) {
+        Session session = this.getSession();
         session.beginTransaction();
-        List<Report> reports=session.createQuery("from Report as r where r.status=0").list();
+        List<Report> reports = session.createQuery("from Report as r where r.status=0").list();
         session.getTransaction().commit();
-        Set<String>  questionnaireIdSet=new HashSet<String>();
-        for (int i=0;i<reports.size();i++){
-        	questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
+        Set<String> questionnaireIdSet = new HashSet<String>();
+        for (int i = 0; i < reports.size(); i++) {
+            questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
         }
-        List<ObjectId> idArray=new ArrayList<ObjectId>();
+        List<ObjectId> idArray = new ArrayList<ObjectId>();
 
         Iterator<String> it = questionnaireIdSet.iterator();
         while (it.hasNext()) {
-          idArray.add(new ObjectId(it.next())) ;
+            idArray.add(new ObjectId(it.next()));
         }
         BasicDBObject query = new BasicDBObject();
-        query.put("_id", new BasicDBObject("$in",idArray));
+        query.put("_id", new BasicDBObject("$in", idArray));
 
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
@@ -263,5 +262,5 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
             list.add(new Questionnaire(dbCursor.next()));
         }
         return list;
-	}
+    }
 }

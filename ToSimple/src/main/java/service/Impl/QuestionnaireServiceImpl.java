@@ -65,16 +65,16 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         questionnaireResultDao.save(questionnaireResult);
         //update answer number
         System.out.print("TTTUUUU");
-        String questionnaireId=(String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
-        Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
-        System.out.println((int)questionnaire.questionnaireJSON.get("answerNumber"));
-        questionnaire.questionnaireJSON.put("answerNumber",((int)questionnaire.questionnaireJSON.get("answerNumber")+1));
+        String questionnaireId = (String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
+        Questionnaire questionnaire = questionnaireDao.findQuestionnaireById(questionnaireId);
+        System.out.println((int) questionnaire.questionnaireJSON.get("answerNumber"));
+        questionnaire.questionnaireJSON.put("answerNumber", ((int) questionnaire.questionnaireJSON.get("answerNumber") + 1));
         questionnaireDao.update(questionnaireId, questionnaire);
         return null;
     }
-    
-    public List<Questionnaire> getReportedQuestionnaire(){
-    	return questionnaireDao.getReportedQuestionnaire();
+
+    public List<Questionnaire> getReportedQuestionnaire() {
+        return questionnaireDao.getReportedQuestionnaire();
     }
 
     @Override
@@ -138,9 +138,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     }
 
     @Override
-    public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize,CountUtils countUtils) {
-		
-		return questionnaireDao.getReportedQuestionnaireByPage(page,pageSize,countUtils);
-	}
+    public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize, CountUtils countUtils) {
+
+        return questionnaireDao.getReportedQuestionnaireByPage(page, pageSize, countUtils);
+    }
 
 }

@@ -100,4 +100,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
+    @Override
+    public Long save(Report report) {
+        return reportDao.save(report);
+    }
 }

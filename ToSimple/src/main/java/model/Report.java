@@ -22,6 +22,12 @@ public class Report {
         this.content = content;
     }
 
+    public Report(String questionnaireId, Date createTime, int status, String content) {
+        this.questionnaireId = questionnaireId;
+        this.createTime = createTime;
+        this.status = status;
+        this.content = content;
+    }
 
     public long getId() {
         return id;

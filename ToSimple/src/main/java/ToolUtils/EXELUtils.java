@@ -45,8 +45,8 @@ public class EXELUtils {
 
         //input answers
         System.out.println(questionnaireResults.size());
-        for (int i=0;i<questionnaireResults.size();i++){
-        	QuestionnaireResultGSON questionnaireResultGSON=QuestionnaireResultGSON.getQuestionnaireResultGSON(questionnaireResults.get(i).getQuestionnaireResult());
+        for (int i = 0; i < questionnaireResults.size(); i++) {
+            QuestionnaireResultGSON questionnaireResultGSON = QuestionnaireResultGSON.getQuestionnaireResultGSON(questionnaireResults.get(i).getQuestionnaireResult());
             HSSFRow rowa = sheet.createRow((int) i + 1);
             //add other info here
 
@@ -59,31 +59,29 @@ public class EXELUtils {
             cellbb.setCellStyle(style);
 
             cellbb = rowa.createCell((short) 2);
-            Long timing=TimeUtils.getLocalTime(questionnaireResultGSON.endTime).getTime()-TimeUtils.getLocalTime(questionnaireResultGSON.beginTime).getTime();
+            Long timing = TimeUtils.getLocalTime(questionnaireResultGSON.endTime).getTime() - TimeUtils.getLocalTime(questionnaireResultGSON.beginTime).getTime();
             cellbb.setCellValue(String.valueOf(timing / 1000) + "s");
             cellbb.setCellStyle(style);
 
 
-        	for (int j=0;j<questionnaireResultGSON.answers.size();j++){
-        		System.out.println("hi");
+            for (int j = 0; j < questionnaireResultGSON.answers.size(); j++) {
+                System.out.println("hi");
 
                 HSSFCell cell = rowa.createCell((short) j + beginPadding);
-                if (questionnaireGSON.questions.get(j).type==2){
-        			cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
-        			System.out.println(questionnaireResultGSON.answers.get(j).blank);
-        		}
-        		else if (questionnaireGSON.questions.get(j).type==1){
-        			String tmp="";
-        			for (int k=0;k<questionnaireResultGSON.answers.get(j).choice.size();k++){
-        				tmp+=questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text+", ";
-        			}
-        			cell.setCellValue(tmp);
-        		}
-        		else {
-        			for (int k=0;k<questionnaireResultGSON.answers.get(j).choice.size();k++){
-        				cell.setCellValue(questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text);
-        			}
-        		}
+                if (questionnaireGSON.questions.get(j).type == 2) {
+                    cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
+                    System.out.println(questionnaireResultGSON.answers.get(j).blank);
+                } else if (questionnaireGSON.questions.get(j).type == 1) {
+                    String tmp = "";
+                    for (int k = 0; k < questionnaireResultGSON.answers.get(j).choice.size(); k++) {
+                        tmp += questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text + ", ";
+                    }
+                    cell.setCellValue(tmp);
+                } else {
+                    for (int k = 0; k < questionnaireResultGSON.answers.get(j).choice.size(); k++) {
+                        cell.setCellValue(questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text);
+                    }
+                }
                 cell.setCellStyle(style);
             }
         }

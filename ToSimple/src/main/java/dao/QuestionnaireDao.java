@@ -24,11 +24,12 @@ public interface QuestionnaireDao {
 
     /**
      * fetch all questionnaires. only return the _id and paperTitle.
+     *
      * @param page
      * @param pageSize
      * @return
      */
-    public List<Questionnaire> fetchAll(Integer page,Integer pageSize,CountUtils countUtils);
+    public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils);
 
 
     /**
@@ -43,6 +44,7 @@ public interface QuestionnaireDao {
 
     /**
      * get a sample of questionnaires. The questionnaire status must be 1
+     *
      * @param size the max size of the questionnaires.
      * @return
      */
@@ -50,19 +52,21 @@ public interface QuestionnaireDao {
 
     /**
      * search questionnaires by name.(fuzzy search) Only return the questionnaire with status equals 1
-     * @param page the page num.begin with 0.
-     * @param name the name
+     *
+     * @param page     the page num.begin with 0.
+     * @param name     the name
      * @param pageSize the number of questionnaire not allowed bigger than 30.
-     * @return  the list of questionnaires
+     * @return the list of questionnaires
      */
     public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils);
 
     /**
      * search questionnaires by name.(fuzzy search)
+     *
      * @param name the name
-     * @return  the list of questionnaires
+     * @return the list of questionnaires
      */
-    public List<Questionnaire> searchQuestionnaireByName(String name,CountUtils countUtils);
+    public List<Questionnaire> searchQuestionnaireByName(String name, CountUtils countUtils);
 
     public List<Questionnaire> getReportedQuestionnaire();
 
@@ -70,6 +74,7 @@ public interface QuestionnaireDao {
 
     /**
      * find questionnaires by status
+     *
      * @param status the status of the questionnaire
      * @return the list of questionnaire
      */
@@ -83,7 +88,6 @@ public interface QuestionnaireDao {
 //     * @return the list of questionnaire
 //     */
 //    public List<Questionnaire> findQuestionnaireByStatus(Integer status,Integer size);
-
 
 
 //	public User getQuestionnaireById(int id);

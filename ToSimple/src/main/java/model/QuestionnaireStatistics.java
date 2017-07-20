@@ -1,11 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import com.google.gson.Gson;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -50,30 +45,29 @@ public class QuestionnaireStatistics {
         }
 
 
-	}
-	
-	public void putResults(List<QuestionnaireResult> questionnaireResults){
-		//put statistics
-		QuestionnaireResultGSON questionnaireResultGSON;
-		for (int i=0;i<questionnaireResults.size();i++){
-			questionnaireResultGSON=QuestionnaireResultGSON.getQuestionnaireResultGSON(questionnaireResults.get(i).getQuestionnaireResult());
-			QuestionnaireResultGSON.Answer atmp;
-			for (int j=0;j<questionnaireResultGSON.answers.size();j++){
-				atmp=questionnaireResultGSON.answers.get(j);
-				if (atmp.blank!=null&&!atmp.blank.equals("")){
+    }
 
-					questions.get(j).blanks.add(new Blank(atmp.blank,questionnaireResultGSON.questionnaireResultId));
-				}
-				else{
-					for (int k=0;k<atmp.choice.size();k++){
-						if (atmp.choice.get(k)!=null){
-							questions.get(j).choices.get(atmp.choice.get(k)).number++;
-						}
-					}
-				}
-			}
-		}
-		System.out.println("break");
+    public void putResults(List<QuestionnaireResult> questionnaireResults) {
+        //put statistics
+        QuestionnaireResultGSON questionnaireResultGSON;
+        for (int i = 0; i < questionnaireResults.size(); i++) {
+            questionnaireResultGSON = QuestionnaireResultGSON.getQuestionnaireResultGSON(questionnaireResults.get(i).getQuestionnaireResult());
+            QuestionnaireResultGSON.Answer atmp;
+            for (int j = 0; j < questionnaireResultGSON.answers.size(); j++) {
+                atmp = questionnaireResultGSON.answers.get(j);
+                if (atmp.blank != null && !atmp.blank.equals("")) {
+
+                    questions.get(j).blanks.add(new Blank(atmp.blank, questionnaireResultGSON.questionnaireResultId));
+                } else {
+                    for (int k = 0; k < atmp.choice.size(); k++) {
+                        if (atmp.choice.get(k) != null) {
+                            questions.get(j).choices.get(atmp.choice.get(k)).number++;
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("break");
 
     }
 

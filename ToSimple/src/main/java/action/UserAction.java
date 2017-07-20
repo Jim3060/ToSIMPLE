@@ -190,13 +190,13 @@ public class UserAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "user/role",method = RequestMethod.POST)
-    public void changeRole(Long userId,Integer role,HttpServletResponse response) throws IOException {
-        Integer integer = userService.changRole(userId,role);
+    @RequestMapping(value = "user/role", method = RequestMethod.POST)
+    public void changeRole(Long userId, Integer role, HttpServletResponse response) throws IOException {
+        Integer integer = userService.changRole(userId, role);
         response.setContentType("application/json;charset=UTF-8");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("success",1);
-        jsonObject.put("oldRole",integer);
+        jsonObject.put("success", 1);
+        jsonObject.put("oldRole", integer);
         System.out.print(jsonObject.toString());
         response.getWriter().print(jsonObject);
     }
