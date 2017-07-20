@@ -69,5 +69,16 @@ public interface QuestionnaireService {
 	public List<Questionnaire> getReportedQuestionnaire();
 	
 	public List<Questionnaire> getReportedQuestionnaireByPage(int page , int pageSize,CountUtils countUtils);
+	
+	public Questionnaire getSojumpQuestionnaire(String sojumpId);
+	
+	public int saveSojumpQuestionnaire(String sojumpId);
+	
+	public Questionnaire getQuestionnaireByKW(String kw);
+	
+	public String getQuestionByKW(String kw);
+	
+	public String getQuestionByKW(String kwq,String kw);
+	
 
 }
