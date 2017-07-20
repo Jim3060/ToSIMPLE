@@ -128,7 +128,7 @@ export default {
                 localStorage.questionnaire = JSON.stringify(this.questionnaire);
                 this.$message.success("问卷已暂存，请记得及时提交");
                 this.recovered = false;
-            });
+            }).catch(() => {});
         },
         recover() {
             this.title = "";
@@ -143,7 +143,7 @@ export default {
                     this.title = this.questionnaire.paperTitle;
                     this.briefing = this.questionnaire.briefing || "";
                     this.recovered = true;
-                });
+                }).catch(() => {});
             }
         },
         deleteQuestionnaire() {

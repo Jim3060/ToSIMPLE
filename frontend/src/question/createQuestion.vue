@@ -10,7 +10,7 @@
         </div>
         <div>
             题目:<!--<input v-model="title"></input>-->
-            <questionTitle :questionnaireTitle="questionnaire.paperTitle" @update="title=$event"></questionTitle>
+            <questionTitle @select="forkQuestion($event)" :questionnaireTitle="questionnaire.paperTitle" :questionTitle="title" @update="title=$event"></questionTitle>
             <el-checkbox v-model="forced">必答题</el-checkbox>
         </div>
         <div v-if="type=='多选'">
@@ -75,7 +75,7 @@
 <script>
 import connectItem from "./connectItem.vue";
 import Vue from "vue";
-import questionTitle from "./questionTitle/questionTitle.vue";
+import questionTitle from "./questionTitle.vue";
 
 export default {
     components:{connectItem, questionTitle},
@@ -149,7 +149,17 @@ export default {
                 this.showAfter[idx] = select;
                 this.newItem = false;
             }
-
+        },
+        forkQuestion(item){
+            this.options = item.choices;
+            this.type = this.types[item.type];
+            this.forced = item.forced || false;
+            this.limit = item.limit || "";
+            this.mix = item.mix || false;
+            this.showAfter = item.showAfter || {};
+            if (item.showAfter != undefined && item.showAfter != {}){
+                this.connect = true;
+            }
         },
         resultCheck(result){
             if(result.questionTitle == ""){
