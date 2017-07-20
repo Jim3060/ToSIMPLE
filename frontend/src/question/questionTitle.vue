@@ -7,17 +7,14 @@
         @select="handleSelect" 
         size="small">
         <template slot="append">
-            <el-button v-if="!showSuggestions" @click="loadSuggestions()">显示相似问题</el-button>
+            <el-button v-if="!showSuggestions" @click="showSuggestions=true">显示相似问题</el-button>
             <el-button v-else @click="hideSuggestions()">隐藏相似问题</el-button>    
         </template>   
     </el-autocomplete>
 </template>
 
 <script>
-//import item from "./suggestItem.vue";
 import Vue from "vue";
-
-//Vue.component("item", item);
 
 Vue.component("item", {
     functional: true,
@@ -25,7 +22,7 @@ Vue.component("item", {
         var item = ctx.props.item;
         return h("li", ctx.data, [
             h("div", { attrs: { class: "title" } }, [item.questionTitle]),
-            h("span", { attrs: { class: "options" } }, ["选项: " + item.choices.map((choice) => {return choice.text;}).join(", ")])
+            h("span", { attrs: { class: "options" } }, ["选项: " + (item.choices || []).map((choice) => {return choice.text;}).join(", ")])
         ]);
     },
     props: {
@@ -45,25 +42,30 @@ export default {
     };},
     methods:{
         loadSuggestions(){
-            this.suggestions = [
-                {questionTitle: "Q1", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q2", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q3", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q4", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q5", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q6", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q7", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q8", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0},
-                {questionTitle: "Q9", choices:[{text:"A"}, {text: "B"}, {text: "C"}], type: 0}
-            ];
-            /*$.get(`questionSojumpKW/${this.questionnaireTitle}-${this.title}`, data => {
-                if (data.valid == 1)
-                    this.suggestions = data.question;
-                else
+            return new Promise((resolve, reject) => {
+                if (this.title != "" && this.showSuggestions){
+                    let url = "questionSojumpKW/";
+                    if (this.questionnaireTitle != "")
+                        url += `${this.questionnaireTitle}-`;
+                    $.get(`${url}${this.title}`, data => {
+                        if (data.valid == 1){
+                            this.suggestions = data.question.slice(0, 10);
+                            resolve("ok");
+                        }
+                        else{
+                            this.suggestions = [];
+                            resolve("ok");
+                        }
+                        this.showSuggestions = true;
+                    }).fail(() => {
+                        reject("error");
+                    });
+                }
+                else{
                     this.suggestions = [];
-                this.showSuggestions = true;
-            });*/
-            this.showSuggestions = true;
+                    resolve("ok");
+                }
+            });
         },
         hideSuggestions(){
             this.suggestions = [];
@@ -74,13 +76,20 @@ export default {
             this.$emit("select", item);
         },
         fetchSuggestions(query, callback){
-            callback(this.suggestions);
+            if (this.showSuggestions){
+                this.loadSuggestions().then(() => {
+                    callback(this.suggestions);
+                }).catch(() => {
+                    this.$message.error("网络异常");
+                });
+            }
+            else{
+                callback([]);
+            }
         }
     },
     watch:{
         title(){
-            if (this.showSuggestions)
-                this.loadSuggestions;
             this.$emit("update", this.title);
         }
     },
