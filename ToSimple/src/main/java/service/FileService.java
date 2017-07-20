@@ -1,10 +1,9 @@
 package service;
 
 import java.io.InputStream;
-import model.Questionnaire;
 
 public interface FileService {
-	public InputStream getFile(String id);
-	
-	public String saveFile(InputStream fileContent);
+    InputStream getFile(String id);
+
+    String saveFile(InputStream fileContent);
 }

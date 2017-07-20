@@ -5,7 +5,7 @@ var path = require("path");
 
 var root = path.resolve(".");
 var allowExternalRequest = true;
-var address = "192.168.1.30";
+var address = "192.168.1.116";
 var port = 8080;
 
 var mime = {
@@ -113,4 +113,4 @@ http.createServer(function (request, response) {
             }
         }
     });
-}).listen(8080, () => { console.log("listen on 8080"); });
+}).listen(8087, () => { console.log("listen on 8087"); });

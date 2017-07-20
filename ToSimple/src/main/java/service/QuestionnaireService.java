@@ -1,15 +1,11 @@
 package service;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import ToolUtils.CountUtils;
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
-import model.User;
-import net.sf.json.JSONObject;
+
+import java.util.List;
 
 public interface QuestionnaireService {
 	public String addOrUpdateQuestionnaire(Questionnaire questionnaireJSON);
@@ -79,6 +75,5 @@ public interface QuestionnaireService {
 	public String getQuestionByKW(String kw);
 	
 	public String getQuestionByKW(String kwq,String kw);
-	
 
 }

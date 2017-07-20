@@ -1,29 +1,6 @@
 package action;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.KeyPair;
-
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.List;
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.sun.org.apache.regexp.internal.RE;
-
-
 import ToolUtils.RSAUtils;
-
-
-import net.sf.json.JSON;
-
-import org.apache.struts2.ServletActionContext;
-
-
 import model.User;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +9,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import service.UserService;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyPair;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class UserAction extends BaseAction {
     private static final long serialVersionUID = 1L;
-
+    public List<User> users = new ArrayList<User>();
     @Autowired
     private UserService userService;
     private Long userId;
@@ -51,7 +38,6 @@ public class UserAction extends BaseAction {
     private String password;
     private Integer role;
     private String email;
-    public List<User> users = new ArrayList<User>();
 
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -59,12 +45,11 @@ public class UserAction extends BaseAction {
 
     @RequestMapping(value = "user", method = RequestMethod.POST)
     public String save(User user) {
-        //TODO
         userService.addUser(user);
         return null;
     }
 
-    @RequestMapping(value = "user/userId", method = RequestMethod.GET)
+    @RequestMapping(value = "user/{userId}", method = RequestMethod.GET)
     public String show(@PathVariable("userId") Long userId, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         User user = userService.getUserById(userId);
@@ -74,15 +59,36 @@ public class UserAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "user/userId", method = RequestMethod.PUT)
+    /**
+     * change the role of the user. only admin allowed.
+     *
+     * @param userId
+     * @param role
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(value = "user/{userId}", method = RequestMethod.PUT)
     public String edit(@PathVariable("userId") Long userId, Integer role, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
         userService.changRole(userId, role);
         return null;
     }
 
+    @RequestMapping(value = "picture", method = RequestMethod.POST)
+    public void savePicture(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("here");
+        System.out.println(file);
+        InputStream fileContent = file.getInputStream();
+        String url = "url";
 
-    @RequestMapping(value = "user/userId", method = RequestMethod.DELETE)
+        JSONObject result = new JSONObject();
+        result.put("imgUrl", url);
+        response.getWriter().print(result);
+        return;
+    }
+
+    @RequestMapping(value = "user/{userId}", method = RequestMethod.DELETE)
     public String delete(@PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
         return null;
@@ -117,17 +123,11 @@ public class UserAction extends BaseAction {
         KeyPair keyPair = RSAUtils.initKey();
         RSAPublicKey publicKey = RSAUtils.getPublicKey(keyPair);
         RSAPrivateKey privateKey = RSAUtils.getPrivateKey(keyPair);
-
-
         session.setAttribute("privateKey", privateKey);
-
         JSONObject result = new JSONObject();
         result.put("publicKey", RSAUtils.generateBase64PublicKey(publicKey));
         response.getWriter().print(result);
-
-
         return null;
-
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
@@ -190,13 +190,13 @@ public class UserAction extends BaseAction {
         return null;
     }
 
-    @RequestMapping(value = "user/role",method = RequestMethod.POST)
-    public void changeRole(Long userId,Integer role,HttpServletResponse response) throws IOException {
-        Integer integer = userService.changRole(userId,role);
+    @RequestMapping(value = "user/role", method = RequestMethod.POST)
+    public void changeRole(Long userId, Integer role, HttpServletResponse response) throws IOException {
+        Integer integer = userService.changRole(userId, role);
         response.setContentType("application/json;charset=UTF-8");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("success",1);
-        jsonObject.put("oldRole",integer);
+        jsonObject.put("success", 1);
+        jsonObject.put("oldRole", integer);
         System.out.print(jsonObject.toString());
         response.getWriter().print(jsonObject);
     }

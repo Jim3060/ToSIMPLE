@@ -8,7 +8,6 @@ Vue.use(VueRouter);
 Vue.use(ElementUI);
 Vue.use(VChart);
 
-
 import index from "./index.vue";
 import navbar from "./navbar.vue";
 import message from "./message.vue";

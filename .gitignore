@@ -3,5 +3,6 @@
 *.sql
 bundle.js
 *.idea
+*.iml
 .eslintrc.json
 .eslintignore
