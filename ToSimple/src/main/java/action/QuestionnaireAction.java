@@ -477,7 +477,7 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
     
-    @RequestMapping(value = "questionnaireResult/chart/{questionnaireId}", method = RequestMethod.GET)
+    @RequestMapping(value = "questionnaireStatistics/chart/{questionnaireId}", method = RequestMethod.GET)
     public String ChartDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException, ParseException {
         //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
         response.setContentType("application/json;charset=UTF-8");

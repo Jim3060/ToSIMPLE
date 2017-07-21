@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
 
 import com.google.gson.Gson;
 
@@ -103,6 +105,16 @@ public class QuestionnaireStatistics {
 	        for (int i=0;i<choices.size();i++){
 	        	QuestionnaireStatistics.Choice choice=choices.get(i);
 	        	dataset.addValue(choice.number,choice.title,choice.title);
+	        }      
+	        return dataset;       
+	    }    
+		public PieDataset getPieDataSet()       
+	    {       
+			DefaultPieDataset dataset = new DefaultPieDataset();      
+	        List<QuestionnaireStatistics.Choice> choices=this.choices;
+	        for (int i=0;i<choices.size();i++){
+	        	QuestionnaireStatistics.Choice choice=choices.get(i);
+	        	dataset.setValue(choice.title,choice.number);
 	        }      
 	        return dataset;       
 	    }    

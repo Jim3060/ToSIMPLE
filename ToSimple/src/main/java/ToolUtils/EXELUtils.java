@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.imageio.ImageIO;
 
@@ -19,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.tomcat.jni.Lock;
 
 import model.Questionnaire;
 import model.QuestionnaireResult;
@@ -27,6 +29,7 @@ import model.QuestionnaireStatistics;
 import model.QuestionnaireGSON;
 
 public class EXELUtils {
+	private static ReentrantLock lock = new ReentrantLock();
 	DateFormat df = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
 	public static HSSFWorkbook GenerateRawResultStatistics(Questionnaire questionnaire,List<QuestionnaireResult> questionnaireResults) throws ParseException{
 		QuestionnaireGSON questionnaireGSON=QuestionnaireGSON.getQuestionnaireGSON(questionnaire.getQuestionnaire());
@@ -115,7 +118,7 @@ public class EXELUtils {
         HSSFCellStyle style = wb.createCellStyle();  
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
         HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
-        HSSFClientAnchor anchor;
+        
         int picWidth=4;
         int picHeight=20;
         List<Integer> picRow=new ArrayList<Integer>();
@@ -151,18 +154,35 @@ public class EXELUtils {
     		}
     		
     		//insert chart
-    		
+    		rowNum++;
     		//read the image
-            BufferedImage bufferImg = null;        
-			ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();     
+//            BufferedImage bufferImg ;        
+//			ByteArrayOutputStream byteArrayOut;     
 			File filec=ChartUtils.CreateBarChart(questions.get(i).getBarDataSet(), questions.get(i).title, "Choices", "Number");
-			bufferImg = ImageIO.read(filec);     
-			ImageIO.write(bufferImg, "png", byteArrayOut);  
+			//File filep=ChartUtils.CreatePieChart(questions.get(i).getPieDataSet(), questions.get(i).title);
+			
 			
 	
-	        anchor = new HSSFClientAnchor(0, 0, 0, 0,(short) 1, rowNum, (short) (7), rowNum+picHeight); 
-			anchor.setAnchorType(2);      
-			patriarch.createPicture(anchor, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG));   
+			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0,(short) 1, rowNum, (short) (7), rowNum+picHeight); 
+	        //HSSFClientAnchor anchor2 = new HSSFClientAnchor(0, 0, 0, 0,(short) 8, rowNum, (short) (14), rowNum+picHeight); 
+			anchor.setAnchorType(2);     
+			//anchor2.setAnchorType(2); 
+			
+			createPic(wb,patriarch,anchor,filec);
+			//createPic(wb,patriarch,anchor2,filep);
+			
+//			bufferImg = null;        
+//			byteArrayOut = new ByteArrayOutputStream();     
+//			bufferImg = ImageIO.read(filec);     
+//			ImageIO.write(bufferImg, "png", byteArrayOut);  
+//			patriarch.createPicture(anchor, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
+//			
+//			bufferImg = null;        
+//			byteArrayOut = new ByteArrayOutputStream(); 
+//			bufferImg = ImageIO.read(filep);     
+//			ImageIO.write(bufferImg, "png", byteArrayOut);  
+//			patriarch.createPicture(anchor2, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
+//			
 			rowNum+=picHeight;
 			
 			//leave an empty line
@@ -174,6 +194,16 @@ public class EXELUtils {
         
         
 		return wb;
+	}
+	
+	public static void createPic(HSSFWorkbook wb,HSSFPatriarch patriarch,HSSFClientAnchor anchor,File file) throws IOException{
+		
+		BufferedImage bufferImg = null;        
+		ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream(); 
+		bufferImg = ImageIO.read(file);     
+		ImageIO.write(bufferImg, "png", byteArrayOut);  
+		patriarch.createPicture(anchor, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
+		
 	}
 	
 	

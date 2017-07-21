@@ -13,10 +13,15 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.Dataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.ui.ApplicationFrame;
 
 import model.QuestionnaireStatistics;
 
-public class ChartUtils {
+public class ChartUtils  {
+
+
 	public static File CreateBarChart(DefaultCategoryDataset dataset,String title,String xName,String yName) throws IOException{
 	             
 		 setChartTheme();       
@@ -31,6 +36,20 @@ public class ChartUtils {
 	     return file;    
   
 		
+	}
+	
+	public static File CreatePieChart(PieDataset dataset,String title) throws IOException{
+		JFreeChart chart = ChartFactory.createPieChart(      
+		         title,  // chart title 
+		         dataset,        // data    
+		         true,           // include legend   
+		         true, 
+		         false);
+		String filename = DateFormatUtils.format(new Date(), "yyyyMMddHHmmss")+".png";  
+	    File file = new File(filename);  
+	    ChartUtilities.saveChartAsPNG(file,chart,600,500);  
+	    // ChartUtilities.saveChartAsJPEG(new File("/Users/JimLiu/Downloads/test.png"), chart, 400, 300);  
+	    return file;    
 	}
 	
 	private static void setChartTheme()       
