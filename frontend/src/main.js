@@ -31,7 +31,8 @@ const routes = [
     {path:"/questionnaireManager", component : questionnaireManager},
     {path:"/s/:id", name:"s", component: statistic},
     {path:"/search/:name", name:"search", component: qView},
-    {path:"/m/q", component: myQuestionnaire}
+    {path:"/m/q", component: myQuestionnaire},
+    {path:"/r/:id", name: "r", component: questionnaire}
 ];
 
 const router = new VueRouter({

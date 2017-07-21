@@ -7,9 +7,9 @@
             <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
                 <el-button v-if="edit" type="primary" size="small" @click="change(index)" style="margin:1px 2px 3px 4px">修改</el-button>
                 <el-button v-if="edit" type="danger" size="small" @click="del(index)">删除</el-button>
-                <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></single>
-                <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></multiple>
-                <blank v-if="question.type==2" :index="index" :title="question.questionTitle" :forced="question.forced" @update="update(index, $event)"></blank>
+                <single v-if="question.type==0" :index="index" :answer="answer[index]" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></single>
+                <multiple v-if="question.type==1" :index="index" :answer="answer[index]" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></multiple>
+                <blank v-if="question.type==2" :index="index" :answer="answer[index]" :title="question.questionTitle" :forced="question.forced" @update="update(index, $event)"></blank>
             </div>
         </div>
         <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
@@ -143,6 +143,40 @@ export default {
                 this.$message.error("网络异常");
             });
         },
+        loadAnswer(){
+            return new Promise((resolve, reject) => {
+                if(this.$route.name == "r"){
+                    let id = this.$route.params.id;
+                    $.get("questionnaireResult/"+id, data => {
+                        if (data.valid == 1 || data.valid == "1"){
+                            this.answer = data.questionnaireResult.answers;
+                            resolve(data.questionnaireResult.questionnaireId);
+                        }
+                        else
+                            reject("invalid id");
+                    }).fail(() => {
+                        reject("error");
+                    });
+                }
+                else
+                    reject("wrong route");
+            });
+        },
+        loadQuestionnaire(qid){
+            var id = qid;
+            $.get("questionnaire/"+id, data=>{
+                if(data.valid == "1"){
+                    this.questionnaire = data.questionnaire;
+                    for(var i = 0; i < this.questionnaire.questions.length; i++){
+                        this.hidden[i] = !this.ifShow(i);
+                    }
+                }else{
+                    this.$message.warning("该问卷不存在");
+                }
+            }, "json").fail(()=>{
+                this.$message.error("网络异常");
+            });
+        },
         ifShow(index){
             var showAfter = this.questionnaire.questions[index].showAfter;
             if(typeof showAfter == "undefined" || Object.keys(showAfter).length == 0)
@@ -181,20 +215,16 @@ export default {
         reportInfo : "getInputSize"
     },
     created(){
-        if(Object.keys(this.questionnaire) == 0){
-            var id = this.$route.params.id;
-            $.get("questionnaire/"+id, data=>{
-                if(data.valid == "1"){
-                    this.questionnaire = data.questionnaire;
-                    for(var i = 0; i < this.questionnaire.questions.length; i++){
-                        this.hidden[i] = !this.ifShow(i);
-                    }
-                }else{
-                    this.$message.warning("该问卷不存在");
-                }
-            }, "json").fail(()=>{
+        this.beginTime = new Date();
+        if(this.$route.name == "r"){
+            this.loadAnswer().then(qid => {
+                this.loadQuestionnaire(qid);
+            }).catch(() => {
                 this.$message.error("网络异常");
             });
+        }
+        else if(this.$route.name == "q"){
+            this.loadQuestionnaire(this.$route.params.id);
         }
         this.beginTime = new Date();
     }
