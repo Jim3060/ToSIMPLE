@@ -3,9 +3,9 @@
         <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
         <div v-if="!edit&&questionnaire!=undefined&&questionnaire.briefing!=undefined" class="questionnaire-briefing">{{questionnaire.briefing}}</div>
         <div></div>
-        <div>
+        <div style="margin:0% 30% 0% 0%">
             <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
-                <el-button v-if="edit" type="primary" size="small" @click="change(index)">修改</el-button>
+                <el-button v-if="edit" type="primary" size="small" @click="change(index)" style="margin:1px 2px 3px 4px">修改</el-button>
                 <el-button v-if="edit" type="danger" size="small" @click="del(index)">删除</el-button>
                 <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></single>
                 <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></multiple>
@@ -13,6 +13,16 @@
             </div>
         </div>
         <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
+        <!-- modify -->
+        <el-button type="primary" v-if="!   edit" @click="dialogVisible=true">举报</el-button>
+        <el-dialog  title="请输入举报原因" :visible.sync="dialogVisible" size="tiny"   :before-close="closeDialog">
+            <el-input type="textarea" :rows="7" placeholder="不多于255个字"  v-model="reportInfo" :maxlength="255"></el-input>
+            <p>已输入{{reportNum}}/255个字</p>
+            <el-button @click="closeDialog()" style="margin: 4% 0% 0% 0%">取 消</el-button>
+            <el-button type="primary" @click="uploadReport()">提 交</el-button>
+        </span>
+        </el-dialog>
+        <!--modify-->
     </div>
 </template>
 
@@ -33,9 +43,53 @@ export default {
         answer:{},
         hidden:[],
         dirty: false,
-        beginTime:""
+
+        beginTime:"",
+        dialogVisible:false,
+        reportInfo:"",
+        reportNum:0
     };},
     methods:{
+        getInputSize() {
+            var self = this;
+            var str = self.reportInfo.toString();
+            var len = 0;
+            for (var i = 0; i < str.length; i++) {
+                if(str.charCodeAt(i) >= 0 && str.charCodeAt(i) <= 128) { 
+                    len++; 
+                } 
+                else { 
+                    len += 2; 
+                } 
+            } 
+            self.reportNum = len;
+        },
+
+        uploadReport() {
+            var self = this;
+            $.ajax({
+                type: "POST",
+                url: "report",
+                data : {"content" : self.reportInfo, "questionnaireId" : 1},
+                dataType : "json",
+                success : data=>{
+                    console.log(data);
+                    if (data.valid == "1" || data.valid == 1)
+                        this.$message.success("操作成功！");
+                    else {
+                        this.$message.error("网络传输异常！");
+                    }
+                    this.closeDialog();
+                }
+            });
+        },
+
+        closeDialog() {
+            var self = this;
+            self.reportInfo = "";
+            self.dialogVisible = false;
+        },
+
         update(index, data){
             this.answer[index] = data;
             this.dirty = true;
@@ -122,7 +176,9 @@ export default {
                 }
                 this.dirty = false;
             }
-        }
+        },
+
+        reportInfo : "getInputSize"
     },
     created(){
         if(Object.keys(this.questionnaire) == 0){
