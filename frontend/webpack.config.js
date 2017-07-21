@@ -1,7 +1,11 @@
+let webpack = require("webpack");
+
+const UglifyEsPlugin = require("uglify-es-webpack-plugin");
+ 
 module.exports = {
     entry: __dirname + "/src/main.js",
     output: {
-        path: __dirname + "/out/ToSimple",
+        path: __dirname + "/out",
         filename: "bundle.js"
     },
     module: {
@@ -48,5 +52,21 @@ module.exports = {
             "vue$": "vue/dist/vue.esm.js"
         }
     },
-    devtool: "#eval-source-map"
+    devtool: false,
+    plugins:[
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: "\"production\""
+            }
+        }),
+        new UglifyEsPlugin()
+    ]
 };
+/*
+if (process.env.NODE_ENV === 'production') {
+    module.exports.devtool = 'source-map';
+ 
+    module.exports.plugins = (module.exports.plugins || []).concat([
+        new UglifyEsPlugin()
+    ]);
+}*/

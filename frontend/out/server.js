@@ -73,7 +73,7 @@ http.createServer(function (request, response) {
                 }
             };
 
-            console.log(request.method, `http://${address}:${port}${url.parse(request.url).path}`);
+            console.log(new Date().toLocaleTimeString(), request.method, `http://${address}:${port}${url.parse(request.url).path}`);
 
             const req = http.request(options, (res) => {
                 //res.setEncoding('utf8');
@@ -113,4 +113,4 @@ http.createServer(function (request, response) {
             }
         }
     });
-}).listen(8087, () => { console.log("listen on 8087"); });
+}).listen(8080, () => { console.log("listen on 8080"); });

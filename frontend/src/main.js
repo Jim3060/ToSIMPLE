@@ -18,6 +18,7 @@ import questionnaireManager from "./manage/qmOfm.vue";
 import statistic from "./statistics/questionnaire.vue";
 import qView from "./question/questionnairesView.vue";
 import myQuestionnaire from "./manage/myquestionnaires.vue";
+import backup from "./manage/backupManage.vue"
 
 
 const routes = [
@@ -32,7 +33,8 @@ const routes = [
     {path:"/s/:id", name:"s", component: statistic},
     {path:"/search/:name", name:"search", component: qView},
     {path:"/m/q", component: myQuestionnaire},
-    {path:"/r/:id", name: "r", component: questionnaire}
+    {path:"/r/:id", name: "r", component: questionnaire},
+    {path:"/backup", component: backup}
 ];
 
 const router = new VueRouter({
