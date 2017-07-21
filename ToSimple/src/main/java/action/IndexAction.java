@@ -1,6 +1,7 @@
 package action;
 
-
+import model.User;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -8,10 +9,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -29,25 +33,150 @@ public class IndexAction {
     @Autowired
     private MongoDbFactory mongoDbFactory;
 
-    @RequestMapping(value = "backup", method = RequestMethod.GET)
-    public void backUp(HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "backupMongodb", method = RequestMethod.GET)
+    public void backupMongodb(HttpServletResponse response, @RequestParam(value = "file", defaultValue = "") String file, HttpSession session) throws IOException {
+        User user = (User) session.getAttribute("user");
+        JSONObject jsonObject = new JSONObject();
+        if (user == null || user.getRole() != 1) {
+            jsonObject.put("valid", 2);
+            response.getWriter().print(jsonObject);
+            return;
+        }
         Properties prop = new Properties();
         InputStream in = getClass().getResourceAsStream("/setting.properties");
         prop.load(in);
-        String command = "mongodump -h " + prop.getProperty("spring.data.mongodb.host") + " -p " + prop.getProperty("spring.data.mongodb.port")
-                + " -d " + prop.getProperty("spring.data.mongodb.dbname") + " -o \"" + "/home/tbxsx/backup" + "\"";
+        String fileDir = file;
+        if (fileDir.equals("")) {
+            fileDir = prop.getProperty("spring.data.mongodb.backUpDir") + (new Date()).toString();
+        } else {
+            fileDir = prop.getProperty("spring.data.mongodb.backUpDir") + fileDir;
+        }
+        String command = "mongodump -h " + prop.getProperty("spring.data.mongodb.host")
+                + " -p " + prop.getProperty("spring.data.mongodb.port")
+                + " -d " + prop.getProperty("spring.data.mongodb.dbname")
+                + " -o " + fileDir+"\n";
+        System.out.print("\n"+command+"\n");
+        System.out.print("\n"+fileDir+"\n");
+        System.out.print("ttttttttttttttttttttttttt");
+        System.out.print(jsonObject.toString());
+        
         Process p = Runtime.getRuntime().exec(command);
+   
+        
+        jsonObject.put("valid", 1);
+        response.getWriter().print(jsonObject);
     }
 
-    @RequestMapping(value = "restore", method = RequestMethod.GET)
-    public void restore() throws IOException {
+    @RequestMapping(value = "backupMysql", method = RequestMethod.GET)
+    public void backupMysql(HttpSession session, HttpServletResponse response, @RequestParam(value = "file", defaultValue = "") String file) throws IOException {
+        User user = (User) session.getAttribute("user");
+        JSONObject jsonObject = new JSONObject();
+        if (user == null || user.getRole() != 1) {
+            jsonObject.put("valid", 2);
+            response.getWriter().print(jsonObject);
+            return;
+        }
         Properties prop = new Properties();
         InputStream in = getClass().getResourceAsStream("/setting.properties");
         prop.load(in);
-        String command = "mongorestore -h " + prop.getProperty("spring.data.mongodb.host") + " -p " + prop.getProperty("spring.data.mongodb.port")
-                + " -d " + prop.getProperty("spring.data.mongodb.dbname") + "/home/tbxsx/backup" + "\"";
-        Process p = Runtime.getRuntime().exec(command);
+        String fileDir = file;
+        if (fileDir.equals("")) {
+            fileDir = prop.getProperty("data.mysql.backUpDir") + (new Date()).toString();
+        } else {
+            fileDir = prop.getProperty("data.mysql.backUpDir") + fileDir;
+        }
+        String command = "mysqldump -h " + prop.getProperty("data.mysql.host") + " -P "
+                + prop.getProperty("data.mysql.port")
+                + " -u" + prop.getProperty("data.mysql.username")
+                + " -p" + prop.getProperty("data.mysql.password")
+                + " " + prop.getProperty("data.mysql.dbname")
+                + " > " + fileDir;
+        System.out.print(command);
+        try {
+            Process p = Runtime.getRuntime().exec(command);
+        } catch (Exception e) {
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return;
+        }
+        jsonObject.put("valid", 1);
+        response.getWriter().print(jsonObject);
     }
+
+    @RequestMapping(value = "restoreMongodb", method = RequestMethod.GET)
+    public void restoreMongodb(HttpSession session, HttpServletResponse response, @RequestParam(value = "file", defaultValue = "") String file) throws IOException {
+        User user = (User) session.getAttribute("user");
+        JSONObject jsonObject = new JSONObject();
+        if (user == null || user.getRole() != 1) {
+            jsonObject.put("valid", 2);
+            response.getWriter().print(jsonObject);
+            return;
+        }
+
+        Properties prop = new Properties();
+        InputStream in = getClass().getResourceAsStream("/setting.properties");
+        prop.load(in);
+        String fileDir = file;
+        if (fileDir.equals("")) {
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return;
+        } else {
+            fileDir = prop.getProperty("spring.data.mongodb.backUpDir") + fileDir;
+        }
+        String command = "mongorestore -h " + prop.getProperty("spring.data.mongodb.host") + " -p " + prop.getProperty("spring.data.mongodb.port")
+                + " -d " + prop.getProperty("spring.data.mongodb.dbname") + " " + fileDir;
+
+        System.out.print(command);
+        try {
+            Process p = Runtime.getRuntime().exec(command);
+        } catch (Exception e) {
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return ;
+        }
+        jsonObject.put("valid", 1);
+        response.getWriter().print(jsonObject);
+    }
+
+    @RequestMapping(value = "restoreMysql", method = RequestMethod.GET)
+    public void restoreMysql(HttpSession session, HttpServletResponse response, @RequestParam(value = "file", defaultValue = "") String file) throws IOException {
+
+        User user = (User) session.getAttribute("user");
+        JSONObject jsonObject = new JSONObject();
+        if (user == null || user.getRole() != 1) {
+            jsonObject.put("valid", 2);
+            response.getWriter().print(jsonObject);
+            return;
+        }
+
+        Properties prop = new Properties();
+        InputStream in = getClass().getResourceAsStream("/setting.properties");
+        prop.load(in);
+        String fileDir = file;
+        if (fileDir.equals("")) {
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return;
+        } else {
+            fileDir = prop.getProperty("data.mysql.backUpDir") + fileDir;
+        }
+        String command = "mysql -h " + prop.getProperty("data.mysql.host") + " -P " + prop.getProperty("data.mysql.port")
+                + " " + prop.getProperty("data.mysql.dbname") + " < " + fileDir;
+
+        System.out.print(command);
+        try {
+            Process p = Runtime.getRuntime().exec(command);
+        } catch (Exception e) {
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return;
+        }
+        jsonObject.put("valid", 1);
+        response.getWriter().print(jsonObject);
+    }
+    
+    
 
 
 }
