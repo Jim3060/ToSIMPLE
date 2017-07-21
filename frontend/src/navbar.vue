@@ -14,30 +14,57 @@
                         <a>
                             <el-dropdown menu-align="start">
                                 <span class="el-dropdown-link">
-                                    问卷<i class="el-icon-caret-bottom el-icon--right"></i>
+                                    问卷
+                                    <i class="el-icon-caret-bottom el-icon--right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item><a href="#/q">随便看看</a></el-dropdown-item>
-                                    <el-dropdown-item><a href="#/n">新建问卷</a></el-dropdown-item>
-                                    <el-dropdown-item><a href="#/m/q">我的问卷</a></el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <a href="#/q">随便看看</a>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item v-if="role>=0">
+                                        <a href="#/n">新建问卷</a>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item v-if="role>=0">
+                                        <a href="#/m/q">我的问卷</a>
+                                    </el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </a>
                     </li>
-                    <!--<li :class="{active:($route.path=='/q'||$route.name=='q')}">
-                        <a href="#/q">问卷</a>
+                    <li v-if="role == 1" :class="{active:$route.path=='/backup'||$route.path=='/questionnaireManager'||$route.path=='/userManager'}">
+                        <a>
+                            <el-dropdown menu-align="start">
+                                <span class="el-dropdown-link">
+                                    管理
+                                    <i class="el-icon-caret-bottom el-icon--right"></i>
+                                </span>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item >
+                                        <a href="#/userManager">管理用户</a>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <a href="#/questionnaireManager">管理问卷</a>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <a href="#/backup">备份</a>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
+                        </a>
                     </li>
-                    <li :class="{active:($route.path=='/n'||$route.name=='n')}">
-                        <a href="#/n">新建</a>
-                    </li>-->
-                    <li :class="{active:($route.path=='/userManager')}">
-                        <a href="#/userManager">管理用户</a>
-                    </li>
-                    <li :class="{active:($route.path=='/questionnaireManager')}">
-                        <a href="#/questionnaireManager">管理问卷</a>
-                    </li>
+                    <!--
+                            <li :class="{active:($route.path=='/userManager')}">
+                                <a href="#/userManager">管理用户</a>
+                            </li>
+                            <li :class="{active:($route.path=='/questionnaireManager')}">
+                                <a href="#/questionnaireManager">管理问卷</a>
+                            </li>
+                            <li :class="{active:($route.path=='/backup')}">
+                                <a href="#/backup">备份</a>
+                            </li>
+                            -->
     
-                    <login class="navbar-right"></login>
+                    <login class="navbar-right" @login="role=$event" @logout="role=-1"></login>
                     <form class="navbar-form navbar-right" role="search">
                         <div class="form-group">
                             <input v-model="searchContent" type="text" class="form-control" placeholder="Search">
@@ -59,7 +86,7 @@ export default {
     data() {
         return {
             searchContent: "",
-            role: 0
+            role: -1
         };
     },
     methods: {

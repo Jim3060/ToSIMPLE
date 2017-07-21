@@ -11,7 +11,7 @@ var address = "192.168.1.30:8080/ToSimple";
 http.createServer(function(request,response){
     if(!allowExternalRequest&&request.headers["host"]!="127.0.0.1:8080"&&request.headers["host"]!="localhost:8080"){
         response.writeHead(403);
-        response.end("<h1>403 Forbidden</h1>")
+        response.end("<h1>403 Forbidden</h1>");
         return;
     }
     
@@ -20,8 +20,8 @@ http.createServer(function(request,response){
     console.log(url.parse(request.url,true).query);
     console.log("user-agent:"+request.headers["user-agent"]);*/
 
-    var post='';      
-    request.on('data',function(chunk){  
+    var post="";      
+    request.on("data",function(chunk){  
         post += chunk;  
     });   
 
@@ -37,13 +37,13 @@ http.createServer(function(request,response){
             var target = "http://" + address + url.parse(request.url).pathname;
             console.log(target, post);
             sendRequest.post(target, {form: post}).pipe(response);
-            }
+        }
         else{
             response.writeHead(200);
             fs.readFile(fpath,"utf-8",function(err,data){
                 var rsp = data ;
                 response.end(rsp);
-            })
+            });
         }
     });    
 }).listen(8080, ()=>{console.log("listen on 8080");});
