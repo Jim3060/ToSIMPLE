@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jfree.data.category.DefaultCategoryDataset;
+
 import com.google.gson.Gson;
 
 import net.sf.json.JSONArray;
@@ -94,6 +96,16 @@ public class QuestionnaireStatistics {
 		public List<Blank> blanks = new ArrayList<Blank>();
 		public String title;
 		public int type;
+		public DefaultCategoryDataset getBarDataSet()       
+	    {       
+	        DefaultCategoryDataset dataset = new DefaultCategoryDataset();      
+	        List<QuestionnaireStatistics.Choice> choices=this.choices;
+	        for (int i=0;i<choices.size();i++){
+	        	QuestionnaireStatistics.Choice choice=choices.get(i);
+	        	dataset.addValue(choice.number,choice.title,choice.title);
+	        }      
+	        return dataset;       
+	    }    
 	}
 	
 	public String getQuestionsJSON(){
@@ -106,6 +118,8 @@ public class QuestionnaireStatistics {
 		
 		return questionArray.toString();
 	}
+	
+	   
 	
 	
 	

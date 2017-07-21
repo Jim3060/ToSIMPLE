@@ -12,5 +12,7 @@ public interface StatisticsService {
 	
 	public HSSFWorkbook exportToEXEL(String questionnaireId) throws IOException, ParseException;
 	
+	public HSSFWorkbook exportChartToEXEL(String questionnaireId) throws IOException, ParseException;
+	
 	
 }

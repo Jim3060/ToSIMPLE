@@ -66,6 +66,18 @@ public class StatisticsServiceImpl implements StatisticsService{
 		return wb;
 	}
 	
+	public HSSFWorkbook exportChartToEXEL(String questionnaireId) throws IOException, ParseException{
+		Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
+		List<QuestionnaireResult> questionnaireResults=questionnaireResultDao.getAllQuestionnaireResultById(questionnaireId);
+		QuestionnaireStatistics questionnaireStat= new QuestionnaireStatistics(questionnaire,questionnaireResults);
+		HSSFWorkbook wb=EXELUtils.generateChartStatistics(questionnaireStat);
+		
+//		FileOutputStream fout = new FileOutputStream(filePath);  
+//        wb.write(fout);  
+//        fout.close();  
+		return wb;
+	}
+	
 	
 	
 	public static void main(String[] args) throws IOException {

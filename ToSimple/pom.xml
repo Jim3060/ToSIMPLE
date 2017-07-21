@@ -319,6 +319,14 @@
             <version>2.6.4.RELEASE</version>
         </dependency>
         
+        <!-- chart -->
+        <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
+		<dependency>
+		    <groupId>org.jfree</groupId>
+		    <artifactId>jfreechart</artifactId>
+		    <version>1.0.19</version>
+		</dependency>
+        
         <!-- Python -->
         <!-- https://mvnrepository.com/artifact/org.python/jython -->
 		<dependency>

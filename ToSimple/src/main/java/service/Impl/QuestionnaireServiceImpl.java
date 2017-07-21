@@ -73,8 +73,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         questionnaireResultDao.save(questionnaireResult);
         //update answer number
         String questionnaireId=(String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
+        System.out.println(questionnaireId);
         Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
-        System.out.println((int)questionnaire.questionnaireJSON.get("answerNumber"));
+        
+        //System.out.println((int)questionnaire.questionnaireJSON.get("answerNumber"));
         questionnaire.questionnaireJSON.put("answerNumber",((int)questionnaire.questionnaireJSON.get("answerNumber")+1));
         questionnaireDao.update(questionnaireId, questionnaire);
         // TODO Auto-generated method stub

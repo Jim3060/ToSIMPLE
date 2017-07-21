@@ -1,12 +1,21 @@
 package ToolUtils;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
+import org.apache.poi.hssf.usermodel.HSSFPatriarch;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -14,6 +23,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import model.QuestionnaireResultGSON;
+import model.QuestionnaireStatistics;
 import model.QuestionnaireGSON;
 
 public class EXELUtils {
@@ -94,4 +104,79 @@ public class EXELUtils {
         
 		return wb;
 	}
+	
+	
+	
+	
+	public static HSSFWorkbook generateChartStatistics(QuestionnaireStatistics questionnairestat) throws IOException{
+		HSSFWorkbook wb = new HSSFWorkbook();  
+        HSSFSheet sheet = wb.createSheet(questionnairestat.questionnaireTitle+"_chartStatistics");  
+        HSSFRow row = sheet.createRow((int) 0);  
+        HSSFCellStyle style = wb.createCellStyle();  
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+        HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
+        HSSFClientAnchor anchor;
+        int picWidth=4;
+        int picHeight=20;
+        List<Integer> picRow=new ArrayList<Integer>();
+        //load each question
+        int rowNum=0;
+
+        List<QuestionnaireStatistics.Question> questions=questionnairestat.questions;
+        for (int i=0;i<questions.size();i++){
+        	if  (questions.get(i).type==2){continue;}
+        	int cNum=0;
+        	row = sheet.createRow(rowNum); rowNum++;
+            HSSFCell cell = row.createCell((short) cNum);cNum++;  
+    		cell.setCellValue(questions.get(i).title);  
+    		cell.setCellStyle(style); 
+    		//load choice title;
+    		List<QuestionnaireStatistics.Choice> choices=questions.get(i).choices;
+    		for (int j=0;j<choices.size();j++){
+    			cell = row.createCell((short) cNum);  cNum++;  
+        		cell.setCellValue(choices.get(j).title);  
+        		cell.setCellStyle(style); 
+    		}
+    		//load number
+    		cNum=0;
+    		row = sheet.createRow(rowNum); rowNum++;
+            cell = row.createCell((short) cNum);cNum++;  
+    		cell.setCellValue("");  
+    		cell.setCellStyle(style); 
+    		choices=questions.get(i).choices;
+    		for (int j=0;j<choices.size();j++){
+    			cell = row.createCell((short) cNum); cNum++;   
+        		cell.setCellValue(choices.get(j).number);  
+        		cell.setCellStyle(style); 
+    		}
+    		
+    		//insert chart
+    		
+    		//read the image
+            BufferedImage bufferImg = null;        
+			ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();     
+			File filec=ChartUtils.CreateBarChart(questions.get(i).getBarDataSet(), questions.get(i).title, "Choices", "Number");
+			bufferImg = ImageIO.read(filec);     
+			ImageIO.write(bufferImg, "png", byteArrayOut);  
+			
+	
+	        anchor = new HSSFClientAnchor(0, 0, 0, 0,(short) 1, rowNum, (short) (7), rowNum+picHeight); 
+			anchor.setAnchorType(2);      
+			patriarch.createPicture(anchor, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG));   
+			rowNum+=picHeight;
+			
+			//leave an empty line
+    		rowNum++;
+    		
+    		
+        }
+      
+        
+        
+		return wb;
+	}
+	
+	
+	
+	
 }
