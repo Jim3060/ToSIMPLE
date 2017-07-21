@@ -169,17 +169,14 @@ public class EXELUtils {
 //            BufferedImage bufferImg ;        
 //			ByteArrayOutputStream byteArrayOut;     
 			File filec=ChartUtils.CreateBarChart(questions.get(i).getBarDataSet(), questions.get(i).title, "Choices", "Number");
-			//File filep=ChartUtils.CreatePieChart(questions.get(i).getPieDataSet(), questions.get(i).title);
-			
-			
-	
 			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0,(short) 1, rowNum, (short) (7), rowNum+picHeight); 
-	        //HSSFClientAnchor anchor2 = new HSSFClientAnchor(0, 0, 0, 0,(short) 8, rowNum, (short) (14), rowNum+picHeight); 
 			anchor.setAnchorType(2);     
-			//anchor2.setAnchorType(2); 
-			
 			createPic(wb,patriarch,anchor,filec);
-			//createPic(wb,patriarch,anchor2,filep);
+			
+			File filep=ChartUtils.CreatePieChart(questions.get(i).getPieDataSet(), questions.get(i).title);
+			HSSFClientAnchor anchor2 = new HSSFClientAnchor(0, 0, 0, 0,(short) 8, rowNum, (short) (14), rowNum+picHeight); 
+			anchor2.setAnchorType(2); 
+			createPic(wb,patriarch,anchor2,filep);
 			
 //			bufferImg = null;        
 //			byteArrayOut = new ByteArrayOutputStream();     
