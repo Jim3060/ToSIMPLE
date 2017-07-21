@@ -5,7 +5,7 @@
 <script>
 export default {
     props:{title:{required:true}, id:{required:true}}
-}
+};
 </script>
 
 <style>

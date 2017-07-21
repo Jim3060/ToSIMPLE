@@ -2,11 +2,6 @@
     <div class="create">
         <div>
             问题类型:
-            <!--<select v-model="type">
-                <option>单选</option>
-                <option>多选</option>
-                <option>填空</option>
-            </select>-->
             <el-radio-group v-model="type" size="small">
                 <el-radio-button label="单选" style="font-weight:400"></el-radio-button>
                 <el-radio-button label="多选" style="font-weight:400"></el-radio-button>
@@ -14,13 +9,16 @@
             </el-radio-group>
         </div>
         <div>
-            题目: <input v-model="title"></input>
+            题目:<!--<input v-model="title"></input>-->
+            <questionTitle @select="forkQuestion($event)" :questionnaireTitle="questionnaire.paperTitle" :questionTitle="title" @update="title=$event"></questionTitle>
+            <el-checkbox v-model="forced">必答题</el-checkbox>
         </div>
         <div v-if="type=='多选'">
             最多可以选择<input class="limit" v-model.number="limit"></input>项
         </div>
         <div v-if="type!='填空'">
-            选项:
+            选项: <el-checkbox v-model="mix" style="font-weight:400">允许其他选项</el-checkbox>
+            <div></div>
             <ul class="list-group">
                 <li class="list-group-item" v-for="(option, index) in options" :key="option">
                     <div v-show="edit==index">
@@ -51,7 +49,6 @@
                 <el-switch :disabled="connectAccessable.length==0 && Object.keys(showAfter).length==0" v-model="connect" ></el-switch>
              </el-tooltip>
         </div>
-        <!--<input type="checkbox" v-model="connect">题目关联</input>-->
         <div v-show="connect">
             <ul class="list-group">
                 <li class="list-group-item" v-for="(value, key) in showAfter" :key="key">
@@ -59,11 +56,6 @@
                     <connectItem @update="update" @cancel="delCon($event)" :questionnaire="questionnaire" :index="index" :idx="key"></connectItem>
                 </li>
                 <li v-if="newItem" class="list-group-item">
-                    <!--第
-                    <select v-model.number="newIdx">
-                        <option v-for="i in connectAccessable" :key="i">{{i}}</option>
-                    </select>
-                    题-->
                     <el-select v-model.number="newIdx" size="small" style="width:150px" placeholder="请选择题号">
                         <el-option v-for="i in connectAccessable" :key="i" :value="i" :label="'第'+i+'题'"></el-option>
                     </el-select>
@@ -81,15 +73,14 @@
 </template>
 
 <script>
-import connectItem from "./connectItem.vue"
-import Vue from "vue"
-import bus from "../bus.js"
-import Element from "element-ui"
+import connectItem from "./connectItem.vue";
+import Vue from "vue";
+import questionTitle from "./questionTitle.vue";
 
 export default {
-    components:{connectItem},
+    components:{connectItem, questionTitle},
     props:{
-        questionnaire:{default(){return{}}},
+        questionnaire:{default(){return{};}},
         index:{default:-1}
     },
     data(){return {
@@ -98,17 +89,19 @@ export default {
         question:{},
         title:"",
         options:[],
-        limit:'',
+        limit:"",
         showAfter:{},
         edit:-1,
         buffer:"",
         connect: false,
         newItem: false,
-        newIdx: 0,
+        newIdx: 1,
         connectAccessable:[],
         imageUrl:"",
-        pictureMode: false
-    }},
+        pictureMode: false,
+        mix:false,
+        forced: false
+    };},
     methods:{
         del(index){
             this.options.splice(index, 1);
@@ -132,6 +125,9 @@ export default {
         },
         save(index){
             this.edit = -1;
+            if(this.pictureMode == false){
+                Vue.delete(this.buffer, "photoId");
+            }
             this.options[index] = this.buffer;
             this.pictureMode = false;
         },
@@ -153,7 +149,17 @@ export default {
                 this.showAfter[idx] = select;
                 this.newItem = false;
             }
-
+        },
+        forkQuestion(item){
+            this.options = item.choices;
+            this.type = this.types[item.type];
+            this.forced = item.forced || false;
+            this.limit = item.limit || "";
+            this.mix = item.mix || false;
+            this.showAfter = item.showAfter || {};
+            if (item.showAfter != undefined && item.showAfter != {}){
+                this.connect = true;
+            }
         },
         resultCheck(result){
             if(result.questionTitle == ""){
@@ -180,12 +186,15 @@ export default {
             var result = {};
             result.questionTitle = this.title;
             result.type = this.types.indexOf(this.type);
+            result.forced = this.forced;
             if(this.connect)
                 result.showAfter = this.showAfter;
             else
                 result.showAfter = {};
-            if(result.type < 2)
+            if(result.type < 2){
                 result.choices = this.options;
+                result.mix = this.mix;
+            }
             if(result.type == 1)
                 result.limit = this.limit;
             if(this.resultCheck(result))
@@ -196,14 +205,14 @@ export default {
             this.imageUrl = URL.createObjectURL(file.raw);
         },
         beforeAvatarUpload(file) {
-            const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+            const isJPG = file.type === "image/jpeg" || file.type === "image/png";
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPG) {
-            this.$message.error('上传头像图片只能是 JPG 格式!');
+                this.$message.error("上传头像图片只能是 JPG 格式!");
             }
             if (!isLt2M) {
-            this.$message.error('上传头像图片大小不能超过 2MB!');
+                this.$message.error("上传头像图片大小不能超过 2MB!");
             }
             return isJPG && isLt2M;
         }
@@ -215,6 +224,7 @@ export default {
             this.limit = this.questionnaire.questions[this.index].limit==undefined?0:this.questionnaire.questions[this.index].limit;
             this.options = this.questionnaire.questions[this.index].choices == undefined?{}:this.questionnaire.questions[this.index].choices;
             this.showAfter = this.questionnaire.questions[this.index].showAfter == undefined?{}:this.questionnaire.questions[this.index].showAfter;
+            this.forced = this.questionnaire.questions[this.index].forced || false;
             this.connect = Object.keys(this.showAfter).length > 0;
         }
         var questions = this.questionnaire.questions;
@@ -223,8 +233,7 @@ export default {
                 this.connectAccessable.push(parseInt(i)+1);
         }
     }
-
-}
+};
 </script>
 
 <style>

@@ -1,82 +1,82 @@
 <!--<?xml version="1.0" encoding="utf-8"?>-->
 <!--&lt;!&ndash; Struts2 DTD &ndash;&gt;-->
 <!--<!DOCTYPE struts PUBLIC-->
-	<!--"-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"-->
-	<!--"http://struts.apache.org/dtds/struts-2.1.7.dtd">-->
+<!--"-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN"-->
+<!--"http://struts.apache.org/dtds/struts-2.1.7.dtd">-->
 <!--<struts>-->
-	<!--<constant name="struts.i18n.encoding" value="utf-8" />-->
-	<!--<constant name="struts.devMode" value="true" />-->
-	<!--<constant name="struts.multipart.maxSize" value="10000000" />-->
-	<!--<package name="process" extends="struts-default">-->
-		<!--&lt;!&ndash; <interceptors>-->
-			<!--<interceptor name="managerInterceptor"-->
-				<!--class="Interceptor.managerInterceptor">-->
-				<!--<param name="hello">Hello world</param>-->
-			<!--</interceptor>-->
-			<!--拦截器栈-->
-			<!--<interceptor-stack name="mystack">-->
-				<!--<interceptor-ref name="managerInterceptor"></interceptor-ref>-->
-				<!--struts2默认拦截器  <interceptor-ref name="defaultStack"></interceptor-ref>-->
-			<!--</interceptor-stack>-->
-		<!--</interceptors>-->
-		<!--global-results放的位置顺序不对会报错， 全局变量error-->
-		<!--<global-results>-->
-			<!--<result name="error">/bookstore/jsp/sorry.jsp</result>-->
-			<!--LoginInterceptor中的Action.LOGIN对应找到name-->
-			<!--<result name="login">/bookstore/jsp/sorry.jsp</result>		-->
-		<!--</global-results> &ndash;&gt;-->
-		<!--<action name="exel" class="action.QuestionnaireAction" method="exel">-->
-			<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!--&lt;!&ndash; User &ndash;&gt;-->
-		<!---->
-		<!---->
-		<!--<action name="allUsers" class="action.UserAction" method="getAllUsers">-->
-			<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!--<action name="fetchRSA" class="action.UserAction" method="fetchRSA">-->
-			<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!--<action name="login" class="action.UserAction" method="login">-->
-			<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!--<action name="registerRequest" class="action.UserAction" method="registerRequest">-->
-			<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!--<action name="registerValidate" class="action.UserAction" method="registerValidate">-->
-			<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!---->
-		<!---->
-		<!--&lt;!&ndash; Questionnaire &ndash;&gt;-->
-		<!---->
-		<!--<action name="addQuestionnaire" class="action.QuestionnaireAction" method="addOrUpdateQuestionnaire">-->
-			<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!--<action name="findAQuestionnaire" class="action.QuestionnaireAction" method="findAQuestionnaire">-->
-			<!--<result name="success">/questionnaire/jsp/testMongo.jsp</result>-->
-			<!--<result name="error">/questionnaire/jsp/testMongo.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!--<action name="SaveAnAnswerPaper" class="action.QuestionnaireAction" method="addQuestionnaireResult">-->
-			<!--<result name="success">/out/index.html</result>-->
-		<!--</action>-->
-		<!---->
-		<!--<action name="setQuestionnaireStatus" class="action.QuestionnaireAction" method="setQuestionnaireStatus">-->
-			<!--<result name="success">/questionnaire/jsp/testMongo.jsp</result>-->
-			<!--<result name="error">/questionnaire/jsp/testMongo.jsp</result>-->
-		<!--</action>-->
-		<!---->
-		<!---->
-		<!--<action name="*">-->
-			<!--<result>/{1}.jsp</result>-->
-		<!--</action>-->
-	<!--</package>-->
+<!--<constant name="struts.i18n.encoding" value="utf-8" />-->
+<!--<constant name="struts.devMode" value="true" />-->
+<!--<constant name="struts.multipart.maxSize" value="10000000" />-->
+<!--<package name="process" extends="struts-default">-->
+<!--&lt;!&ndash; <interceptors>-->
+<!--<interceptor name="managerInterceptor"-->
+<!--class="Interceptor.managerInterceptor">-->
+<!--<param name="hello">Hello world</param>-->
+<!--</interceptor>-->
+<!--拦截器栈-->
+<!--<interceptor-stack name="mystack">-->
+<!--<interceptor-ref name="managerInterceptor"></interceptor-ref>-->
+<!--struts2默认拦截器  <interceptor-ref name="defaultStack"></interceptor-ref>-->
+<!--</interceptor-stack>-->
+<!--</interceptors>-->
+<!--global-results放的位置顺序不对会报错， 全局变量error-->
+<!--<global-results>-->
+<!--<result name="error">/bookstore/jsp/sorry.jsp</result>-->
+<!--LoginInterceptor中的Action.LOGIN对应找到name-->
+<!--<result name="login">/bookstore/jsp/sorry.jsp</result>		-->
+<!--</global-results> &ndash;&gt;-->
+<!--<action name="exel" class="action.QuestionnaireAction" method="exel">-->
+<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
+<!--</action>-->
+<!---->
+<!--&lt;!&ndash; User &ndash;&gt;-->
+<!---->
+<!---->
+<!--<action name="allUsers" class="action.UserAction" method="getAllUsers">-->
+<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
+<!--</action>-->
+<!---->
+<!--<action name="fetchRSA" class="action.UserAction" method="fetchRSA">-->
+<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
+<!--</action>-->
+<!---->
+<!--<action name="login" class="action.UserAction" method="login">-->
+<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
+<!--</action>-->
+<!---->
+<!--<action name="registerRequest" class="action.UserAction" method="registerRequest">-->
+<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
+<!--</action>-->
+<!---->
+<!--<action name="registerValidate" class="action.UserAction" method="registerValidate">-->
+<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
+<!--</action>-->
+<!---->
+<!---->
+<!---->
+<!--&lt;!&ndash; Questionnaire &ndash;&gt;-->
+<!---->
+<!--<action name="addQuestionnaire" class="action.QuestionnaireAction" method="addOrUpdateQuestionnaire">-->
+<!--<result name="success">/questionnaire/jsp/userCRUD.jsp</result>-->
+<!--</action>-->
+<!---->
+<!--<action name="findAQuestionnaire" class="action.QuestionnaireAction" method="findAQuestionnaire">-->
+<!--<result name="success">/questionnaire/jsp/testMongo.jsp</result>-->
+<!--<result name="error">/questionnaire/jsp/testMongo.jsp</result>-->
+<!--</action>-->
+<!---->
+<!--<action name="SaveAnAnswerPaper" class="action.QuestionnaireAction" method="addQuestionnaireResult">-->
+<!--<result name="success">/out/index.html</result>-->
+<!--</action>-->
+<!---->
+<!--<action name="setQuestionnaireStatus" class="action.QuestionnaireAction" method="setQuestionnaireStatus">-->
+<!--<result name="success">/questionnaire/jsp/testMongo.jsp</result>-->
+<!--<result name="error">/questionnaire/jsp/testMongo.jsp</result>-->
+<!--</action>-->
+<!---->
+<!---->
+<!--<action name="*">-->
+<!--<result>/{1}.jsp</result>-->
+<!--</action>-->
+<!--</package>-->
 <!--</struts>-->

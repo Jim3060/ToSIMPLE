@@ -1,39 +1,37 @@
 package dao;
 
-import java.util.List;
-
 import model.User;
+
+import java.util.List;
 
 public interface UserDao {
 
-    public Long save(User user);
+    Long save(User user);
 
     /**
      * delete user
      *
      * @param user
      */
-    public void delete(User user);
+    void delete(User user);
 
     /**
      * delete user.
      *
      * @param userId
      */
-    public void delete(Long userId);
+    void delete(Long userId);
 
-    public void update(User user);
+    void update(User user);
 
-    public User getUserById(long id);
+    User getUserById(long id);
 
 
-    public List<User> getAllUsers();
+    List<User> getAllUsers();
 
-    public User getUserByEmail(String email);
+    User getUserByEmail(String email);
 
-    public User getUserByUserName(String userName);
-	
-	
+    User getUserByUserName(String userName);
 
 
     /**
@@ -43,11 +41,11 @@ public interface UserDao {
      * @param role
      * @return the old role.
      */
-    public Integer changRole(Long userId, Integer role);
+    Integer changRole(Long userId, Integer role);
 
-    public List<User> getValidUsersByPage(Integer page, Integer pageSize);
-    
-    public Long getValidUserNumber();
+    List<User> getValidUsersByPage(Integer page, Integer pageSize);
+
+    Long getValidUserNumber();
 
 
 }

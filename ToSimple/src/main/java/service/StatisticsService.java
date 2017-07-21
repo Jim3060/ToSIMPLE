@@ -1,11 +1,11 @@
 package service;
 
+import model.QuestionnaireStatistics;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
-import model.QuestionnaireStatistics;
 
 public interface StatisticsService {
 	public QuestionnaireStatistics getQuestionnaireStatisticsById(String id);
@@ -15,4 +15,5 @@ public interface StatisticsService {
 	public HSSFWorkbook exportChartToEXEL(String questionnaireId) throws IOException, ParseException;
 	
 	
+
 }

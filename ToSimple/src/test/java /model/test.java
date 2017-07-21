@@ -1,36 +1,25 @@
 package model;
 
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mongodb.*;
+import dao.Impl.QuestionnaireDaoImpl;
+import dao.ReportDao;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.mongodb.*;
-import com.mongodb.client.model.Accumulators;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Projections;
-import dao.Impl.QuestionnaireDaoImpl;
-import edu.emory.mathcs.backport.java.util.Arrays;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.expression.spel.ast.Projection;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.persistence.criteria.CriteriaBuilder;
-
-import static com.mongodb.client.model.Filters.*;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -41,7 +30,19 @@ public class test {
     QuestionnaireDaoImpl questionnaireDao;
 
     @Autowired
+    ReportDao reportDao;
+
+    @Autowired
     MongoTemplate mongoTemplate;
+
+    public static void main(String[] args) throws IOException {
+
+        String jsontest = "{'_id':{'$oid':'5959b6badac1e1082a93c51d'},'questions':[{'questionTitle':'testSINGLE','type':0,'choices':['c1','c2']},{'questionTitle':'testMUTIPLE','type':1,'choices':['c1','c2','c3'],'limit':'2'},{'questionTitle':'testBLANK','type':2}],'paperTitle':'testPaper','createDate':'2017-07-03T03:15:06.174Z','status':0,'questionnaireId':'5959b6badac1e1082a93c51d'}";
+        Gson gson = new GsonBuilder().create();
+        QuestionnaireGSON p = gson.fromJson(jsontest, QuestionnaireGSON.class);
+        System.out.println(p);
+
+    }
 
     @Test
     public void test() throws IOException {
@@ -63,16 +64,6 @@ public class test {
 //        DBObject object = questionnaires.findAndRemove(query);
 ////        System.out.print(object.get("questions"));
     }
-
-    public static void main(String[] args) throws IOException {
-
-        String jsontest = "{'_id':{'$oid':'5959b6badac1e1082a93c51d'},'questions':[{'questionTitle':'testSINGLE','type':0,'choices':['c1','c2']},{'questionTitle':'testMUTIPLE','type':1,'choices':['c1','c2','c3'],'limit':'2'},{'questionTitle':'testBLANK','type':2}],'paperTitle':'testPaper','createDate':'2017-07-03T03:15:06.174Z','status':0,'questionnaireId':'5959b6badac1e1082a93c51d'}";
-        Gson gson = new GsonBuilder().create();
-        QuestionnaireGSON p = gson.fromJson(jsontest, QuestionnaireGSON.class);
-        System.out.println(p);
-
-    }
-
 
     @Test
     public void dao() throws IOException {
@@ -127,7 +118,7 @@ public class test {
     public void testRandom() {
         List<Questionnaire> list = questionnaireDao.randomQuestionnaire(3);
         Iterator<Questionnaire> iterator = list.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             System.out.print(iterator.next().questionnaireJSON.toString());
         }
 //        DB db = mongoTemplate.getDb();
@@ -164,7 +155,7 @@ public class test {
     }
 
     @Test
-    public void testYM(){
+    public void testYM() {
         StringBuffer stringBuffer = new StringBuffer("Hello");
 //        Integer i = 20;
         System.out.print(stringBuffer.toString());
@@ -183,7 +174,54 @@ public class test {
 
 
     }
-    class INT{
+
+    private void change3(INT i) {
+        i.setI(30);
+    }
+
+    private void change(StringBuffer stringBuffer) {
+        stringBuffer.append("world");
+    }
+
+    private void change1(Integer i) {
+        i += 5;
+    }
+
+    @Test
+    public void testReport() {
+//        List<Report> list = reportDao.getAllUnhandledReports(new Integer(0),new Integer(30),new Integer(3));
+//        Iterator<Report> iterator = list.iterator();
+//        while (iterator.hasNext()){
+//            System.out.print(iterator.next().getContent());
+//        }
+    }
+
+    @Test
+    public void testIn() {
+        final String[] userUrls = new String[]{
+                "admin", "yyk"
+        };
+        List<String> list1 = Arrays.asList(userUrls);
+
+        List<String> list = new LinkedList<String>() {{
+            add("ad");
+            add("sdf");
+        }};
+        ;
+        Assert.assertEquals(true, list1.contains("admin"));
+//        Integer i = 1;
+//        boolean b = (i ==1);
+//        System.out.print(b);
+//        Assert.assertEquals(true,(i == 1));
+    }
+
+    @Test
+    public void testSec() {
+       
+       
+    }
+
+    class INT {
         private Integer i;
 
         public INT(Integer i) {
@@ -199,15 +237,5 @@ public class test {
         }
     }
 
-    private void change3(INT i){
-        i.setI(30);
-    }
-    private void change(StringBuffer stringBuffer){
-        stringBuffer.append("world");
-    }
-
-    private void change1(Integer i){
-        i += 5;
-    }
 
 }

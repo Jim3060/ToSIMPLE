@@ -1,5 +1,6 @@
 package model;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,10 +9,12 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
-import com.google.gson.Gson;
 
+import com.google.gson.Gson;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+
 
 public class QuestionnaireStatistics {
 	public static List<QuestionnaireResult> questionnaireResults= new ArrayList<QuestionnaireResult>();
@@ -137,5 +140,6 @@ public class QuestionnaireStatistics {
 	
 	
 	
+
 
 }

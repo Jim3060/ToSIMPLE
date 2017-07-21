@@ -2,3 +2,7 @@
 /frontend/node_modules/
 *.sql
 bundle.js
+*.idea
+*.iml
+.eslintrc.json
+.eslintignore

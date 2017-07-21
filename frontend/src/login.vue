@@ -60,9 +60,8 @@
 </template>
 
 <script>
-    import {modal, alert} from "vue-strap"
-    import {JSEncrypt} from "./jsencrypt.js"
-    import bus from "./bus.js"
+    import {modal, alert} from "vue-strap";
+    import {JSEncrypt} from "./jsencrypt.js";
 
     export default{
         name:"login",
@@ -75,13 +74,13 @@
             showLoginModal:false,
             showRegModal: false,
             publicKey:""
-        }},
+        };},
         methods:{
             showMsg(msgType, msgContent){
                 this.msgType = msgType;
                 this.msg = msgContent;
                 this.msgShow = true;
-                setTimeout(()=>{this.msgShow = false}, 2000);
+                setTimeout(()=>{this.msgShow = false;}, 2000);
             },
             loginModal(){
                 this.loginBuf = {};
@@ -92,27 +91,30 @@
                 this.showRegModal = true;
             },
             login(){
-                var self = this;
-                var postBody = {};
-                postBody.userName = this.loginBuf.username;
-                postBody.passwordSECURE = this.encrypt(this.loginBuf.password);
-                $.post("login", postBody, (data)=>{
-                    console.log(data);
-                    if(data.loginSuccess == 1 || data.loginSuccess == '1'){
-                        self.user.role = data.user.role;
-                        self.user.username = data.user.userName;
-                        localStorage.user = JSON.stringify(self.user);
-                        self.ifLog = true;
-                        self.showLoginModal = false;
-                        this.$message.success("登录成功");
-                        self.$emit("login");
-                    }else{
-                        this.$message.error("用户名或密码错误");
-                    }
-                }, "json").fail(()=>{
+                this.encrypt(this.loginBuf.password).then(password => {
+                    var self = this;
+                    var postBody = {};
+                    postBody.userName = this.loginBuf.username;
+                    postBody.passwordSECURE = password;
+                    $.post("login", postBody, (data)=>{
+                        console.log(data);
+                        if(data.loginSuccess == 1 || data.loginSuccess == "1"){
+                            self.user.role = data.user.role;
+                            self.user.username = data.user.userName;
+                            localStorage.user = JSON.stringify(self.user);
+                            self.ifLog = true;
+                            self.showLoginModal = false;
+                            this.$message.success("登录成功");
+                            self.$emit("login");
+                        }else{
+                            this.$message.error("用户名或密码错误");
+                        }
+                    }, "json").fail(()=>{
+                        this.$message.error("网络异常");
+                    });
+                }).catch(() => {
                     this.$message.error("网络异常");
-                })
-                this.getPublicKey();
+                });
             },
             logout(){
                 this.ifLog = false;
@@ -148,37 +150,46 @@
                     this.$message.error("请输入合法的邮箱地址");
                     return ;
                 }
-                var postBody = {};
-                postBody.userName = this.regBuf.name;
-                postBody.passwordSECURE = this.encrypt(this.regBuf.password1);
-                postBody.email = this.regBuf.email;
-                $.post("register", postBody, (data)=>{
-                    if(data >= 1){
-                        self.user.role = 1;
-                        self.user.username = self.regBuf.name;
-                        localStorage.user = JSON.stringify(self.user);
-                        self.ifLog = true;
-                        self.showRegModal = false;
-                        self.$emit("login");
-                        this.$message.success("注册成功");
-                    }else{
-                        this.$message.error("用户名或邮箱重复");
-                    }
-                }).fail(()=>{
+
+                this.encrypt(this.regBuf.password1).then((password) => {
+                    var postBody = {};
+                    postBody.userName = this.regBuf.name;
+                    postBody.passwordSECURE = password;
+                    postBody.email = this.regBuf.email;
+                    $.post("register", postBody, (data)=>{
+                        if(data >= 1){
+                            localStorage.user = JSON.stringify(self.user);
+                            self.showRegModal = false;
+                            this.$message.success("注册成功,请登录邮箱验证");
+                        }else{
+                            this.$message.error("用户名或邮箱重复");
+                        }
+                    }).fail(()=>{
+                        this.$message.error("网络异常");
+                    });
+                }).catch(() => {
                     this.$message.error("网络异常");
-                })
-                this.getPublicKey();
+                });
             },
             getPublicKey(){
-                var self = this;
-                $.get("fetchRSA", data=>{
-                    self.publicKey = data.publicKey;
-                }, "json");
+                return new Promise((resolve, reject) => {
+                    $.get("fetchRSA", data=>{
+                        resolve(data.publicKey);
+                    }, "json").fail(() => {
+                        reject("error");
+                    });
+                });
             },
             encrypt(password){
-                var encrypt = new JSEncrypt();
-                encrypt.setPublicKey(this.publicKey);
-                return encrypt.encrypt(password);
+                return new Promise((resolve, reject) => {
+                    var encrypt = new JSEncrypt();
+                    this.getPublicKey().then(key => {
+                        encrypt.setPublicKey(key);
+                        resolve(encrypt.encrypt(password));
+                    }).catch(() => {
+                        reject("fail");
+                    });
+                });
             }
         },
         created(){
@@ -187,9 +198,8 @@
                 this.ifLog = true;
                 this.$emit("login");
             }
-            this.getPublicKey();
         }
-    }    
+    };    
 </script>
 
 <style>

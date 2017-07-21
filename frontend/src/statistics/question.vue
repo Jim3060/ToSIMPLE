@@ -1,25 +1,24 @@
 <template>
-    <el-card class="box-card">
+    <el-card class="box-card" style="height:370px">
         <div slot="header">
             <span class="statistic-title">{{index+1}}.{{title}}</span>
             <el-radio-group style="float: right" v-model="type" size="small">
                 <el-radio-button label="饼图" style="font-weight:400"></el-radio-button>
                 <el-radio-button label="条形图" style="font-weight:400"></el-radio-button>
-                <el-radio-button v-if="questionType==2" label="详细信息" style="font-weight:400"></el-radio-button>
+                <el-radio-button label="详细信息" style="font-weight:400"></el-radio-button>
             </el-radio-group>
         </div>
         <ve-pie v-if="type=='饼图'" height="300px" :data="chartData" :settings="chartSettingsPie"></ve-pie>
         <div v-if="type=='条形图'" style="width:400px; height:300px">
             <ve-bar :colors="['#5ab1ef']" height="300px" width="400px" :data="chartData" :settings="chartSettingsBar" :legend-visible="false"></ve-bar>
         </div>
-        <el-table class="detail-table" v-show="type=='详细信息'" :data="statisticData.blanks" border style="width: 100%; height: 300px">
+        <el-table class="detail-table" v-show="type=='详细信息'" :data="statisticData.blanks" border style="width: 100%; height: 280px; overflow: scroll">
             <el-table-column prop="resultId" label="答卷ID" width="225"></el-table-column>
             <el-table-column prop="content" label="回答" width="75"></el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
-                    <el-button type="text" size="small">查看</el-button>
+                    <a :href="`#/r/${statisticData.blanks[scope.$index].resultId}`">查看</a>
                 </template>
-                <!--<el-button size="small">查看答卷</el-button>-->
             </el-table-column>
         </el-table>
     </el-card>
@@ -42,20 +41,21 @@ export default {
         chartSettingsPie:{
             dimension: "title",
             metrics: "number",
-            dataType: 'KMB',
-            selectedMode: 'single',
+            dataType: "KMB",
+            selectedMode: "single",
             hoverAnimation: false,
             radius: 100,
             offsetY: 150
         },
         chartSettingsBar: {
-            dimension: ['title'],
-            metrics: ['number'],
-            xAxisType: ['KMB', 'percent'],
-            xAxisName: ['数量'],
+            dimension: ["title"],
+            metrics: ["number"],
+            xAxisType: ["KMB", "percent"],
+            xAxisName: ["数量"],
             stack:{"数量":["number"]}
         }
-    }},
+    };
+    },
     methods:{
         update(){
             this.chartData.rows = this.statisticData.choices;
@@ -65,13 +65,13 @@ export default {
             }
             else if(blanks.length > 0 && this.questionType == 2){
                 var temp = {};
-                for(var i in blanks){
+                for(let i in blanks){
                     if(temp[blanks[i].content] == undefined)
                         temp[blanks[i].content] = 1;
                     else
                         temp[blanks[i].content] ++;
                 }
-                for(var i in temp){
+                for(let i in temp){
                     this.chartData.rows.push({title:i, number: temp[i]});
                 }
             }
@@ -83,7 +83,7 @@ export default {
     created(){
         this.update();
     }
-}
+};
 </script>
 
 <style>

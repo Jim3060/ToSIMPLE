@@ -2,19 +2,17 @@ package model;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
-
 import net.sf.json.JSONObject;
 
 public class Questionnaire {
     public JSONObject questionnaireJSON;
 
     public Questionnaire() {
-        ;
     }
 
     public Questionnaire(String questionnaireStr, Long userid) {
         this.questionnaireJSON = JSONObject.fromObject(questionnaireStr);
-        
+
         this.questionnaireJSON.put("authorId", userid);
         if (this.questionnaireJSON.get("questionnaireId") == null) {
             questionnaireJSON.put("questionnaireId", "");
@@ -22,9 +20,9 @@ public class Questionnaire {
     }
 
     public Questionnaire(String questionnaireStr) {
-    	System.out.println(questionnaireStr);
+        System.out.println(questionnaireStr);
         this.questionnaireJSON = JSONObject.fromObject(questionnaireStr);
-        if (!this.questionnaireJSON.has("questionnaireId") ) {
+        if (!this.questionnaireJSON.has("questionnaireId")) {
             questionnaireJSON.put("questionnaireId", "");
         }
     }
