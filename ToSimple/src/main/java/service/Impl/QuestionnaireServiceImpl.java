@@ -79,11 +79,14 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult) {
         questionnaireResultDao.save(questionnaireResult);
         //update answer number
-        System.out.print("TTTUUUU");
-        String questionnaireId = (String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
-        Questionnaire questionnaire = questionnaireDao.findQuestionnaireById(questionnaireId);
-        System.out.println((int) questionnaire.questionnaireJSON.get("answerNumber"));
-        questionnaire.questionnaireJSON.put("answerNumber", ((int) questionnaire.questionnaireJSON.get("answerNumber") + 1));
+
+        String questionnaireId=(String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
+        System.out.println(questionnaireId);
+        Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
+        
+        //System.out.println((int)questionnaire.questionnaireJSON.get("answerNumber"));
+        questionnaire.questionnaireJSON.put("answerNumber",((int)questionnaire.questionnaireJSON.get("answerNumber")+1));
+
         questionnaireDao.update(questionnaireId, questionnaire);
         return null;
     }

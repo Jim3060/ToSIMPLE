@@ -50,9 +50,9 @@ public class SpiderUtils {
         	String href=i.child(0).child(0).attr("href");
         	String regEx="activity=*"; 
         	String [] dataStr = href.split(regEx); 
-        	System.out.println(i.child(0).child(0).text());
-        	System.out.println(dataStr[1]);
-        	System.out.println(Algorithm.getStringGap(i.child(0).child(0).text(), keyWord));
+        	//System.out.println(i.child(0).child(0).text());
+        	//System.out.println(dataStr[1]);
+        	//System.out.println(Algorithm.getStringGap(i.child(0).child(0).text(), keyWord));
         	
         	result.add( new SojumpBrief(i.child(0).child(0).text(),dataStr[1]));
         	

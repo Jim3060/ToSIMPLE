@@ -189,7 +189,7 @@ public class QuestionnaireAction extends BaseAction {
     	String q;
     	String [] dataStr = keyword.split("-"); 
     	System.out.println(dataStr[0]);
-    	if (dataStr[0].equals(keyword)){q=questionnaireService.getQuestionByKW(keyword);}
+    	if (dataStr[0].equals(keyword)){q=questionnaireService.getQuestionByKW(keyword,keyword);}
     	else{q=questionnaireService.getQuestionByKW(dataStr[0],dataStr[1]);}
     	if (q==null){
     		JSONObject result = new JSONObject();
@@ -305,8 +305,20 @@ public class QuestionnaireAction extends BaseAction {
      */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.DELETE)
     public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId,
-                                      HttpServletResponse response) throws IOException {
+                                      HttpServletResponse response,HttpSession session) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
+        //check user equals author
+        Questionnaire questionnaireTest = questionnaireService.findQuestionnaireById(questionnaireId);
+       // System.out.println("authorId:"+questionnaireTest.questionnaireJSON.get("authorId"));
+        
+        if (session.getAttribute("user")==null||questionnaireTest.questionnaireJSON.has("authorId") && !(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User) session.getAttribute("user")).getId())))) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
+            response.getWriter().print(result);
+            return null;
+        }
         Integer integer = questionnaireService.deleteQuestionnaire(questionnaireId);
         JSONObject result = new JSONObject();
         result.put("deleteSuccess", integer);
@@ -449,9 +461,24 @@ public class QuestionnaireAction extends BaseAction {
      *
      * @param questionnaireResultId
      * @return
+     * @throws IOException 
      */
     @RequestMapping(value = "questionnaireResult/{questionnaireResultId}", method = RequestMethod.GET)
-    public String show(@PathVariable("questionnaireResultId") String questionnaireResultId) {
+    public String show(@PathVariable("questionnaireResultId") String questionnaireResultId,HttpServletResponse response) throws IOException {
+    	response.setContentType("application/json;charset=UTF-8");
+    	QuestionnaireResult questionnaireResult=questionnaireService.getQuestionnaireResultByid(questionnaireResultId);
+    	if (questionnaireResult==null){
+    		JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.getWriter().print(result);
+            return  null;
+    	}
+    	JSONObject result = new JSONObject();
+        result.put("valid", 1);
+        result.put("questionnaireResult", questionnaireResult.questionnaireResultJSON.toString());
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
+        response.getWriter().print(result);
         return null;
     }
 
@@ -469,6 +496,21 @@ public class QuestionnaireAction extends BaseAction {
         //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
         response.setContentType("application/json;charset=UTF-8");
         HSSFWorkbook wb = statisticsService.exportToEXEL(questionnaireId);
+        OutputStream out = response.getOutputStream();
+        response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("statistics.xls", "UTF-8"));
+        response.setContentType("application/msexcel;charset=UTF-8");
+        wb.write(out);
+        out.flush();
+        out.close();
+        return null;
+    }
+    
+    @RequestMapping(value = "questionnaireStatistics/chart/{questionnaireId}", method = RequestMethod.GET)
+    public String ChartDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException, ParseException {
+        //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);
+        response.setContentType("application/json;charset=UTF-8");
+        HSSFWorkbook wb = statisticsService.exportChartToEXEL(questionnaireId);
+        if (wb==null){System.out.println("error");}
         OutputStream out = response.getOutputStream();
         response.setHeader("Content-disposition", "attachment;filename=" + URLEncoder.encode("statistics.xls", "UTF-8"));
         response.setContentType("application/msexcel;charset=UTF-8");
