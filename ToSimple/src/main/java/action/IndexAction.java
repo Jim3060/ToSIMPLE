@@ -54,15 +54,35 @@ public class IndexAction {
         String command = "mongodump -h " + prop.getProperty("spring.data.mongodb.host")
                 + " -p " + prop.getProperty("spring.data.mongodb.port")
                 + " -d " + prop.getProperty("spring.data.mongodb.dbname")
-                + " -o " + fileDir+"\n";
-        System.out.print("\n"+command+"\n");
-        System.out.print("\n"+fileDir+"\n");
-        System.out.print("ttttttttttttttttttttttttt");
-        System.out.print(jsonObject.toString());
-        
-        Process p = Runtime.getRuntime().exec(command);
-   
-        
+                + " -o " + fileDir;
+        System.out.print(command);
+        try {
+            Process p = Runtime.getRuntime().exec(command);
+            
+            if (p.waitFor() == 0) {
+                //normally terminated, a way to read the output
+                InputStream inputStream = p.getInputStream();
+                byte[] buffer = new byte[inputStream.available()];
+                inputStream.read(buffer);
+
+                String str = new String(buffer);
+                System.out.println(str);
+            } else {
+                // abnormally terminated, there was some problem
+                //a way to read the error during the execution of the command
+                InputStream errorStream = p.getErrorStream();
+                byte[] buffer = new byte[errorStream.available()];
+                errorStream.read(buffer);
+
+                String str = new String(buffer);
+                System.out.println(str);
+
+            }
+        } catch (Exception e) {
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return;
+        }
         jsonObject.put("valid", 1);
         response.getWriter().print(jsonObject);
     }
@@ -89,11 +109,30 @@ public class IndexAction {
                 + prop.getProperty("data.mysql.port")
                 + " -u" + prop.getProperty("data.mysql.username")
                 + " -p" + prop.getProperty("data.mysql.password")
-                + " " + prop.getProperty("data.mysql.dbname")
-                + " > " + fileDir;
+                + " " + prop.getProperty("data.mysql.dbname") + " User Report --result-file=" + fileDir;
         System.out.print(command);
         try {
             Process p = Runtime.getRuntime().exec(command);
+            if (p.waitFor() == 0) {
+                //normally terminated, a way to read the output
+                InputStream inputStream = p.getInputStream();
+                byte[] buffer = new byte[inputStream.available()];
+                inputStream.read(buffer);
+
+                String str = new String(buffer);
+                System.out.println(str);
+            } else {
+                // abnormally terminated, there was some problem
+                //a way to read the error during the execution of the command
+                InputStream errorStream = p.getErrorStream();
+                byte[] buffer = new byte[errorStream.available()];
+                errorStream.read(buffer);
+
+                String str = new String(buffer);
+                System.out.println(str);
+
+            }
+
         } catch (Exception e) {
             jsonObject.put("valid", 0);
             response.getWriter().print(jsonObject);
@@ -133,7 +172,7 @@ public class IndexAction {
         } catch (Exception e) {
             jsonObject.put("valid", 0);
             response.getWriter().print(jsonObject);
-            return ;
+            return;
         }
         jsonObject.put("valid", 1);
         response.getWriter().print(jsonObject);
@@ -159,7 +198,7 @@ public class IndexAction {
             response.getWriter().print(jsonObject);
             return;
         } else {
-            fileDir = prop.getProperty("data.mysql.backUpDir") + fileDir;
+            fileDir = prop.getProperty("data.mysql.backUpDir") + fileDir + ".sql";
         }
         String command = "mysql -h " + prop.getProperty("data.mysql.host") + " -P " + prop.getProperty("data.mysql.port")
                 + " " + prop.getProperty("data.mysql.dbname") + " < " + fileDir;
@@ -175,8 +214,6 @@ public class IndexAction {
         jsonObject.put("valid", 1);
         response.getWriter().print(jsonObject);
     }
-    
-    
 
 
 }
