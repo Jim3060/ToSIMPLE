@@ -3,7 +3,7 @@ package dao;
 import java.io.InputStream;
 
 public interface FileDao {
-	public String saveFile(InputStream fileContent);
-	
-	public InputStream getFile(String id);
+    String saveFile(InputStream fileContent);
+
+    InputStream getFile(String id);
 }

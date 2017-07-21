@@ -42,20 +42,21 @@ export default {
         chartSettingsPie:{
             dimension: "title",
             metrics: "number",
-            dataType: 'KMB',
-            selectedMode: 'single',
+            dataType: "KMB",
+            selectedMode: "single",
             hoverAnimation: false,
             radius: 100,
             offsetY: 150
         },
         chartSettingsBar: {
-            dimension: ['title'],
-            metrics: ['number'],
-            xAxisType: ['KMB', 'percent'],
-            xAxisName: ['数量'],
+            dimension: ["title"],
+            metrics: ["number"],
+            xAxisType: ["KMB", "percent"],
+            xAxisName: ["数量"],
             stack:{"数量":["number"]}
         }
-    }},
+    };
+    },
     methods:{
         update(){
             this.chartData.rows = this.statisticData.choices;
@@ -65,13 +66,13 @@ export default {
             }
             else if(blanks.length > 0 && this.questionType == 2){
                 var temp = {};
-                for(var i in blanks){
+                for(let i in blanks){
                     if(temp[blanks[i].content] == undefined)
                         temp[blanks[i].content] = 1;
                     else
                         temp[blanks[i].content] ++;
                 }
-                for(var i in temp){
+                for(let i in temp){
                     this.chartData.rows.push({title:i, number: temp[i]});
                 }
             }
@@ -83,7 +84,7 @@ export default {
     created(){
         this.update();
     }
-}
+};
 </script>
 
 <style>

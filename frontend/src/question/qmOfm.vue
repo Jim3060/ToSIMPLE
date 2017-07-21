@@ -31,92 +31,93 @@
 </template>
 
 <script>
-    import Vue from "vue";
-    //import BootStrapVue from "bootstrap-vue";
-    //Vue.use(BootStrapVue);
-
-    //import {bAlert, bModal} from 'bootstrap-vue/lib/components'
-    import {modal, alert} from "vue-strap"
-
-    export default {
-        data(){return {
-            status : {},
+export default {
+    data() {
+        return {
+            status: {},
             report: {},
-            reportNum : {}
-        }},
+            reportNum: {}
+        };
+    },
 
-        created() {
-            this.getReport();
+    created() {
+        this.getReport();
+    },
+
+    methods: {
+        getReport() {
+            var self = this;
+            $.ajax({
+                type: "GET",
+                url: "allUnhandledReports?page=0&pageSize=1",
+                data: "",
+                dataType: "json",
+                success: data => {
+                    self.report = data.reports;
+                    console.log(1);
+                    console.log(data.reportNum);
+                    self.reportNum = data.reportNum;
+                }
+            });
         },
 
-        methods:{
-            getReport() {
-                var self = this;
+        pass(ID, reportId) {
+            this.$confirm("此操作会改变问卷的状态, 您确定继续吗?", "警告", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "danger"
+            }).then(() => {
                 $.ajax({
-                    type: "GET",
-                    url: "allUnhandledReports?page=0&pageSize=1",
-                    data: "",
-                    dataType : "json",
-                    success : data=>{
-                        self.report = data.reports;
-                        console.log(1);
-                        console.log(data.reportNum);
-                        self.reportNum = data.reportNum;
+                    type: "POST",
+                    url: ("report/" + reportId),
+                    data: { "status": 1, "questionnaireId": ID },
+                    dataType: "json",
+                    success: data => {
+                        console.log(data);
+                        this.getReport();
+                        this.$message.success("操作成功！");
                     }
                 });
-            },
+            });
+        },
 
-            pass(ID, reportId) {
-                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'danger'
-                    }).then(() => {
-                        var self = this;
-                        $.ajax({
-                            type: "POST",
-                            url: ("report/" + reportId),
-                            data : {"status" : 1, "questionnaireId" : ID},
-                            dataType : "json",
-                            success : data=>{
-                                console.log(data);
-                                this.getReport();
-                                this.$message.success("操作成功！");
-                            }
-                        });
+        noPass(reportId) {
+            this.$confirm("此操作会改变问卷的状态, 您确定继续吗?", "警告", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "danger"
+            }).then(() => {
+                $.ajax({
+                    type: "POST",
+                    url: ("report/" + reportId),
+                    data: { "status": 1, "questionnaireId": "" },
+                    dataType: "json",
+                    success: data => {
+                        console.log(data);
+                        this.getReport();
+                        this.$message.success("操作成功！");
+                    }
                 });
-            },
+            });
+        },
 
-            noPass(reportId) {
-                var self = this;
-                this.$confirm('此操作会改变问卷的状态, 您确定继续吗?', '警告', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'danger'
-                    }).then(() => {
-                        var self = this;
-                        $.ajax({
-                            type: "POST",
-                            url: ("report/" + reportId),
-                            data : {"status" : 1, "questionnaireId" : ""},
-                            dataType : "json",
-                            success : data=>{
-                                console.log(data);
-                                this.getReport();
-                                this.$message.success("操作成功！");
-                            }
-                        });
-                });
-            },
-
-            viewContent() {
-                this.$router.push({ name: "q" + report[0].questionnaireId);
-            }
+        viewContent() {
+            this.$router.push({ name: "q" + report[0].questionnaireId);
         }
     }
+};
 </script>
 
 <style>
-    table{width:80% !important; margin-left:10%;}
-    th, td, td>input{text-align: center; width:150px !important;}
+table {
+    width: 80% !important;
+    margin-left: 10%;
+}
+
+th,
+td,
+td>input {
+    text-align: center;
+    width: 150px !important;
+}
 </style>

@@ -1,37 +1,31 @@
 package dao.Impl;
 
 import ToolUtils.CountUtils;
-import java.util.*;
-import java.util.regex.Pattern;
-
-
 import com.mongodb.*;
-import model.QuestionnaireStatistics;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-
-import com.mongodb.util.JSON;
-import org.bson.types.ObjectId;
-
 import dao.QuestionnaireDao;
 import model.Questionnaire;
-import net.sf.json.JSONObject;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import model.Report;
+import org.bson.types.ObjectId;
+import org.hibernate.Session;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 import static java.lang.Math.min;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 
-
-public class QuestionnaireDaoImpl implements QuestionnaireDao {
+public class QuestionnaireDaoImpl extends HibernateDaoSupport implements QuestionnaireDao {
     protected MongoTemplate mongoTemplate;
-
-    public void setMongoTemplate(MongoTemplate template) {
-        this.mongoTemplate = template;
-    }
 
     public MongoTemplate getMongoTemplate() {
         return this.mongoTemplate;
+    }
+
+    public void setMongoTemplate(MongoTemplate template) {
+        this.mongoTemplate = template;
     }
 
     public String save(Questionnaire questionnaire) {
@@ -47,7 +41,6 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
 
     @Override
     public Integer delete(String id) {
-        // TODO Auto-generated method stub
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
@@ -62,7 +55,6 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         }
 
         DBObject object = questionnaires.findAndRemove(query);
-//        System.out.print(writeResult);
         return (object == null) ? 0 : 1;
 
     }
@@ -79,7 +71,6 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
             return null;
         }
         questionnaires.update(query, questionnaireDB);
-        // TODO Auto-generated method stub
         ObjectId newid = (ObjectId) dbObj.get("_id");
         return newid.toString();
     }
@@ -98,7 +89,6 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
         if (dbObj == null) {
             return null;
         }
-        // TODO Auto-generated method stub
         return new Questionnaire(dbObj);
     }
 
@@ -118,10 +108,9 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name,CountUtils countUtils) {
+    public List<Questionnaire> searchQuestionnaireByName(Integer page, Integer pageSize, String name, CountUtils countUtils) {
 
         pageSize = min(pageSize, 30);
-
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
@@ -140,13 +129,29 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> fetchAll(Integer page, Integer pageSize,CountUtils countUtils) {
+    public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils) {
         pageSize = min(pageSize, 30);
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
         BasicDBObject fields = new BasicDBObject("paperTitle", true).append("_id", true);
         DBCursor dbCursor = questionnaires.find(query, fields).skip(page * pageSize).limit(pageSize);
+        Integer count = questionnaires.find(query).size();
+        countUtils.setCount(count);
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        while (dbCursor.hasNext()) {
+            list.add(new Questionnaire(dbCursor.next()));
+        }
+        return list;
+    }
+
+    @Override
+    public List<Questionnaire> fetchAllWithAllInfo(Integer page, Integer pageSize, CountUtils countUtils) {
+        pageSize = min(pageSize, 30);
+        DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        BasicDBObject query = new BasicDBObject();
+        DBCursor dbCursor = questionnaires.find(query).skip(page * pageSize).limit(pageSize);
         Integer count = questionnaires.find(query).size();
         countUtils.setCount(count);
         List<Questionnaire> list = new ArrayList<Questionnaire>();
@@ -178,19 +183,79 @@ public class QuestionnaireDaoImpl implements QuestionnaireDao {
     }
 
     @Override
-    public List<Questionnaire> searchQuestionnaireByName(String name,CountUtils countUtils) {
-        return searchQuestionnaireByName(0, 30, name,countUtils);
+    public List<Questionnaire> searchQuestionnaireByName(String name, CountUtils countUtils) {
+        return searchQuestionnaireByName(0, 30, name, countUtils);
     }
 
 
     @Override
-    public List<Questionnaire> findQuestionnaireByStatus(Integer status,CountUtils countUtils) {
+    public List<Questionnaire> findQuestionnaireByStatus(Integer status, CountUtils countUtils) {
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
         query.put("status", status);
         DBCursor dbCursor = questionnaires.find(query);
         Integer count = dbCursor.size();
+        countUtils.setCount(count);
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        while (dbCursor.hasNext()) {
+            list.add(new Questionnaire(dbCursor.next()));
+        }
+        return list;
+    }
+
+    @Override
+    public List<Questionnaire> getReportedQuestionnaire() {
+        Session session = this.getSession();
+        session.beginTransaction();
+        List<Report> reports = session.createQuery("from Report as r where r.status=0").list();
+        session.getTransaction().commit();
+        Set<String> questionnaireIdSet = new HashSet<String>();
+        for (int i = 0; i < reports.size(); i++) {
+            questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
+        }
+        List<ObjectId> idArray = new ArrayList<ObjectId>();
+
+        Iterator<String> it = questionnaireIdSet.iterator();
+        while (it.hasNext()) {
+            idArray.add(new ObjectId(it.next()));
+        }
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new BasicDBObject("$in", idArray));
+
+        DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        DBCursor dbCursor = questionnaires.find(query);
+        List<Questionnaire> list = new ArrayList<Questionnaire>();
+        while (dbCursor.hasNext()) {
+            list.add(new Questionnaire(dbCursor.next()));
+        }
+        return list;
+
+    }
+
+    public List<Questionnaire> getReportedQuestionnaireByPage(int page, int pageSize, CountUtils countUtils) {
+        Session session = this.getSession();
+        session.beginTransaction();
+        List<Report> reports = session.createQuery("from Report as r where r.status=0").list();
+        session.getTransaction().commit();
+        Set<String> questionnaireIdSet = new HashSet<String>();
+        for (int i = 0; i < reports.size(); i++) {
+            questionnaireIdSet.add(reports.get(i).getQuestionnaireId());
+        }
+        List<ObjectId> idArray = new ArrayList<ObjectId>();
+
+        Iterator<String> it = questionnaireIdSet.iterator();
+        while (it.hasNext()) {
+            idArray.add(new ObjectId(it.next()));
+        }
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new BasicDBObject("$in", idArray));
+
+        DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        DBCursor dbCursor = questionnaires.find(query).skip(page * pageSize).limit(pageSize);
+        Integer count = questionnaires.find(query).size();
         countUtils.setCount(count);
         List<Questionnaire> list = new ArrayList<Questionnaire>();
         while (dbCursor.hasNext()) {

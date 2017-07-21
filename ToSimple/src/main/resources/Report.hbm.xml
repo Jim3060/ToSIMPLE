@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="model.Report" table="Report">
+        <id name="id" type="long">
+            <column name="id"/>
+            <generator class="native"/>
+        </id>
+        <property name="userId" type="long">
+            <column name="userId"/>
+        </property>
+        <property name="questionnaireId" type="java.lang.String">
+            <column name="questionnaireId"/>
+        </property>
+        <property name="content" type="java.lang.String">
+            <column name="content"/>
+        </property>
+        <property name="createTime" column="createTime" type="java.util.Date"/>
+        <property name="status" type="integer">
+            <column name="status"/>
+        </property>
+    </class>
+</hibernate-mapping>
