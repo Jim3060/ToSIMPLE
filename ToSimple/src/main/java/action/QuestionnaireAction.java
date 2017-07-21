@@ -190,7 +190,10 @@ public class QuestionnaireAction extends BaseAction {
     	String [] dataStr = keyword.split("-"); 
     	System.out.println(dataStr[0]);
     	if (dataStr[0].equals(keyword)){q=questionnaireService.getQuestionByKW(keyword,keyword);}
-    	else{q=questionnaireService.getQuestionByKW(dataStr[0],dataStr[1]);}
+    	else{
+    		q=questionnaireService.getQuestionByKW(dataStr[0],dataStr[1]);
+    		
+    	}
     	if (q==null){
     		JSONObject result = new JSONObject();
     		result.put("valid", 0);

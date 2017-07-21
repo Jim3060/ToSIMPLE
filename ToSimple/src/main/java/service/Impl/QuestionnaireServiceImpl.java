@@ -207,6 +207,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	@Override
 	public String getQuestionByKW(String kwq, String kw) {
 		List<String> ids=SpiderUtils.searchSojumpIdByKW(kwq);
+		//ids.addAll(SpiderUtils.searchSojumpIdByKW(kw));
 		if(ids==null||ids.size()==0){return null;}
 		Comparator<QuestionnaireSpider.Question> cmps =  new Comparator<QuestionnaireSpider.Question>(){  
             public int compare(QuestionnaireSpider.Question o1, QuestionnaireSpider.Question o2) {  

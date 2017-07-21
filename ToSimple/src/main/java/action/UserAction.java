@@ -129,6 +129,8 @@ public class UserAction extends BaseAction {
         response.getWriter().print(result);
         return null;
     }
+    
+    
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response) throws Exception {
@@ -162,6 +164,34 @@ public class UserAction extends BaseAction {
         return null;
     }
 
+    @RequestMapping(value = "updatePassword", method = RequestMethod.POST)
+    public String updatePassword(HttpSession session, String passwordSECURE, String passwordNewSECURE, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        System.out.println(passwordSECURE);
+        System.out.println(passwordNewSECURE);
+        RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+        String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
+        User user=(User) session.getAttribute("user");
+        user=userService.getUserById(user.getId());
+        System.out.println(passwordInput);
+        if (user==null){response.getWriter().print(0);return null;}
+        
+        if (!user.getPassword().equals(passwordInput)){
+        	response.getWriter().print(-1);return null;
+        }
+        
+        user.setPassword(RSAUtils.decryptBase64(passwordNewSECURE, privateKey));
+        userService.updateUser(user);
+
+
+
+        response.getWriter().print(1);
+        session.removeAttribute("privateKey");
+        return null;
+    }
+
+    
+    
     @RequestMapping(value = "logout", method = RequestMethod.GET)
     public String logout(HttpSession session,HttpServletResponse response) throws IOException {
         session.removeAttribute("user");
