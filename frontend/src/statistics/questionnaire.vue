@@ -28,16 +28,7 @@ export default {
             this.$router.push({name:"n", params:{id: this.$route.params.id}});
         },
         draw(){
-            window.print();
-            /*html2canvas($("#images")[0]).then(canvas => {
-                window.open(canvas.toDataURL());
-            });*/
-            /*let canvases = $("canvas");
-            const length = canvases.length;
-            for(let i = 0; i < length; i++){
-                console.log(canvases[i]);
-                window.open(canvases[i].toDataURL());
-            }*/
+            window.open(`questionnaireStatistics/chart/${this.$route.params.id}`);
         }
     },
     created(){
