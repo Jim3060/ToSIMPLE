@@ -305,8 +305,20 @@ public class QuestionnaireAction extends BaseAction {
      */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.DELETE)
     public String deleteQuestionnaire(@PathVariable("questionnaireId") String questionnaireId,
-                                      HttpServletResponse response) throws IOException {
+                                      HttpServletResponse response,HttpSession session) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
+        //check user equals author
+        Questionnaire questionnaireTest = questionnaireService.findQuestionnaireById(questionnaireId);
+       // System.out.println("authorId:"+questionnaireTest.questionnaireJSON.get("authorId"));
+        
+        if (session.getAttribute("user")==null||questionnaireTest.questionnaireJSON.has("authorId") && !(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User) session.getAttribute("user")).getId())))) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("application/json");
+            response.getWriter().print(result);
+            return null;
+        }
         Integer integer = questionnaireService.deleteQuestionnaire(questionnaireId);
         JSONObject result = new JSONObject();
         result.put("deleteSuccess", integer);

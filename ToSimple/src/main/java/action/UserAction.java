@@ -163,8 +163,9 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "logout", method = RequestMethod.GET)
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session,HttpServletResponse response) throws IOException {
         session.removeAttribute("user");
+        response.getWriter().print(1);
         return null;
     }
 
