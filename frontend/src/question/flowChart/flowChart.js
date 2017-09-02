@@ -7,15 +7,18 @@ class Question{
         this.choices = choices;
         this.conditions = conditions;
         this.choicesUsed = new Set(); // To record whether this question is open
+        this.open = choices.length > 0;
     }
 
     isOpen(){
-        if (this.open == undefined && this.choices.length > 0 && this.choicesUsed.length == this.choices.length) {
+        if (this.choices.length > 0 && this.choicesUsed.length == this.choices.length) {
             this.open = false;
-            return false;
-        }else{
-            return true;
         }
+        return this.open;
+    }
+
+    close() {
+        this.open = false;
     }
 
     link(choices){
@@ -24,6 +27,25 @@ class Question{
         }else{
             this.choicesUsed = new Set([...choices, ...this.choicesUsed]);
         }
+    }
+
+    conditionEqual(q) {
+        if (Object.keys(this.conditions).length == 0) {
+            return false;
+        }
+        for (let idx in this.conditions) {
+            if (q.conditions[idx] == undefined || q.conditions[idx].length != this.conditions[idx].length) {
+                return false;
+            }
+            else {
+                for (let i in this.conditions[idx]) {
+                    if (this.conditions[idx][i] != q.conditions[idx][i]) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }
 
@@ -107,7 +129,19 @@ export default class FlowChart{
 
     generate(){
         for (let i = 0; i < this.questions.length; i++) {
+            let flag = false;
             this.g.setNode(i, {label: this.questions[i].title});
+
+            for (let j = i - 1; j >= 0; j--) {
+                if (this.questions[i].conditionEqual(this.questions[j])) {
+                    this.link(j, i);
+                    this.questions[j].close();
+                    flag = true;
+                }
+            }
+            if (flag) {
+                continue;
+            }
 
             let conditions = this.questions[i].conditions;
             for (let c in conditions) {
