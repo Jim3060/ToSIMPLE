@@ -54,6 +54,8 @@ public interface UserService {
     User loginByEmail(String email, String password);
 
     Long getValidUserNumber();
+    
+    public int checkTokenValid(User u,String checkToken);
 
 
 }

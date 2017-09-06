@@ -18,7 +18,7 @@ public class MailUtils {
     public static final String URL = "http://localhost:8080/ToSimple";//项目主页
     public static final int LIMITHOUR = 2; //激活邮件过期时间2小时
     public static final int LIMITTIME = 1000 * 60 * 60 * 2;
-    public static final String TITLE = "ToSimple账户激活邮件";
+    public static String TITLE = "ToSimple账户激活邮件";
     public static final String HOST = "smtp.163.com";
     public static final String SMTP = "smtp";
 
@@ -31,7 +31,7 @@ public class MailUtils {
         //激活的有效时间
         Long activateTime = curTime + LIMITTIME;
         //激活码--用于激活邮箱账号
-        String token = to + curTime;
+        String token = curTime+to ;
         u.setToken(MD5Utils.getEncoded(token));
         u.setCreateTime(new Date(activateTime));
         token = u.getToken();
@@ -39,6 +39,20 @@ public class MailUtils {
         String content = "<p>您好 O(∩_∩)O~~<br><br>欢迎加入ToSimple!<br><br>帐户需要激活才能使用，赶紧激活成为ToSimple正式的一员吧:)<br><br>请在2小时内点击下面的链接立即激活帐户："
                 + "<br><a href='" + URL + "/registerValidate?token=" + token + "&email=" + to + "'>"
                 + URL + "/registerValidate?token=" + token + "&email=" + to + "</a></p>";
+        //调用发送邮箱服务
+        MailUtils.sendMail(to, TITLE, content);
+        return u;
+    }
+    
+    public static User sendCheckToken(User u) throws MessagingException{
+    	//get userful information
+        String to = u.getEmail();  //email
+        Long curTime = System.currentTimeMillis();  //time
+        String token= u.getCheckToken();
+        TITLE= "密码找回";
+        //发送的邮箱内容
+        String content = "<p>您好 O(∩_∩)O~~<br><br>欢迎使用ToSimple!<br><br>这是您请求的验证码，若不是您的操作，请勿点击！<br><br>验证码为："
+                + "<br>"+token+"</p>";
         //调用发送邮箱服务
         MailUtils.sendMail(to, TITLE, content);
         return u;
