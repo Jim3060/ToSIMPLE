@@ -51,6 +51,7 @@
         <questionnaire :questionnaire="questionnaire" :edit="questionnaire.status==0&&editMode" @delete="del($event)" @edit="edit($event)"></questionnaire>
         <div v-show="questionnaire.status==0" class="buttons">
             <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
+            <el-button type="primary" @click="showChart()">流程图预览</el-button>
             <el-button type="success" @click="submit()">提交问卷</el-button>
             <el-button @click="save()">暂存问卷</el-button>
         </div>
@@ -71,6 +72,7 @@ import create from "./createQuestion.vue";
 import questionnaire from "./questionnaire.vue";
 import { modal } from "vue-strap";
 import qrcode from "qrcode.vue";
+import chart from "./flowChart/flowChart.vue";
 
 export default {
     data() {
@@ -89,7 +91,7 @@ export default {
             forkId: ""
         };
     },
-    components: { modal, questionnaire, create, qrcode },
+    components: { modal, questionnaire, create, qrcode, chart },
     methods: {
         add(data) {
             if (this.idx == -1)
@@ -235,6 +237,10 @@ export default {
                 this.$message.error("网络异常");
             });
         },
+        showChart() {
+            localStorage.questions = JSON.stringify(this.questionnaire.questions);
+            window.open("#/flow");
+        },
         fork() {
             let id = this.forkId;
             let self = this;
@@ -283,7 +289,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .edit-title,
 .edit-switch {
     font-size: 20px;

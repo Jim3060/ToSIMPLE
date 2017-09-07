@@ -13,12 +13,13 @@ import navbar from "./navbar.vue";
 import message from "./message.vue";
 import questionnaire from "./question/questionnaire.vue";
 import create from "./question/createQuestionnaire.vue";
-import userManager from "./question/userManager.vue";
-import questionnaireManager from "./question/qmOfm.vue";
+import userManager from "./manage/userManager.vue";
+import questionnaireManager from "./manage/qmOfm.vue";
 import statistic from "./statistics/questionnaire.vue";
 import qView from "./question/questionnairesView.vue";
 import myQuestionnaire from "./manage/myquestionnaires.vue";
-
+import backup from "./manage/backupManage.vue";
+import flowChart from "./question/flowChart/flowChart.vue";
 
 const routes = [
     {path:"/index",component: index},
@@ -32,7 +33,9 @@ const routes = [
     {path:"/s/:id", name:"s", component: statistic},
     {path:"/search/:name", name:"search", component: qView},
     {path:"/m/q", component: myQuestionnaire},
-    {path:"/r/:id", name: "r", component: questionnaire}
+    {path:"/r/:id", name: "r", component: questionnaire},
+    {path:"/backup", component: backup},
+    {path:"/flow", component: flowChart}
 ];
 
 const router = new VueRouter({
