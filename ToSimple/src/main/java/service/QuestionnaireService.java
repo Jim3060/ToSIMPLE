@@ -4,6 +4,7 @@ import ToolUtils.CountUtils;
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
+import model.User;
 
 import java.util.List;
 
@@ -31,6 +32,14 @@ public interface QuestionnaireService {
     public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils);
 
     public Questionnaire findQuestionnaireById(String id);
+    
+    public Integer associateQuestionnaires(String id1, String id2, String message, User user);
+    
+    public Integer breakAssociation(String id1, String id2, User user);
+    
+    public List<Questionnaire> getAllAssociatedQuestionnaires(String questionnaireId);
+    
+    public Questionnaire getOneAssociatedQuestionnaire(String questionnaireId);
 
     public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult);
 

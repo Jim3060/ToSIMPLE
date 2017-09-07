@@ -106,8 +106,6 @@ public class QuestionnaireAction extends BaseAction {
             response.getWriter().print(result);
             return null;
         }
-
-
         //check user equals author
         Questionnaire questionnaireTest = new Questionnaire(questionnaire);
 
@@ -132,6 +130,23 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
+    
+    @RequestMapping(value = "associateQuestionnaires", method =  RequestMethod.GET)
+    public void associateQuestionnaires(HttpSession session, HttpServletResponse response,String questionnaireId1,String questionnaireId2, String message) throws IOException{
+    	response.setContentType("application/json;charset=UTF-8");
+    	int i=questionnaireService.associateQuestionnaires(questionnaireId1, questionnaireId2,message,(User)session.getAttribute("user"));
+    	response.getWriter().print(i);
+    }
+    
+    @RequestMapping(value = "breakAssociation", method =  RequestMethod.GET)
+    public void breakAssociation(HttpSession session, HttpServletResponse response,String questionnaireId1,String questionnaireId2) throws IOException{
+    	response.setContentType("application/json;charset=UTF-8");
+    	int i=questionnaireService.breakAssociation(questionnaireId1, questionnaireId2,(User)session.getAttribute("user"));
+    	response.getWriter().print(i);
+    }
+    
+    
+    
     
     @RequestMapping(value = "questionnaireSojump/{questionnaireId}", method =  RequestMethod.POST)
     public String forkSojumpQuestionnaire( HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {

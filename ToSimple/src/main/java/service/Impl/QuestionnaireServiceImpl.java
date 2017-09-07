@@ -24,6 +24,8 @@ import model.QuestionnaireGSON;
 import model.QuestionnaireResult;
 import model.QuestionnaireSpider;
 import model.QuestionnaireStatistics;
+import model.User;
+import net.sf.json.JSONArray;
 import service.QuestionnaireService;
 
 import java.util.ArrayList;
@@ -229,5 +231,65 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		
 		return gson.toJson(quess);
 	}
+	
+	@Override
+	public Integer associateQuestionnaires(String id1, String id2, String message, User user){//main id, slave id, message
+		//identify the questionnaires
+		Questionnaire q1=questionnaireDao.findQuestionnaireById(id1);
+		if (q1==null){return 0;}
+		//check the user
+		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
+			return -1;
+		}
+		//identify the second questionnaire
+		Questionnaire q2=questionnaireDao.findQuestionnaireById(id2);
+		if (q2==null){return 0;}
+		//set associate
+		q1.setAssociate(id2,message);
+		//q2.setAssociate(id1);
+		//save
+		questionnaireDao.update(id1,q1);
+		//questionnaireDao.save(q2);
+		return 1;
+	}
+	
+	@Override
+	public Integer breakAssociation(String id1, String id2, User user){//main id, slave id, message
+		//identify the questionnaires
+		Questionnaire q1=questionnaireDao.findQuestionnaireById(id1);
+		if (q1==null){return 0;}
+		//check the user
+		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
+			return -1;
+		}
+		//identify the second questionnaire
+		Questionnaire q2=questionnaireDao.findQuestionnaireById(id2);
+		if (q2==null){return 0;}
+		//set associate
+		q1.removeAssociate(id2);
+		//q2.setAssociate(id1);
+		//save
+		questionnaireDao.update(id1,q1);
+		//questionnaireDao.save(q2);
+		return 1;
+	}
+
+	@Override
+	public List<Questionnaire> getAllAssociatedQuestionnaires(String id) {
+		// TODO Auto-generated method stub
+		Questionnaire q=questionnaireDao.findQuestionnaireById(id);
+		if (q==null){return null;}
+		JSONArray associatedIdsJ=(JSONArray) q.questionnaireJSON.get("associatedQuestionnaires");
+		if (associatedIdsJ==null){return null;}
+		return questionnaireDao.findQuestionnaireByIds(JSONArray.toList(associatedIdsJ) );
+	}
+
+	@Override
+	public Questionnaire getOneAssociatedQuestionnaire(String questionnaireId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 
 }

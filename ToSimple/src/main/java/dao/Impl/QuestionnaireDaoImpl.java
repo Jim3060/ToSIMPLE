@@ -266,4 +266,23 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         }
         return list;
     }
+
+	@Override
+	public List<Questionnaire> findQuestionnaireByIds(List<String> ids) {
+		// TODO Auto-generated method stub
+		DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        BasicDBObject query = new BasicDBObject();
+        List<Questionnaire> qlist=new ArrayList<Questionnaire>();
+        for (String id : ids){
+	        try {
+	            query.put("_id", new ObjectId(id));
+	        } catch (Exception e) {
+	            return null;
+	        }
+	        qlist.add(new Questionnaire(questionnaires.findOne(query)));
+        }
+        return qlist;
+		
+	}
 }
