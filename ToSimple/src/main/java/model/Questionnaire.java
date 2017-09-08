@@ -115,10 +115,15 @@ public class Questionnaire {
         return this.questionnaireJSON.get("questionnaireId").toString();
     }
 
-    public DBObject getQuestionnaireDB() {
+    public DBObject fetchQuestionnaireDB() {
         JSONObject tmp = JSONObject.fromObject(questionnaireJSON.toString());
         tmp.remove("questionnaireId");
         return (DBObject) JSON.parse(tmp.toString());
+    }
+    
+    public Questionnaire cleanDb(){
+    	this.questionnaireJSON.remove("questionnaireDB");
+    	return this;
     }
 
 

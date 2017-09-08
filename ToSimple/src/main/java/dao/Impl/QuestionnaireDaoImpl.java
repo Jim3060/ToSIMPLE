@@ -30,7 +30,7 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
 
     public String save(Questionnaire questionnaire) {
         //insert the json
-        DBObject questionnaireDB = questionnaire.getQuestionnaireDB();
+        DBObject questionnaireDB = questionnaire.fetchQuestionnaireDB();
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         questionnaires.insert(questionnaireDB);
@@ -61,7 +61,7 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
 
     @Override
     public String update(String id, Questionnaire questionnaire) {
-        DBObject questionnaireDB = questionnaire.getQuestionnaireDB();
+        DBObject questionnaireDB = questionnaire.fetchQuestionnaireDB();
         DBObject dbObj;
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
@@ -274,7 +274,8 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
         List<Questionnaire> qlist=new ArrayList<Questionnaire>();
-        for (String id : ids){
+        for (int i=0;i<ids.size();i++){
+        	String id=ids.get(i);
 	        try {
 	            query.put("_id", new ObjectId(id));
 	        } catch (Exception e) {

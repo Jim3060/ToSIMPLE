@@ -35,6 +35,8 @@ public interface QuestionnaireService {
     
     public Integer associateQuestionnaires(String id1, String id2, String message, User user);
     
+    public Questionnaire.Association getOneAssociatedQuestionnaireInfo(String id) ;
+    
     public Integer breakAssociation(String id1, String id2, User user);
     
     public List<Questionnaire> getAllAssociatedQuestionnaires(String questionnaireId);
