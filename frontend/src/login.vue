@@ -295,7 +295,7 @@ export default {
 };    
 </script>
 
-<style>
+<style scoped>
 form#login .input-group,
 form#reg .input-group {
     margin: 20px;
