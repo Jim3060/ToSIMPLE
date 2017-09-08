@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import bus from "./bus.js"
-import {alert} from "vue-strap"
+import bus from "./bus.js";
+import {alert} from "vue-strap";
 
 export default {
     components:{alert},
@@ -17,15 +17,15 @@ export default {
         msgShow: false,
         msgType: "",
         msg: ""
-    }},
+    };},
     created(){
         bus.$on("showMsg", (type, message)=>{
             this.msgType = type;
             this.msg = message;
             this.msgShow = true;
-            setTimeout(()=>{this.msgShow = false}, 2000)
-        })
+            setTimeout(()=>{this.msgShow = false;}, 2000);
+        });
     }
-}
+};
 </script>
 

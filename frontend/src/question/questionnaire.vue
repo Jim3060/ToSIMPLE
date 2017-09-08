@@ -12,7 +12,9 @@
                 <blank v-if="question.type==2" :index="index" :answer="answer[index]" :title="question.questionTitle" :forced="question.forced" @update="update(index, $event)"></blank>
             </div>
         </div>
+        <div v-if="$route.path!='/n'&&$route.name!='n'&&associateID!=''">{{associateMessage}}</div>
         <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
+        <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'&&associateID!=''" @click="submitAndJump()">提交并回答下一份问卷</el-button>
         <!-- modify -->
         <el-button type="primary" v-if="!   edit" @click="dialogVisible=true">举报</el-button>
         <el-dialog  title="请输入举报原因" :visible.sync="dialogVisible" size="tiny"   :before-close="closeDialog">
@@ -47,7 +49,10 @@ export default {
         beginTime:"",
         dialogVisible:false,
         reportInfo:"",
-        reportNum:0
+        reportNum:0,
+
+        associateID:"",
+        associateMessage:""
     };},
     methods:{
         getInputSize() {
@@ -105,7 +110,7 @@ export default {
                 let answered = JSON.parse(localStorage.answered);
                 if(answered.indexOf(this.$route.params.id) != -1){
                     this.$message.warning("请勿重复回答该问题！");
-                    return;
+                    return false;
                 }
             }
             var postBody = {answers: []};
@@ -120,11 +125,11 @@ export default {
                 if(typeof temp === "undefined"){
                     //postBody.answers.push({choice:[], blank:""});
                     this.$message.warning("请记得回答第"+ (i+1) +"题");
-                    return;
+                    return false;
                 }else{
                     if((temp.choice == undefined || temp.choice.length == 0) && temp.blank == ""){
                         this.$message.warning("请记得回答第"+ (i+1) +"题");
-                        return;
+                        return false;
                     }
                     postBody.answers.push(temp);
                 }
@@ -138,9 +143,12 @@ export default {
                     let answered = JSON.parse(localStorage.answered || "[]");
                     answered.push(this.$route.params.id);
                     localStorage.answered = JSON.stringify(answered);
+                    return true;
                 }
+                return false;
             }).fail(()=>{
                 this.$message.error("网络异常");
+                return false;
             });
         },
         loadAnswer(){
@@ -200,6 +208,22 @@ export default {
                 }
             }
             return false;
+        },
+        loadAssociate(id){
+            $.get(`getOneAssociationInfo?questionnaireId=${id}`, data => {
+                if (data.valid == 1) {
+                    this.associateID = data.questionnaireAssociation["questionnaireId"];
+                    this.associateMessage = data.questionnaireAssociation["message"];
+                }
+            }, "json");
+        },
+        submitAndJump(){
+            if (this.submit() == true) {
+                this.$message.success("即将跳转……");
+                setTimeout(() => {
+                    this.$router.push({name:"q", id: this.associateID});
+                }, 5000);
+            }
         }
     },
     watch:{
@@ -225,6 +249,7 @@ export default {
         }
         else if(this.$route.name == "q"){
             this.loadQuestionnaire(this.$route.params.id);
+            this.loadAssociate(this.$route.params.id);
         }
         this.beginTime = new Date();
     }
