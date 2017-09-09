@@ -13,7 +13,7 @@ public interface QuestionnaireResultDao {
 
     QuestionnaireResult getQuestionnaireResultById(String id);
 
-
+    public Integer deleteByQuestionnaireId(String questionnaireId);
 //	public User getQuestionnaireById(int id);
 //
 //	public List<User> getAllQuestionnaires();

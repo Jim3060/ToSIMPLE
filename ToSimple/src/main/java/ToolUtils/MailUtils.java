@@ -48,7 +48,7 @@ public class MailUtils {
     	//get userful information
         String to = u.getEmail();  //email
         Long curTime = System.currentTimeMillis();  //time
-        String token= u.getCheckToken();
+        String token= u.fetchCheckToken();
         TITLE= "密码找回";
         //发送的邮箱内容
         String content = "<p>您好 O(∩_∩)O~~<br><br>欢迎使用ToSimple!<br><br>这是您请求的验证码，若不是您的操作，请勿点击！<br><br>验证码为："

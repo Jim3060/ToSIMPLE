@@ -29,6 +29,21 @@ public class QuestionnaireResultDaoImpl implements QuestionnaireResultDao {
         questionnaires.insert(questionnaireResult.getQuestionnaireResultDB());
         return 1;
     }
+    
+    public Integer deleteByQuestionnaireId(String questionnaireId){
+    	DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("QuestionnaireResults");
+        BasicDBObject query = new BasicDBObject();
+        query.put("questionnaireId", questionnaireId);
+
+        if ((questionnaires.findOne(query)) == null) {
+            return 0;
+        }
+        
+
+        questionnaires.remove(query);
+        return 1;
+    }
 
     @Override
     public List<QuestionnaireResult> getAllQuestionnaireResultById(String id) {

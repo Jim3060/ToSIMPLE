@@ -106,8 +106,6 @@ public class QuestionnaireAction extends BaseAction {
             response.getWriter().print(result);
             return null;
         }
-
-
         //check user equals author
         Questionnaire questionnaireTest = new Questionnaire(questionnaire);
 
@@ -132,6 +130,79 @@ public class QuestionnaireAction extends BaseAction {
         return null;
     }
 
+    //associateQuestionnaires?questionnaireId1={id1}&questionnaireId2={id2}&message={message}
+    //{id1}:主人的问卷id {id2}:被挂在后面的问卷id {message}:连接语
+    @RequestMapping(value = "associateQuestionnaires", method =  RequestMethod.GET)
+    public void associateQuestionnaires(HttpSession session, HttpServletResponse response,String questionnaireId1,String questionnaireId2, String message) throws IOException{
+    	response.setContentType("application/json;charset=UTF-8");
+    	int i=questionnaireService.associateQuestionnaires(questionnaireId1, questionnaireId2,message,(User)session.getAttribute("user"));
+    	response.getWriter().print(i);
+    }
+    
+    //breakAssociation?questionnaireId1={id1}&questionnaireId2={id2}
+    //{id1}:主人的问卷id {id2}:被挂在后面的问卷id
+    @RequestMapping(value = "breakAssociation", method =  RequestMethod.GET)
+    public void breakAssociation(HttpSession session, HttpServletResponse response,String questionnaireId1,String questionnaireId2) throws IOException{
+    	response.setContentType("application/json;charset=UTF-8");
+    	int i=questionnaireService.breakAssociation(questionnaireId1, questionnaireId2,(User)session.getAttribute("user"));
+    	response.getWriter().print(i);
+    }
+    
+    @RequestMapping(value = "getAllAssociation", method =  RequestMethod.GET)
+    public void getAllAssociation(HttpSession session, HttpServletResponse response,String questionnaireId) throws IOException{
+    	response.setContentType("application/json;charset=UTF-8");
+    	List<Questionnaire> list=questionnaireService.getAllAssociatedQuestionnaires(questionnaireId);
+    	if (list==null){
+    		JSONObject jsonObject = new JSONObject();
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return ;
+    	}
+    	
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("valid", 1);
+        jsonObject.put("questionnaires", list);
+        response.getWriter().print(jsonObject);
+    }
+    
+    @RequestMapping(value = "getOneAssociation", method =  RequestMethod.GET)
+    public void getOneAssociation(HttpSession session, HttpServletResponse response,String questionnaireId) throws IOException{
+    	response.setContentType("application/json;charset=UTF-8");
+    	Questionnaire q=questionnaireService.getOneAssociatedQuestionnaire(questionnaireId);
+    	if (q==null){
+    		JSONObject jsonObject = new JSONObject();
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return ;
+    	}
+    	
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("valid", 1);
+        jsonObject.put("questionnaire", q);
+        response.getWriter().print(jsonObject);
+    }
+    
+    @RequestMapping(value = "getOneAssociationInfo", method =  RequestMethod.GET)
+    public void getOneAssociationInfo(HttpSession session, HttpServletResponse response,String questionnaireId) throws IOException{
+    	response.setContentType("application/json;charset=UTF-8");
+    	Questionnaire.Association a=questionnaireService.getOneAssociatedQuestionnaireInfo(questionnaireId);
+    	if (a==null){
+    		JSONObject jsonObject = new JSONObject();
+            jsonObject.put("valid", 0);
+            response.getWriter().print(jsonObject);
+            return ;
+    	}
+    	
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("valid", 1);
+        jsonObject.put("questionnaireAssociation", a);
+        response.getWriter().print(jsonObject);
+    }
+    
+    
+    
+    
+    
     
     @RequestMapping(value = "questionnaireSojump/{questionnaireId}", method =  RequestMethod.POST)
     public String forkSojumpQuestionnaire( HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
