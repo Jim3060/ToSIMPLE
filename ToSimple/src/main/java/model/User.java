@@ -110,7 +110,7 @@ public class User {
          this.setToken(MD5Utils.getEncoded(token));
     }
     
-    public String getCheckToken(){
+    public String fetchCheckToken(){
     	String result=this.token.substring(0, 6);
     	return result;
     }

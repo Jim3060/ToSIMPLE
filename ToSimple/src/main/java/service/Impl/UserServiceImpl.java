@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
     }
     
     public int checkTokenValid(User u,String checkToken){
-    	String tokenCorrect=u.getCheckToken();
+    	String tokenCorrect=u.fetchCheckToken();
     	if (tokenCorrect.equals(checkToken)){
     		return 1;
     	}

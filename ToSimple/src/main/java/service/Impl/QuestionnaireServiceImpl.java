@@ -63,7 +63,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
     @Override
     public Integer deleteQuestionnaire(String id) {
+    	System.out.println(questionnaireResultDao.deleteByQuestionnaireId(id));
         return questionnaireDao.delete(id);
+        
 
     }
 
