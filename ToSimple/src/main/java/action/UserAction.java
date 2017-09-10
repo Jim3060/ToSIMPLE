@@ -1,5 +1,6 @@
 package action;
 
+import ToolUtils.MailUtils;
 import ToolUtils.RSAUtils;
 import model.User;
 import net.sf.json.JSONObject;
@@ -129,6 +130,8 @@ public class UserAction extends BaseAction {
         response.getWriter().print(result);
         return null;
     }
+    
+    
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response) throws Exception {
@@ -162,9 +165,38 @@ public class UserAction extends BaseAction {
         return null;
     }
 
+    @RequestMapping(value = "updatePassword", method = RequestMethod.POST)
+    public String updatePassword(HttpSession session, String passwordSECURE, String passwordNewSECURE, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        System.out.println(passwordSECURE);
+        System.out.println(passwordNewSECURE);
+        RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+        String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
+        User user=(User) session.getAttribute("user");
+        user=userService.getUserById(user.getId());
+        System.out.println(passwordInput);
+        if (user==null){response.getWriter().print(0);return null;}
+        
+        if (!user.getPassword().equals(passwordInput)){
+        	response.getWriter().print(-1);return null;
+        }
+        
+        user.setPassword(RSAUtils.decryptBase64(passwordNewSECURE, privateKey));
+        userService.updateUser(user);
+
+
+
+        response.getWriter().print(1);
+        session.removeAttribute("privateKey");
+        return null;
+    }
+
+    
+    
     @RequestMapping(value = "logout", method = RequestMethod.GET)
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session,HttpServletResponse response) throws IOException {
         session.removeAttribute("user");
+        response.getWriter().print(1);
         return null;
     }
 
@@ -189,6 +221,34 @@ public class UserAction extends BaseAction {
         response.getWriter().print(flag);
         return null;
     }
+    
+    @RequestMapping(value = "sendCheckToken", method = RequestMethod.GET)
+    public String sendCheckToken( HttpServletResponse response, String email) throws MessagingException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        System.out.println(email);
+        User user = userService.getUserByEmail(email);
+        if (user==null){response.getWriter().print(0);}
+        MailUtils.sendCheckToken(user);
+        response.getWriter().print(1);
+        return null;
+    }
+    
+    @RequestMapping(value = "forgotPassword", method = RequestMethod.GET)
+    public String forgotPassword(HttpSession session, String passwordNewSECURE, HttpServletResponse response, String checkToken, String email) throws MessagingException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        User user=userService.getUserByEmail(email);
+        int flag = userService.checkTokenValid(user, checkToken);
+        if (flag==1){
+        	RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+        	user.setPassword(RSAUtils.decryptBase64(passwordNewSECURE, privateKey));
+        	user.updateToken();
+        	userService.updateUser(user);
+        }
+        response.getWriter().print(flag);
+        return null;
+    }
+    
+    
 
     @RequestMapping(value = "user/role", method = RequestMethod.POST)
     public void changeRole(Long userId, Integer role, HttpServletResponse response) throws IOException {

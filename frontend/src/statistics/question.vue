@@ -1,5 +1,5 @@
 <template>
-    <el-card class="box-card">
+    <el-card class="box-card" style="height:370px">
         <div slot="header">
             <span class="statistic-title">{{index+1}}.{{title}}</span>
             <el-radio-group style="float: right" v-model="type" size="small">
@@ -12,14 +12,13 @@
         <div v-if="type=='条形图'" style="width:400px; height:300px">
             <ve-bar :colors="['#5ab1ef']" height="300px" width="400px" :data="chartData" :settings="chartSettingsBar" :legend-visible="false"></ve-bar>
         </div>
-        <el-table class="detail-table" v-show="type=='详细信息'" :data="statisticData.blanks" border style="width: 100%; height: 300px">
+        <el-table class="detail-table" v-show="type=='详细信息'" :data="statisticData.blanks" border style="width: 100%; height: 280px; overflow: scroll">
             <el-table-column prop="resultId" label="答卷ID" width="225"></el-table-column>
             <el-table-column prop="content" label="回答" width="75"></el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
-                    <el-button type="text" size="small">查看</el-button>
+                    <a :href="`#/r/${statisticData.blanks[scope.$index].resultId}`">查看</a>
                 </template>
-                <!--<el-button size="small">查看答卷</el-button>-->
             </el-table-column>
         </el-table>
     </el-card>

@@ -30,7 +30,7 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
 
     public String save(Questionnaire questionnaire) {
         //insert the json
-        DBObject questionnaireDB = questionnaire.getQuestionnaireDB();
+        DBObject questionnaireDB = questionnaire.fetchQuestionnaireDB();
         DB db = mongoTemplate.getDb();
         DBCollection questionnaires = db.getCollection("Questionnaires");
         questionnaires.insert(questionnaireDB);
@@ -61,7 +61,7 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
 
     @Override
     public String update(String id, Questionnaire questionnaire) {
-        DBObject questionnaireDB = questionnaire.getQuestionnaireDB();
+        DBObject questionnaireDB = questionnaire.fetchQuestionnaireDB();
         DBObject dbObj;
         BasicDBObject query = new BasicDBObject();
         query.put("_id", new ObjectId(id));
@@ -99,7 +99,10 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         DBCollection questionnaires = db.getCollection("Questionnaires");
         BasicDBObject query = new BasicDBObject();
         query.put("authorId", id);
-        DBCursor dbCursor = questionnaires.find(query);
+        System.out.println("delete here");
+        DBObject orderBy = new BasicDBObject();  
+        orderBy.put("createDate", -1);
+        DBCursor dbCursor = questionnaires.find(query).sort(orderBy);
         List<Questionnaire> list = new ArrayList<Questionnaire>();
         while (dbCursor.hasNext()) {
             list.add(new Questionnaire(dbCursor.next()));
@@ -263,4 +266,24 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         }
         return list;
     }
+
+	@Override
+	public List<Questionnaire> findQuestionnaireByIds(List<String> ids) {
+		// TODO Auto-generated method stub
+		DB db = mongoTemplate.getDb();
+        DBCollection questionnaires = db.getCollection("Questionnaires");
+        BasicDBObject query = new BasicDBObject();
+        List<Questionnaire> qlist=new ArrayList<Questionnaire>();
+        for (int i=0;i<ids.size();i++){
+        	String id=ids.get(i);
+	        try {
+	            query.put("_id", new ObjectId(id));
+	        } catch (Exception e) {
+	            return null;
+	        }
+	        qlist.add(new Questionnaire(questionnaires.findOne(query)));
+        }
+        return qlist;
+		
+	}
 }

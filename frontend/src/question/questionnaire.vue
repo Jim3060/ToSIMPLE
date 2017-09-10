@@ -7,12 +7,14 @@
             <div v-for="(question, index) in questionnaire.questions" v-if="edit || !hidden[index]" :key="question">
                 <el-button v-if="edit" type="primary" size="small" @click="change(index)" style="margin:1px 2px 3px 4px">修改</el-button>
                 <el-button v-if="edit" type="danger" size="small" @click="del(index)">删除</el-button>
-                <single v-if="question.type==0" :index="index" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></single>
-                <multiple v-if="question.type==1" :index="index" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></multiple>
-                <blank v-if="question.type==2" :index="index" :title="question.questionTitle" :forced="question.forced" @update="update(index, $event)"></blank>
+                <single v-if="question.type==0" :index="index" :answer="answer[index]" :title="question.questionTitle" :options="question.choices" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></single>
+                <multiple v-if="question.type==1" :index="index" :answer="answer[index]" :title="question.questionTitle" :options="question.choices" :limit="question.limit" :mix="question.mix||false" :forced="question.forced" @update="update(index, $event)"></multiple>
+                <blank v-if="question.type==2" :index="index" :answer="answer[index]" :title="question.questionTitle" :forced="question.forced" @update="update(index, $event)"></blank>
             </div>
         </div>
+        <div v-if="$route.path!='/n'&&$route.name!='n'&&associateID!=''">{{associateMessage}}</div>
         <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
+        <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'&&associateID!=''" @click="submitAndJump()">提交并回答下一份问卷</el-button>
         <!-- modify -->
         <el-button type="primary" v-if="!   edit" @click="dialogVisible=true">举报</el-button>
         <el-dialog  title="请输入举报原因" :visible.sync="dialogVisible" size="tiny"   :before-close="closeDialog">
@@ -47,7 +49,10 @@ export default {
         beginTime:"",
         dialogVisible:false,
         reportInfo:"",
-        reportNum:0
+        reportNum:0,
+
+        associateID:"",
+        associateMessage:""
     };},
     methods:{
         getInputSize() {
@@ -105,7 +110,7 @@ export default {
                 let answered = JSON.parse(localStorage.answered);
                 if(answered.indexOf(this.$route.params.id) != -1){
                     this.$message.warning("请勿重复回答该问题！");
-                    return;
+                    return false;
                 }
             }
             var postBody = {answers: []};
@@ -120,11 +125,11 @@ export default {
                 if(typeof temp === "undefined"){
                     //postBody.answers.push({choice:[], blank:""});
                     this.$message.warning("请记得回答第"+ (i+1) +"题");
-                    return;
+                    return false;
                 }else{
                     if((temp.choice == undefined || temp.choice.length == 0) && temp.blank == ""){
                         this.$message.warning("请记得回答第"+ (i+1) +"题");
-                        return;
+                        return false;
                     }
                     postBody.answers.push(temp);
                 }
@@ -138,8 +143,45 @@ export default {
                     let answered = JSON.parse(localStorage.answered || "[]");
                     answered.push(this.$route.params.id);
                     localStorage.answered = JSON.stringify(answered);
+                    return true;
                 }
+                return false;
             }).fail(()=>{
+                this.$message.error("网络异常");
+                return false;
+            });
+        },
+        loadAnswer(){
+            return new Promise((resolve, reject) => {
+                if(this.$route.name == "r"){
+                    let id = this.$route.params.id;
+                    $.get("questionnaireResult/"+id, data => {
+                        if (data.valid == 1 || data.valid == "1"){
+                            this.answer = data.questionnaireResult.answers;
+                            resolve(data.questionnaireResult.questionnaireId);
+                        }
+                        else
+                            reject("invalid id");
+                    }).fail(() => {
+                        reject("error");
+                    });
+                }
+                else
+                    reject("wrong route");
+            });
+        },
+        loadQuestionnaire(qid){
+            var id = qid;
+            $.get("questionnaire/"+id, data=>{
+                if(data.valid == "1"){
+                    this.questionnaire = data.questionnaire;
+                    for(var i = 0; i < this.questionnaire.questions.length; i++){
+                        this.hidden[i] = !this.ifShow(i);
+                    }
+                }else{
+                    this.$message.warning("该问卷不存在");
+                }
+            }, "json").fail(()=>{
                 this.$message.error("网络异常");
             });
         },
@@ -166,6 +208,22 @@ export default {
                 }
             }
             return false;
+        },
+        loadAssociate(id){
+            $.get(`getOneAssociationInfo?questionnaireId=${id}`, data => {
+                if (data.valid == 1) {
+                    this.associateID = data.questionnaireAssociation["questionnaireId"];
+                    this.associateMessage = data.questionnaireAssociation["message"];
+                }
+            }, "json");
+        },
+        submitAndJump(){
+            if (this.submit() == true) {
+                this.$message.success("即将跳转……");
+                setTimeout(() => {
+                    this.$router.push({name:"q", id: this.associateID});
+                }, 5000);
+            }
         }
     },
     watch:{
@@ -181,20 +239,17 @@ export default {
         reportInfo : "getInputSize"
     },
     created(){
-        if(Object.keys(this.questionnaire) == 0){
-            var id = this.$route.params.id;
-            $.get("questionnaire/"+id, data=>{
-                if(data.valid == "1"){
-                    this.questionnaire = data.questionnaire;
-                    for(var i = 0; i < this.questionnaire.questions.length; i++){
-                        this.hidden[i] = !this.ifShow(i);
-                    }
-                }else{
-                    this.$message.warning("该问卷不存在");
-                }
-            }, "json").fail(()=>{
+        this.beginTime = new Date();
+        if(this.$route.name == "r"){
+            this.loadAnswer().then(qid => {
+                this.loadQuestionnaire(qid);
+            }).catch(() => {
                 this.$message.error("网络异常");
             });
+        }
+        else if(this.$route.name == "q"){
+            this.loadQuestionnaire(this.$route.params.id);
+            this.loadAssociate(this.$route.params.id);
         }
         this.beginTime = new Date();
     }

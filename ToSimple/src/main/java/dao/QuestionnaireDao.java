@@ -21,6 +21,8 @@ public interface QuestionnaireDao {
     public Questionnaire findQuestionnaireById(String id);
 
     public List<Questionnaire> findQuestionnaireByUser(Long id);
+    
+    public List<Questionnaire> findQuestionnaireByIds(List<String> ids);
 
     /**
      * fetch all questionnaires. only return the _id and paperTitle.

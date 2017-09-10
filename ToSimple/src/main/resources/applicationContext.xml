@@ -17,30 +17,30 @@
     <!-- Bean -->
     <!-- NEED TO BE MODIFIED -->
     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-          destroy-method="close" p:driverClass="com.mysql.jdbc.Driver"
-          p:jdbcUrl="jdbc:mysql://localhost:3306/questionnaireServey" p:user="root"
-          p:password="lulls520" p:maxPoolSize="40" p:minPoolSize="1"
-          p:initialPoolSize="1" p:maxIdleTime="20"/>
+		destroy-method="close" p:driverClass="com.mysql.jdbc.Driver"
+		p:jdbcUrl="jdbc:mysql://localhost:3306/questionnaireServey" p:user="root"
+		p:password="Ljy970714" p:maxPoolSize="40" p:minPoolSize="1"
+		p:initialPoolSize="1" p:maxIdleTime="20" />
 
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
-          p:dataSource-ref="dataSource">
-        <property name="mappingResources">
-            <list>
-                <value>User.hbm.xml</value>
-                <value>Report.hbm.xml</value>
-            </list>
-        </property>
-        <!-- Hibernate SessionFactory -->
-        <property name="hibernateProperties">
-            <value>
-                hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
-                hibernate.hbm2ddl.auto=update
-                hibernate.show_sql=true
-                hibernate.format_sql=true
-            </value>
-        </property>
-    </bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+		p:dataSource-ref="dataSource">
+		<property name="mappingResources">
+			<list>	
+				<value>model/User.hbm.xml</value>
+				<value>model/Report.hbm.xml</value>
+			</list>
+		</property>
+		<!-- Hibernate SessionFactory -->
+		<property name="hibernateProperties">
+			<value>
+				hibernate.dialect=org.hibernate.dialect.MySQLInnoDBDialect
+				hibernate.hbm2ddl.auto=update
+				hibernate.show_sql=true
+				hibernate.format_sql=true
+			</value>
+		</property>
+	</bean>
 
     <!-- DAO Bean -->
 

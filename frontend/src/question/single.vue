@@ -18,7 +18,7 @@
 <script>
     export default{
         name: "single",
-        props:{options:{required: true}, title:{required: true}, index:{}, mix:{default: false}, forced:{}},
+        props:{options:{required: true}, title:{required: true}, index:{}, mix:{default: false}, forced:{}, answer:{}},
         data(){return {
             select:"",
             blank:""
@@ -35,6 +35,12 @@
         watch:{
             select(){this.update();},
             blank(){this.update();}
+        },
+        created(){
+            if (this.answer != undefined){
+                this.select = (this.answer.choice || [this.options.length])[0];
+                this.blank = this.answer.blank;
+            }
         }
     };
 </script>

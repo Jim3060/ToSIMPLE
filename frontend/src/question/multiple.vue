@@ -27,7 +27,7 @@
 <script>
     export default{
         name: "multiple",
-        props:{options:{required: true}, title:{required: true}, limit:{required: true}, index:{}, mix:{default:false}, forced:{}},
+        props:{options:{required: true}, title:{required: true}, limit:{required: true}, index:{}, mix:{default:false}, forced:{}, answer:{}},
         data(){return {
             select:[],
             blank:""
@@ -56,6 +56,15 @@
         watch:{
             select(){this.update();},
             blank(){this.update();}
+        },
+        created(){
+            if (this.answer != undefined){
+                this.select = this.answer.choice;
+                if (this.answer.blank != ""){
+                    this.select.push(this.options.length);
+                    this.blank = this.answer.blank;
+                }
+            }
         }
     };
 </script>

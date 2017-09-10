@@ -236,7 +236,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
     .create, .create>div, .create>input{margin:10px;}
     .limit{width:50px;}
     .option{width:240px;}

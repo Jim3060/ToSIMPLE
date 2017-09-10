@@ -2,8 +2,11 @@ package service.Impl;
 
 
 import ToolUtils.CountUtils;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import ToolUtils.CountUtils;
 import ToolUtils.SojumpParser;
 import ToolUtils.SpiderUtils;
+import ToolUtils.TimeUtils;
 import ToolUtils.Spider.Algorithm;
 import ToolUtils.SpiderUtils.SojumpBrief;
 
@@ -20,10 +24,13 @@ import com.google.gson.GsonBuilder;
 import dao.QuestionnaireDao;
 import dao.QuestionnaireResultDao;
 import model.Questionnaire;
+import model.Questionnaire.Association;
 import model.QuestionnaireGSON;
 import model.QuestionnaireResult;
 import model.QuestionnaireSpider;
 import model.QuestionnaireStatistics;
+import model.User;
+import net.sf.json.JSONArray;
 import service.QuestionnaireService;
 
 import java.util.ArrayList;
@@ -60,7 +67,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
     @Override
     public Integer deleteQuestionnaire(String id) {
+    	System.out.println(questionnaireResultDao.deleteByQuestionnaireId(id));
         return questionnaireDao.delete(id);
+        
 
     }
 
@@ -79,11 +88,14 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult) {
         questionnaireResultDao.save(questionnaireResult);
         //update answer number
-        System.out.print("TTTUUUU");
-        String questionnaireId = (String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
-        Questionnaire questionnaire = questionnaireDao.findQuestionnaireById(questionnaireId);
-        System.out.println((int) questionnaire.questionnaireJSON.get("answerNumber"));
-        questionnaire.questionnaireJSON.put("answerNumber", ((int) questionnaire.questionnaireJSON.get("answerNumber") + 1));
+
+        String questionnaireId=(String) questionnaireResult.questionnaireResultJSON.get("questionnaireId");
+        System.out.println(questionnaireId);
+        Questionnaire questionnaire=questionnaireDao.findQuestionnaireById(questionnaireId);
+        
+        //System.out.println((int)questionnaire.questionnaireJSON.get("answerNumber"));
+        questionnaire.questionnaireJSON.put("answerNumber",((int)questionnaire.questionnaireJSON.get("answerNumber")+1));
+
         questionnaireDao.update(questionnaireId, questionnaire);
         return null;
     }
@@ -204,6 +216,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 	@Override
 	public String getQuestionByKW(String kwq, String kw) {
 		List<String> ids=SpiderUtils.searchSojumpIdByKW(kwq);
+		//ids.addAll(SpiderUtils.searchSojumpIdByKW(kw));
 		if(ids==null||ids.size()==0){return null;}
 		Comparator<QuestionnaireSpider.Question> cmps =  new Comparator<QuestionnaireSpider.Question>(){  
             public int compare(QuestionnaireSpider.Question o1, QuestionnaireSpider.Question o2) {  
@@ -225,5 +238,112 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		
 		return gson.toJson(quess);
 	}
+	
+	@Override
+	public Integer associateQuestionnaires(String id1, String id2, String message, User user){//main id, slave id, message
+		//identify the questionnaires
+		Questionnaire q1=questionnaireDao.findQuestionnaireById(id1);
+		if (q1==null||(int)q1.questionnaireJSON.get("status")!=1){return 0;}
+		//check the user
+//		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
+//			return -1;
+//		}
+		//identify the second questionnaire
+		Questionnaire q2=questionnaireDao.findQuestionnaireById(id2);
+		if (q2==null||(int)q1.questionnaireJSON.get("status")!=1){return 0;}
+		//set associate
+		q1.setAssociate(id2,message);
+		//q2.setAssociate(id1);
+		//save
+		questionnaireDao.update(id1,q1);
+		//questionnaireDao.save(q2);
+		return 1;
+	}
+	
+	
+	
+	@Override
+	public Integer breakAssociation(String id1, String id2, User user){//main id, slave id, message
+		//identify the questionnaires
+		Questionnaire q1=questionnaireDao.findQuestionnaireById(id1);
+		if (q1==null){return 0;}
+		//check the user
+//		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
+//			return -1;
+//		}
+		//identify the second questionnaire
+		Questionnaire q2=questionnaireDao.findQuestionnaireById(id2);
+		if (q2==null){return 0;}
+		//set associate
+		q1.removeAssociate(id2);
+		//q2.setAssociate(id1);
+		//save
+		questionnaireDao.update(id1,q1);
+		//questionnaireDao.save(q2);
+		return 1;
+	}
+
+	@Override
+	public List<Questionnaire> getAllAssociatedQuestionnaires(String id) {
+		// TODO Auto-generated method stub
+		Questionnaire q=questionnaireDao.findQuestionnaireById(id);
+		if (q==null){System.out.println(2345);return null;}
+		JSONArray associatedIdsJ=(JSONArray) q.questionnaireJSON.get("associatedQuestionnaires");
+		if (associatedIdsJ==null){System.out.println(123);return null;}
+		System.out.println(234);
+		System.out.println(associatedIdsJ);
+		List<Association> as= JSONArray.toList(associatedIdsJ,Association.class) ;
+		List<String> ids=new ArrayList<String>();
+		for (int i=0;i<as.size();i++){
+			ids.add(as.get(i).questionnaireId);
+		}
+		return questionnaireDao.findQuestionnaireByIds(ids);
+	}
+
+	@Override
+	public Questionnaire getOneAssociatedQuestionnaire(String id) {
+		// TODO Auto-generated method stub
+		Questionnaire q=questionnaireDao.findQuestionnaireById(id);
+		if (q==null){System.out.println(2345);return null;}
+		JSONArray associatedIdsJ=(JSONArray) q.questionnaireJSON.get("associatedQuestionnaires");
+		if (associatedIdsJ==null){System.out.println(123);return null;}
+		System.out.println(234);
+		System.out.println(associatedIdsJ);
+		List<Association> qs= JSONArray.toList(associatedIdsJ,Association.class) ;
+		//System.out.println(Math.random());
+		int tmp=(int)(Math.random()*qs.size());
+		System.out.println(tmp);
+		return (questionnaireDao.findQuestionnaireById(qs.get(tmp).questionnaireId)).cleanDb();
+	}
+	
+	@Override
+	public Questionnaire.Association getOneAssociatedQuestionnaireInfo(String id) {
+		// TODO Auto-generated method stub
+		Questionnaire q=questionnaireDao.findQuestionnaireById(id);
+		if (q==null){System.out.println(2345);return null;}
+		JSONArray associatedIdsJ=(JSONArray) q.questionnaireJSON.get("associatedQuestionnaires");
+		if (associatedIdsJ==null){System.out.println(123);return null;}
+		System.out.println(234);
+		System.out.println(associatedIdsJ);
+		List<Association> qs= JSONArray.toList(associatedIdsJ,Association.class) ;
+		//System.out.println(Math.random());
+		int tmp=(int)(Math.random()*qs.size());
+		System.out.println(tmp);
+		return qs.get(tmp);
+	}
+	
+	public int checkQuestionnaireInTime(Questionnaire questionnaire) throws ParseException{
+		String startDateStr=(String) questionnaire.questionnaireJSON.get("startDate");
+		if (startDateStr==null){return 1;}
+		Date startDate=TimeUtils.getLocalTime(startDateStr);
+		if (startDate==null){return 1;}
+		Date endDate=TimeUtils.getLocalTime((String) questionnaire.questionnaireJSON.get("endDate"));
+		Date now=new Date();
+		if (endDate.getTime()>=now.getTime()&&startDate.getTime()<=now.getTime()){
+			return 1;
+		}
+		return 0;
+	}
+	
 
 }

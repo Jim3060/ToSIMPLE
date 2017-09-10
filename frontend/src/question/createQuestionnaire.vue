@@ -29,37 +29,62 @@
             </el-dropdown>
         </div>
         <div v-show="questionnaire.status==0">
-            <span class="edit-title">问卷标题: </span>
-            <input class="edit-title" :disabled="!editMode" v-model="title"></input>
-            <el-button v-if="$route.path=='/n'" @click="forkMode=true">Fork</el-button>
+            <el-input class="edit-title" placeholder="请输入问卷标题" :disabled="!editMode" v-model="title"></el-input>
+            <el-button v-if="$route.path=='/n'" @click="forkMode=!forkMode">{{!forkMode?"导入问卷":"取消"}}</el-button>
             <div></div>
-            <div v-if="forkMode" style="width:600px; margin-left:20px">
-                <el-input placeholder="请输入ID" v-model="forkId">
+            <div v-if="forkMode" style="margin-left:15px; margin-bottom:10px">
+                <el-input placeholder="请输入ID" v-model="forkId" style="width:600px">
                     <el-select style="width:120px" v-model="forkFrom" slot="prepend" placeholder="请选择来源">
                         <el-option label="To Simple" value="1"></el-option>
                         <el-option label="问卷星" value="2"></el-option>
                     </el-select>
-                    <el-button @click="fork()" slot="append">Fork</el-button>
+                    <el-button @click="fork()" slot="append">导入</el-button>
                 </el-input>
             </div>
             <div></div>
             <div>
-                <span class="edit-briefing" style="float:left">简介: </span>
-                <textarea class="edit-briefing" :disabled="!editMode" v-model="briefing"></textarea>
+                <el-input type="textarea" placeholder="请输入问卷简介" class="edit-briefing" :disabled="!editMode" v-model="briefing"></el-input>
             </div>
         </div>
         <questionnaire :questionnaire="questionnaire" :edit="questionnaire.status==0&&editMode" @delete="del($event)" @edit="edit($event)"></questionnaire>
         <div v-show="questionnaire.status==0" class="buttons">
             <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
             <el-button type="success" @click="submit()">提交问卷</el-button>
-            <el-button @click="save()">暂存问卷</el-button>
+            <el-dropdown v-if="questionnaire.status==0" menu-align="start">
+                <el-button>
+                    更多
+                    <i class="el-icon-caret-bottom el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>
+                        <a @click="showChart()">流程图预览</a>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                        <a @click="showAssociate=true">关联问卷</a>
+                    </el-dropdown-item>
+                    <el-dropdown-item>
+                        <a @click="save()">暂存问卷</a>
+                    </el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown> 
         </div>
+
+
         <modal :show="showModal" effect="zoom" :backdrop="false">
             <div slot="modal-header" class="modal-header">
                 <h4>编辑问题</h4>
             </div>
             <div slot="modal-body" class="modal-body">
                 <create v-if="showModal" :questionnaire="questionnaire" :index="idx" @submit="add($event)" @cancel="cancel($event)"></create>
+            </div>
+            <div slot="modal-footer"></div>
+        </modal>
+        <modal :show="showAssociate" effect="zoom" :backdrop="false">
+            <div slot="modal-header" class="modal-header">
+                <h4>问卷关联</h4>
+            </div>
+            <div slot="modal-body" class="modal-body associate-content">
+                <associate :id="$route.params.id||''" @cancel="showAssociate=false" @submit="showAssociate=false"></associate>
             </div>
             <div slot="modal-footer"></div>
         </modal>
@@ -71,6 +96,8 @@ import create from "./createQuestion.vue";
 import questionnaire from "./questionnaire.vue";
 import { modal } from "vue-strap";
 import qrcode from "qrcode.vue";
+import chart from "./flowChart/flowChart.vue";
+import associate from "./associate.vue";
 
 export default {
     data() {
@@ -86,10 +113,11 @@ export default {
             recovered: false,
             forkMode: false,
             forkFrom: "",
-            forkId: ""
+            forkId: "",
+            showAssociate: false
         };
     },
-    components: { modal, questionnaire, create, qrcode },
+    components: { modal, questionnaire, create, qrcode, chart, associate },
     methods: {
         add(data) {
             if (this.idx == -1)
@@ -128,7 +156,7 @@ export default {
                 localStorage.questionnaire = JSON.stringify(this.questionnaire);
                 this.$message.success("问卷已暂存，请记得及时提交");
                 this.recovered = false;
-            }).catch(() => {});
+            }).catch(() => { });
         },
         recover() {
             this.title = "";
@@ -143,7 +171,7 @@ export default {
                     this.title = this.questionnaire.paperTitle;
                     this.briefing = this.questionnaire.briefing || "";
                     this.recovered = true;
-                }).catch(() => {});
+                }).catch(() => { });
             }
         },
         deleteQuestionnaire() {
@@ -235,6 +263,10 @@ export default {
                 this.$message.error("网络异常");
             });
         },
+        showChart() {
+            localStorage.questions = JSON.stringify(this.questionnaire.questions);
+            window.open("#/flow");
+        },
         fork() {
             let id = this.forkId;
             let self = this;
@@ -269,7 +301,7 @@ export default {
             } else
                 this.loadQuestionnaire();
         },
-        title(){
+        title() {
             this.questionnaire.paperTitle = this.title;
         }
     },
@@ -283,19 +315,29 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .edit-title,
 .edit-switch {
     font-size: 20px;
     margin: 15px
 }
 
-.edit-briefing {
-    font-size: 14px;
-    margin: 15px;
+.edit-title {
+    width: 60%;
 }
 
-.creator>.buttons {
-    margin: 15px;
+.edit-briefing {
+    font-size: 14px;
+    margin-left: 15px;
+    width: 60%;
 }
+
+.buttons>* {
+    margin: 5px;
+}
+
+.buttons {
+    margin-left: 10px;
+}
+
 </style>

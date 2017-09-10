@@ -1,6 +1,6 @@
 <template>
     <div class="headline">
-        <img src="http://www.shejiye.com/uploadfile/icon/2017/0203/shejiyeicon5jockzqeutc.png"></img>
+    <span class="text"></span>
         <div id="Wfooter">
             <p>contact US&emsp;&emsp;&emsp;
                 Tel:&ensp;222222&emsp;&emsp;&emsp;
@@ -11,12 +11,23 @@
 </template>
 
 <script>
+    import Typed from "typed.js";
     export default{
-        
-    }
+        data(){return {};},
+        mounted(){
+            new Typed(".text", {
+                strings: ["欢迎访问 Too Simple", "欢迎访问 To Simple 问卷网"],
+                typeSpeed: 30,
+                backSpeed: 25,
+                startDelay:1000,
+                smartBackspace: true,
+                autoInsertCss: true
+            });
+        }
+    };
 </script>
 
-<style>
+<style scoped>
     .headline{font-size:40px; text-align: center;}
     
     #Wfooter {
@@ -33,4 +44,5 @@
     }
     .footer{width:100px;
     height:50px;background:black;margin-top:-50px;}
+    .headline{font-size:40px; margin-left: 15px;}
 </style>

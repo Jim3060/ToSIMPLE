@@ -93,6 +93,14 @@ public class UserServiceImpl implements UserService {
         }
         return -2;
     }
+    
+    public int checkTokenValid(User u,String checkToken){
+    	String tokenCorrect=u.fetchCheckToken();
+    	if (tokenCorrect.equals(checkToken)){
+    		return 1;
+    	}
+    	return 0;
+    }
 
     @Override
     public User loginByUserName(String userName, String password) {

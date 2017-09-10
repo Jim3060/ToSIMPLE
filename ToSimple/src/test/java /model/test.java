@@ -1,6 +1,6 @@
 package model;
 
-import action.SecurityInterceptor;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.*;
@@ -217,9 +217,8 @@ public class test {
 
     @Test
     public void testSec() {
-        SecurityInterceptor securityInterceptor = new SecurityInterceptor();
-        System.out.print(securityInterceptor.needRole("allUsers", "GET"));
-        System.out.print(securityInterceptor.needRole("registerValidate", "GET"));
+       
+       
     }
 
     class INT {
