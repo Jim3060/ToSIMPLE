@@ -1,6 +1,9 @@
 <template>
     <div class="headline">
+        <div style="height:10%"></div>
         <span class="text"></span>
+        <div style="height:30px;"></div>
+        <el-button @click="$router.push({path:'/q'})">随便看看</el-button>
     </div>
 </template>
 
@@ -22,5 +25,10 @@
 </script>
 
 <style scoped>
-    .headline{font-size:40px; margin-left: 15px;}
+    .headline{
+        font-size:48px;
+        margin-left: 15px; 
+        text-align:center;
+    }
+
 </style>

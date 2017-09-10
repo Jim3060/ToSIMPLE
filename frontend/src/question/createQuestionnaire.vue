@@ -50,7 +50,7 @@
         <div v-show="questionnaire.status==0" class="buttons">
             <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
             <el-button type="success" @click="submit()">提交问卷</el-button>
-            <el-dropdown v-if="questionnaire.status==0" menu-align="start">
+            <el-dropdown v-if="$route.name=='n'||$route.path=='/n'" menu-align="start">
                 <el-button>
                     更多
                     <i class="el-icon-caret-bottom el-icon--right"></i>
@@ -59,10 +59,12 @@
                     <el-dropdown-item>
                         <a @click="showChart()">流程图预览</a>
                     </el-dropdown-item>
-                    <el-dropdown-item>
-                        <a @click="showAssociate=true">关联问卷</a>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
+                    <el-tooltip :disabled="$route.name=='n'" content="需要先提交问卷才能关联其他问卷" placement="right">
+                        <el-dropdown-item>
+                                <el-button type="text" :disabled="$route.path=='/n'" @click="showAssociate=true">关联问卷</el-button>
+                        </el-dropdown-item>
+                    </el-tooltip>
+                    <el-dropdown-item v-if="editMode">
                         <a @click="save()">暂存问卷</a>
                     </el-dropdown-item>
                 </el-dropdown-menu>
@@ -272,6 +274,10 @@ export default {
             let self = this;
             if (this.forkFrom == "") {
                 this.$message.warning("请选择来源");
+                return;
+            }
+            if (this.forkId == "") {
+                this.$message.warning("ID不能为空");
                 return;
             }
             let url = this.forkFrom == "1" ? "questionnaire/" : "questionnaireSojump/";

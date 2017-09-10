@@ -5,7 +5,7 @@ const UglifyEsPlugin = require("uglify-es-webpack-plugin");
 module.exports = {
     entry: __dirname + "/src/main.js",
     output: {
-        path: __dirname + "/out",
+        path: __dirname + "/out/ToSimple",
         filename: "bundle.js"
     },
     module: {
@@ -54,12 +54,12 @@ module.exports = {
     },
     devtool: false,
     plugins:[
-        new webpack.DefinePlugin({
+        /*new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: "\"production\""
             }
         }),
-        new UglifyEsPlugin()
+        new UglifyEsPlugin()*/
     ]
 };
 /*
