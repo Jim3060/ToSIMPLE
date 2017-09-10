@@ -288,25 +288,28 @@ public class QuestionnaireAction extends BaseAction {
      * @param response        the response to be returned
      * @return none
      * @throws IOException
+     * @throws ParseException 
      */
     @RequestMapping(value = "questionnaire/{questionnaireId}", method = RequestMethod.GET)
-    public String findAQuestionnaire(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException {
-        //questionnaireId="5954b29d37fac38fdc65727c";
+    public String findAQuestionnaire(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException, ParseException {
+        
         String valid = "1";
         response.setContentType("application/json;charset=UTF-8");
         String questionnairestr = null;
-        if (questionnaireId == null) {
-            valid = "0";
+        if (questionnaireId == null) {valid = "0";}
+        Questionnaire questionnaireGet=questionnaireService.findQuestionnaireById(questionnaireId);
+        if (questionnaireGet == null) { valid = "0"; } 
+        else {
+            questionnairestr = questionnaireGet.getQuestionnaire();
         }
-        if (questionnaireService.findQuestionnaireById(questionnaireId) == null) {
-            valid = "0";
-        } else {
-            questionnairestr = questionnaireService.findQuestionnaireById(questionnaireId).getQuestionnaire();
-        }
+        
+        //if (questionnaireService.checkQuestionnaireInTime(questionnaireGet)==0){valid="2";}
 
         JSONObject result = new JSONObject();
         result.put("valid", valid);
-        result.put("questionnaire", questionnairestr);
+        if (valid=="1"){
+        	result.put("questionnaire", questionnairestr);
+        }
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         response.getWriter().print(result);
@@ -384,8 +387,8 @@ public class QuestionnaireAction extends BaseAction {
         //check user equals author
         Questionnaire questionnaireTest = questionnaireService.findQuestionnaireById(questionnaireId);
        // System.out.println("authorId:"+questionnaireTest.questionnaireJSON.get("authorId"));
-        
-        if (session.getAttribute("user")==null||questionnaireTest.questionnaireJSON.has("authorId") && !(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User) session.getAttribute("user")).getId())))) {
+        User user=(User) session.getAttribute("user");
+        if (session.getAttribute("user")==null||questionnaireTest.questionnaireJSON.has("authorId") && user.getRole()!=1 && !(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User) session.getAttribute("user")).getId())))) {
             JSONObject result = new JSONObject();
             result.put("valid", 0);
             response.setCharacterEncoding("utf-8");
@@ -512,20 +515,25 @@ public class QuestionnaireAction extends BaseAction {
      * @param request
      * @return
      * @throws IOException
+     * @throws ParseException 
      */
 
     @RequestMapping(value = "questionnaireResult", method = RequestMethod.POST)
-    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException, ParseException {
         response.setContentType("application/json;charset=UTF-8");
         if (answerPaper == null) {//data not fetched, fail
             response.getWriter().print('0');
             return null;
         }
-        System.out.print("Result");
-        System.out.print(answerPaper);
-        questionnaireService.addQuestionnaireResult(new QuestionnaireResult(answerPaper, request));
+        //check in duration
+        QuestionnaireResult questionnaireResult=new QuestionnaireResult(answerPaper, request);
+        Questionnaire questionnaireTmp=questionnaireService.findQuestionnaireById((String)(questionnaireResult.questionnaireResultJSON.get("questionnaireId")));
+        if (questionnaireService.checkQuestionnaireInTime(questionnaireTmp)==0){
+        	response.getWriter().print('2');
+            return null;
+        }
+        questionnaireService.addQuestionnaireResult(questionnaireResult);
         response.getWriter().print('1');//success
-        System.out.print("TTTTTTTT");
         return null;
     }
 

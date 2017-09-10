@@ -6,6 +6,7 @@ import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
 import model.User;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface QuestionnaireService {
@@ -94,5 +95,7 @@ public interface QuestionnaireService {
     public String getQuestionByKW(String kw);
 
     public String getQuestionByKW(String kwq, String kw);
+    
+    public int checkQuestionnaireInTime(Questionnaire questionnaire) throws ParseException;
 
 }
