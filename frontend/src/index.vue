@@ -27,7 +27,7 @@
     };
 </script>
 
-<style scoped>
+<style>
     .headline{font-size:40px; text-align: center;}
     
     #Wfooter {
@@ -35,7 +35,7 @@
         overflow: hidden;
         width: 100%;
         position: absolute;
-        left: -15px;
+        left: 0px;
         bottom: 0;
         font-size: 15;
         font-family:cursive;
