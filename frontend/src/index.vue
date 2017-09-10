@@ -2,7 +2,7 @@
     <div class="headline">
         <div style="height:10%"></div>
         <span class="text"></span>
-        <div style="height:30px;"></div>
+        <div class="divider" style="height:30px;"></div>
         <el-button @click="$router.push({path:'/q'})">随便看看</el-button>
         <div id="Wfooter">
             <p>contact US&emsp;&emsp;&emsp;

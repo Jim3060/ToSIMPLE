@@ -1,5 +1,8 @@
 <template>
     <div v-show="!invalid" class="creator">
+        <el-row>
+            <el-col :span="4">&nbsp</el-col>
+            <el-col :span="16">
         <div class="buttons">
             <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0 && $route.name=='n'">发布问卷</el-button>
             <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
@@ -28,12 +31,13 @@
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
-        <div v-show="questionnaire.status==0">
-            <el-input class="edit-title" placeholder="请输入问卷标题" :disabled="!editMode" v-model="title"></el-input>
-            <el-button v-if="$route.path=='/n'" @click="forkMode=!forkMode">{{!forkMode?"导入问卷":"取消"}}</el-button>
+        <div class="head" v-show="questionnaire.status==0">
+            <el-input class="edit-title" placeholder="请输入问卷标题" :disabled="!editMode" v-model="title">
+                <el-button v-if="$route.path=='/n'" @click="forkMode=!forkMode" slot="append" style="font-size:14px">{{!forkMode?"导入问卷":"取消"}}</el-button>
+            </el-input>
             <div></div>
             <div v-if="forkMode" style="margin-left:15px; margin-bottom:10px">
-                <el-input placeholder="请输入ID" v-model="forkId" style="width:600px">
+                <el-input placeholder="请输入ID" v-model="forkId">
                     <el-select style="width:120px" v-model="forkFrom" slot="prepend" placeholder="请选择来源">
                         <el-option label="To Simple" value="1"></el-option>
                         <el-option label="问卷星" value="2"></el-option>
@@ -46,7 +50,14 @@
                 <el-input type="textarea" placeholder="请输入问卷简介" class="edit-briefing" :disabled="!editMode" v-model="briefing"></el-input>
             </div>
         </div>
+            </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
         <questionnaire :questionnaire="questionnaire" :edit="questionnaire.status==0&&editMode" @delete="del($event)" @edit="edit($event)"></questionnaire>
+        
+         <el-row>
+            <el-col :span="4">&nbsp</el-col>
+            <el-col :span="16">
         <div v-show="questionnaire.status==0" class="buttons">
             <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
             <el-button type="success" @click="submit()">提交问卷</el-button>
@@ -70,6 +81,9 @@
                 </el-dropdown-menu>
             </el-dropdown> 
         </div>
+        </el-col>
+            <el-col :span="4"></el-col>
+        </el-row>
 
 
         <modal :show="showModal" effect="zoom" :backdrop="false">
@@ -328,14 +342,9 @@ export default {
     margin: 15px
 }
 
-.edit-title {
-    width: 60%;
-}
-
 .edit-briefing {
     font-size: 14px;
     margin-left: 15px;
-    width: 60%;
 }
 
 .buttons>* {
@@ -343,7 +352,7 @@ export default {
 }
 
 .buttons {
-    margin-left: 10px;
+    margin: 15px;
 }
 
 </style>
