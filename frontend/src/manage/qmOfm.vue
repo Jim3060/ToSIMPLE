@@ -102,8 +102,7 @@ export default {
         },
 
         viewContent() {
-            //this.$router.push({ name: "q" + report[0].questionnaireId);
-            window.open("#/q/" + report[0].questionnaireId);
+            this.$router.push("q" + report[0].questionnaireId);
         }
     }
 };
