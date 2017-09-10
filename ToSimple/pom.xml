@@ -318,7 +318,7 @@
             <artifactId>spring-data-rest-webmvc</artifactId>
             <version>2.6.4.RELEASE</version>
         </dependency>
-        
+
         <!-- chart -->
         <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
 		<dependency>
@@ -326,7 +326,7 @@
 		    <artifactId>jfreechart</artifactId>
 		    <version>1.0.19</version>
 		</dependency>
-        
+
         <!-- Python -->
         <!-- https://mvnrepository.com/artifact/org.python/jython -->
 		<dependency>
@@ -334,18 +334,17 @@
 		    <artifactId>jython</artifactId>
 		    <version>2.7.1b3</version>
 		</dependency>
-		
-		<dependency>
+
+        <dependency>
 		    <groupId>org.jsoup</groupId>
 		    <artifactId>jsoup</artifactId>
 		    <version>1.9.2</version>
 		</dependency>
 
-        
 
     </dependencies>
     <build>
-        <finalName>BookStore</finalName>
+        <finalName>ToSimple</finalName>
 
         <plugins>
             <plugin>
@@ -369,7 +368,6 @@
                     <server>tomcat7</server>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>

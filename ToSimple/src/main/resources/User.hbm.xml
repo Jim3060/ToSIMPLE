@@ -18,6 +18,10 @@
         <property name="email" column="email" type="java.lang.String" length="255"/>
         <property name="token" column="token" type="java.lang.String" length="255"/>
         <property name="createTime" column="createTime" type="java.util.Date"/>
+        <property name="address" column="address" type="java.lang.String" length="255"/>
+        <property name="qq" column="qq" type="java.lang.String" length="255"/>
+        <property name="phone" column="phone" type="java.lang.String" length="255"/>
+        <property name="weixin" column="weixin" type="java.lang.String" length="255"/>
         <property name="valid" column="valid" type="int"/>
     </class>
 </hibernate-mapping>

@@ -3,17 +3,9 @@ package ToolUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Properties;
-
-import org.python.core.Py;
-import org.python.core.PyFunction;
-import org.python.core.PyInteger;
-import org.python.core.PyObject;
-import org.python.core.PySystemState;
-import org.python.util.PythonInterpreter;
 
 public class PythonUtils {
-	public static void main(String[] args) throws IOException   {
+    public static void main(String[] args) throws IOException {
 //		Properties props = new Properties();  
 //        props.put("python.console.encoding", "UTF-8");  
 //        props.put("python.security.respectJavaAccessibility", "false");  
@@ -49,29 +41,29 @@ public class PythonUtils {
 //        PyObject pyobj = func.__call__();  
 //        System.out.println("anwser = " + pyobj.toString());  
 //        System.out.println("hi");
-		
-		Process pr=null;
-		try {
-			pr = Runtime.getRuntime().exec("python /Users/JimLiu/Desktop/questionnaire.py ");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-		 BufferedReader in = new BufferedReader(new    
-		         InputStreamReader(pr.getInputStream()));    
-		 String line;    
-		 while ((line = in.readLine()) != null) {    
-		     System.out.println(line);    
-		 }    
-		 in.close();    
-		 try {
-			pr.waitFor();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}    
-		 System.out.println("end");    
 
-	}
+        Process pr = null;
+        try {
+            pr = Runtime.getRuntime().exec("python /Users/JimLiu/Desktop/questionnaire.py ");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        BufferedReader in = new BufferedReader(new
+                InputStreamReader(pr.getInputStream()));
+        String line;
+        while ((line = in.readLine()) != null) {
+            System.out.println(line);
+        }
+        in.close();
+        try {
+            pr.waitFor();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("end");
+
+    }
 }

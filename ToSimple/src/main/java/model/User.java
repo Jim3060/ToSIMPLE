@@ -12,6 +12,50 @@ public class User {
     private String token;
     private Date createTime;
 
+    /* More infomation of the user. */
+    private String address;
+    private String phone;
+    private String qq;
+    private String weixin;
+
+    public void updateUser(String address, String phone, String qq, String weixin) {
+        this.address = address;
+        this.phone = phone;
+        this.qq = qq;
+        this.weixin = weixin;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getQq() {
+        return qq;
+    }
+
+    public void setQq(String qq) {
+        this.qq = qq;
+    }
+
+    public String getWeixin() {
+        return weixin;
+    }
+
+    public void setWeixin(String weixin) {
+        this.weixin = weixin;
+    }
 
     public User(Long id, String userName, String password, Integer role, String email, int valid, String token,
                 Date createTime) {

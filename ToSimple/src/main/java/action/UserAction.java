@@ -89,8 +89,19 @@ public class UserAction extends BaseAction {
     }
 
     @RequestMapping(value = "user/{userId}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable("userId") Long userId) {
-        userService.deleteUser(userId);
+    public String delete(@PathVariable("userId") Long userId, HttpSession session, HttpServletRequest request) throws IOException {
+        User user = (User) session.getAttribute("user");
+        JSONObject result = new JSONObject();
+        if (user == null) {
+            result.put("valid", 0);
+        } else if ((user.getRole() == 1) || (user.getId().equals(userId))) {
+            userService.deleteUser(userId);
+            result.put("valid", 1);
+            response.getWriter().print(result);
+        } else {
+            result.put("valid", 0);
+            response.getWriter().print(result);
+        }
         return null;
     }
 
@@ -102,6 +113,27 @@ public class UserAction extends BaseAction {
         JSONObject result = new JSONObject();
         result.put("users", users);
         response.getWriter().print(result);
+        return null;
+    }
+
+    @RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
+    public String update(HttpSession session, @PathVariable("userId") Long userId,
+                         String address, String qq, String weixin, String phone, HttpServletResponse response) throws IOException {
+        User user = (User) session.getAttribute("user");
+        JSONObject result = new JSONObject();
+        if (user == null || userId == null) {
+            result.put("valid", 0);
+            response.getWriter().print(result);
+        } else if (user.getRole() == 1 || user.getId() == userId) {
+            User user1 = userService.getUserById(userId);
+            user1.updateUser(address, phone, qq, weixin);
+            userService.updateUser(user1);
+            result.put("valid", 1);
+            response.getWriter().print(result);
+        } else {
+            result.put("valid", 0);
+            response.getWriter().print(result);
+        }
         return null;
     }
 
@@ -129,8 +161,7 @@ public class UserAction extends BaseAction {
         response.getWriter().print(result);
         return null;
     }
-    
-    
+
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response) throws Exception {
@@ -171,18 +202,21 @@ public class UserAction extends BaseAction {
         System.out.println(passwordNewSECURE);
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
         String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
-        User user=(User) session.getAttribute("user");
-        user=userService.getUserById(user.getId());
+        User user = (User) session.getAttribute("user");
+        user = userService.getUserById(user.getId());
         System.out.println(passwordInput);
-        if (user==null){response.getWriter().print(0);return null;}
-        
-        if (!user.getPassword().equals(passwordInput)){
-        	response.getWriter().print(-1);return null;
+        if (user == null) {
+            response.getWriter().print(0);
+            return null;
         }
-        
+
+        if (!user.getPassword().equals(passwordInput)) {
+            response.getWriter().print(-1);
+            return null;
+        }
+
         user.setPassword(RSAUtils.decryptBase64(passwordNewSECURE, privateKey));
         userService.updateUser(user);
-
 
 
         response.getWriter().print(1);
@@ -190,10 +224,9 @@ public class UserAction extends BaseAction {
         return null;
     }
 
-    
-    
+
     @RequestMapping(value = "logout", method = RequestMethod.GET)
-    public String logout(HttpSession session,HttpServletResponse response) throws IOException {
+    public String logout(HttpSession session, HttpServletResponse response) throws IOException {
         session.removeAttribute("user");
         response.getWriter().print(1);
         return null;

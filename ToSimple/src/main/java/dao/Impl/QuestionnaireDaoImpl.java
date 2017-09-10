@@ -100,7 +100,7 @@ public class QuestionnaireDaoImpl extends HibernateDaoSupport implements Questio
         BasicDBObject query = new BasicDBObject();
         query.put("authorId", id);
         System.out.println("delete here");
-        DBObject orderBy = new BasicDBObject();  
+        DBObject orderBy = new BasicDBObject();
         orderBy.put("createDate", -1);
         DBCursor dbCursor = questionnaires.find(query).sort(orderBy);
         List<Questionnaire> list = new ArrayList<Questionnaire>();

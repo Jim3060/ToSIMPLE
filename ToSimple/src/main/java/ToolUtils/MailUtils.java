@@ -43,8 +43,7 @@ public class MailUtils {
         MailUtils.sendMail(to, TITLE, content);
         return u;
     }
-    
-    
+
 
     //---------------发送邮件-------------------
     public static void sendMail(String to, String title, String content) throws MessagingException {

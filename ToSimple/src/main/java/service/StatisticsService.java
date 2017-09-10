@@ -8,12 +8,11 @@ import java.text.ParseException;
 
 
 public interface StatisticsService {
-	public QuestionnaireStatistics getQuestionnaireStatisticsById(String id);
-	
-	public HSSFWorkbook exportToEXEL(String questionnaireId) throws IOException, ParseException;
-	
-	public HSSFWorkbook exportChartToEXEL(String questionnaireId) throws IOException, ParseException;
-	
-	
+    public QuestionnaireStatistics getQuestionnaireStatisticsById(String id);
+
+    public HSSFWorkbook exportToEXEL(String questionnaireId) throws IOException, ParseException;
+
+    public HSSFWorkbook exportChartToEXEL(String questionnaireId) throws IOException, ParseException;
+
 
 }

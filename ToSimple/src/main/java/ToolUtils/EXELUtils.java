@@ -1,18 +1,14 @@
 package ToolUtils;
 
 
+import model.*;
+import org.apache.poi.hssf.usermodel.*;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-
-import model.Questionnaire;
-import model.QuestionnaireGSON;
-import model.QuestionnaireResult;
-import model.QuestionnaireResultGSON;
-import org.apache.poi.hssf.usermodel.*;
-
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,34 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.imageio.ImageIO;
-
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFClientAnchor;
-import org.apache.poi.hssf.usermodel.HSSFPatriarch;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.tomcat.jni.Lock;
-
-import model.Questionnaire;
-import model.QuestionnaireResult;
-import model.QuestionnaireResultGSON;
-import model.QuestionnaireStatistics;
-import model.QuestionnaireGSON;
-
 public class EXELUtils {
-	private static ReentrantLock lock = new ReentrantLock();
-	DateFormat df = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
-	public static HSSFWorkbook GenerateRawResultStatistics(Questionnaire questionnaire,List<QuestionnaireResult> questionnaireResults) throws ParseException{
-		QuestionnaireGSON questionnaireGSON=QuestionnaireGSON.getQuestionnaireGSON(questionnaire.getQuestionnaire());
-		HSSFWorkbook wb = new HSSFWorkbook();  
-        
-        HSSFSheet sheet = wb.createSheet(questionnaireGSON.paperTitle+"statistics");  
-        HSSFRow row = sheet.createRow((int) 0);  
-        HSSFCellStyle style = wb.createCellStyle();  
+    private static ReentrantLock lock = new ReentrantLock();
+    DateFormat df = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssZ");
+
+    public static HSSFWorkbook GenerateRawResultStatistics(Questionnaire questionnaire, List<QuestionnaireResult> questionnaireResults) throws ParseException {
+        QuestionnaireGSON questionnaireGSON = QuestionnaireGSON.getQuestionnaireGSON(questionnaire.getQuestionnaire());
+        HSSFWorkbook wb = new HSSFWorkbook();
+
+        HSSFSheet sheet = wb.createSheet(questionnaireGSON.paperTitle + "statistics");
+        HSSFRow row = sheet.createRow((int) 0);
+        HSSFCellStyle style = wb.createCellStyle();
 
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
 
@@ -114,70 +93,76 @@ public class EXELUtils {
             }
         }
 
-        
-		return wb;
-	}
-	
-	
-	
-	
-	public static HSSFWorkbook generateChartStatistics(QuestionnaireStatistics questionnairestat) throws IOException{
-		HSSFWorkbook wb = new HSSFWorkbook();  
-        HSSFSheet sheet = wb.createSheet(questionnairestat.questionnaireTitle+"_chartStatistics");  
-        HSSFRow row = sheet.createRow((int) 0);  
-        HSSFCellStyle style = wb.createCellStyle();  
+
+        return wb;
+    }
+
+
+    public static HSSFWorkbook generateChartStatistics(QuestionnaireStatistics questionnairestat) throws IOException {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet(questionnairestat.questionnaireTitle + "_chartStatistics");
+        HSSFRow row = sheet.createRow((int) 0);
+        HSSFCellStyle style = wb.createCellStyle();
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
         HSSFPatriarch patriarch = sheet.createDrawingPatriarch();
-        
-        int picWidth=4;
-        int picHeight=20;
-        List<Integer> picRow=new ArrayList<Integer>();
-        //load each question
-        int rowNum=0;
 
-        List<QuestionnaireStatistics.Question> questions=questionnairestat.questions;
-        for (int i=0;i<questions.size();i++){
-        	if  (questions.get(i).type==2){continue;}
-        	int cNum=0;
-        	row = sheet.createRow(rowNum); rowNum++;
-            HSSFCell cell = row.createCell((short) cNum);cNum++;  
-    		cell.setCellValue(questions.get(i).title);  
-    		cell.setCellStyle(style); 
-    		//load choice title;
-    		List<QuestionnaireStatistics.Choice> choices=questions.get(i).choices;
-    		for (int j=0;j<choices.size();j++){
-    			cell = row.createCell((short) cNum);  cNum++;  
-        		cell.setCellValue(choices.get(j).title);  
-        		cell.setCellStyle(style); 
-    		}
-    		//load number
-    		cNum=0;
-    		row = sheet.createRow(rowNum); rowNum++;
-            cell = row.createCell((short) cNum);cNum++;  
-    		cell.setCellValue("");  
-    		cell.setCellStyle(style); 
-    		choices=questions.get(i).choices;
-    		for (int j=0;j<choices.size();j++){
-    			cell = row.createCell((short) cNum); cNum++;   
-        		cell.setCellValue(choices.get(j).number);  
-        		cell.setCellStyle(style); 
-    		}
-    		
-    		//insert chart
-    		rowNum++;
-    		//read the image
+        int picWidth = 4;
+        int picHeight = 20;
+        List<Integer> picRow = new ArrayList<Integer>();
+        //load each question
+        int rowNum = 0;
+
+        List<QuestionnaireStatistics.Question> questions = questionnairestat.questions;
+        for (int i = 0; i < questions.size(); i++) {
+            if (questions.get(i).type == 2) {
+                continue;
+            }
+            int cNum = 0;
+            row = sheet.createRow(rowNum);
+            rowNum++;
+            HSSFCell cell = row.createCell((short) cNum);
+            cNum++;
+            cell.setCellValue(questions.get(i).title);
+            cell.setCellStyle(style);
+            //load choice title;
+            List<QuestionnaireStatistics.Choice> choices = questions.get(i).choices;
+            for (int j = 0; j < choices.size(); j++) {
+                cell = row.createCell((short) cNum);
+                cNum++;
+                cell.setCellValue(choices.get(j).title);
+                cell.setCellStyle(style);
+            }
+            //load number
+            cNum = 0;
+            row = sheet.createRow(rowNum);
+            rowNum++;
+            cell = row.createCell((short) cNum);
+            cNum++;
+            cell.setCellValue("");
+            cell.setCellStyle(style);
+            choices = questions.get(i).choices;
+            for (int j = 0; j < choices.size(); j++) {
+                cell = row.createCell((short) cNum);
+                cNum++;
+                cell.setCellValue(choices.get(j).number);
+                cell.setCellStyle(style);
+            }
+
+            //insert chart
+            rowNum++;
+            //read the image
 //            BufferedImage bufferImg ;        
 //			ByteArrayOutputStream byteArrayOut;     
-			File filec=ChartUtils.CreateBarChart(questions.get(i).getBarDataSet(), questions.get(i).title, "Choices", "Number");
-			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0,(short) 1, rowNum, (short) (7), rowNum+picHeight); 
-			anchor.setAnchorType(2);     
-			createPic(wb,patriarch,anchor,filec);
-			
-			File filep=ChartUtils.CreatePieChart(questions.get(i).getPieDataSet(), questions.get(i).title);
-			HSSFClientAnchor anchor2 = new HSSFClientAnchor(0, 0, 0, 0,(short) 8, rowNum, (short) (14), rowNum+picHeight); 
-			anchor2.setAnchorType(2); 
-			createPic(wb,patriarch,anchor2,filep);
-			
+            File filec = ChartUtils.CreateBarChart(questions.get(i).getBarDataSet(), questions.get(i).title, "Choices", "Number");
+            HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) 1, rowNum, (short) (7), rowNum + picHeight);
+            anchor.setAnchorType(2);
+            createPic(wb, patriarch, anchor, filec);
+
+            File filep = ChartUtils.CreatePieChart(questions.get(i).getPieDataSet(), questions.get(i).title);
+            HSSFClientAnchor anchor2 = new HSSFClientAnchor(0, 0, 0, 0, (short) 8, rowNum, (short) (14), rowNum + picHeight);
+            anchor2.setAnchorType(2);
+            createPic(wb, patriarch, anchor2, filep);
+
 //			bufferImg = null;        
 //			byteArrayOut = new ByteArrayOutputStream();     
 //			bufferImg = ImageIO.read(filec);     
@@ -190,31 +175,27 @@ public class EXELUtils {
 //			ImageIO.write(bufferImg, "png", byteArrayOut);  
 //			patriarch.createPicture(anchor2, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
 //			
-			rowNum+=picHeight;
-			
-			//leave an empty line
-    		rowNum++;
-    		
-    		
+            rowNum += picHeight;
+
+            //leave an empty line
+            rowNum++;
+
+
         }
-      
-        
-        
-		return wb;
-	}
-	
-	public static void createPic(HSSFWorkbook wb,HSSFPatriarch patriarch,HSSFClientAnchor anchor,File file) throws IOException{
-		
-		BufferedImage bufferImg = null;        
-		ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream(); 
-		bufferImg = ImageIO.read(file);     
-		ImageIO.write(bufferImg, "png", byteArrayOut);  
-		patriarch.createPicture(anchor, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
-		
-	}
-	
-	
-	
-	
+
+
+        return wb;
+    }
+
+    public static void createPic(HSSFWorkbook wb, HSSFPatriarch patriarch, HSSFClientAnchor anchor, File file) throws IOException {
+
+        BufferedImage bufferImg = null;
+        ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+        bufferImg = ImageIO.read(file);
+        ImageIO.write(bufferImg, "png", byteArrayOut);
+        patriarch.createPicture(anchor, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG));
+
+    }
+
 
 }

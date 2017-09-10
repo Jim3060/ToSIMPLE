@@ -58,7 +58,7 @@ public class IndexAction {
         System.out.print(command);
         try {
             Process p = Runtime.getRuntime().exec(command);
-            
+
             if (p.waitFor() == 0) {
                 //normally terminated, a way to read the output
                 InputStream inputStream = p.getInputStream();
