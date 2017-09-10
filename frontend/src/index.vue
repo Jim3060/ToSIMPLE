@@ -32,15 +32,13 @@
     
     #Wfooter {
         background: gray;
-        margin: 0 auto;
         overflow: hidden;
         width: 100%;
-        position: bottom;
-        min-width: 980px;
-        position: relative;
-        top: 200px;
+        position: absolute;
+        left: -15px;
+        bottom: 0;
         font-size: 15;
-        margin-top: 10px;
+        font-family:cursive;
     }
     .footer{width:100px;
     height:50px;background:black;margin-top:-50px;}
