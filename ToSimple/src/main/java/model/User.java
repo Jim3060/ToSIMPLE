@@ -2,6 +2,8 @@ package model;
 
 import java.util.Date;
 
+import ToolUtils.MD5Utils;
+
 public class User {
     private Long id;
     private String userName;
@@ -144,7 +146,18 @@ public class User {
     public String getToken() {
         return token;
     }
-
+    
+    public void updateToken(){
+    	 String to = this.email;
+         Long curTime = System.currentTimeMillis();
+         String token = curTime+to;
+         this.setToken(MD5Utils.getEncoded(token));
+    }
+    
+    public String fetchCheckToken(){
+    	String result=this.token.substring(0, 6);
+    	return result;
+    }
 
     public void setToken(String token) {
         this.token = token;

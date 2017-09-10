@@ -234,4 +234,140 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         return gson.toJson(quess);
     }
 
+    @Override
+    public Integer associateQuestionnaires(String id1, String id2, String message, User user) {//main id, slave id, message
+        //identify the questionnaires
+        Questionnaire q1 = questionnaireDao.findQuestionnaireById(id1);
+        if (q1 == null || (int) q1.questionnaireJSON.get("status") != 1) {
+            return 0;
+        }
+        //check the user
+//		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
+//			return -1;
+//		}
+        //identify the second questionnaire
+        Questionnaire q2 = questionnaireDao.findQuestionnaireById(id2);
+        if (q2 == null || (int) q1.questionnaireJSON.get("status") != 1) {
+            return 0;
+        }
+        //set associate
+        q1.setAssociate(id2, message);
+        //q2.setAssociate(id1);
+        //save
+        questionnaireDao.update(id1, q1);
+        //questionnaireDao.save(q2);
+        return 1;
+    }
+
+
+    @Override
+    public Integer breakAssociation(String id1, String id2, User user) {//main id, slave id, message
+        //identify the questionnaires
+        Questionnaire q1 = questionnaireDao.findQuestionnaireById(id1);
+        if (q1 == null) {
+            return 0;
+        }
+        //check the user
+//		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
+//			return -1;
+//		}
+        //identify the second questionnaire
+        Questionnaire q2 = questionnaireDao.findQuestionnaireById(id2);
+        if (q2 == null) {
+            return 0;
+        }
+        //set associate
+        q1.removeAssociate(id2);
+        //q2.setAssociate(id1);
+        //save
+        questionnaireDao.update(id1, q1);
+        //questionnaireDao.save(q2);
+        return 1;
+    }
+
+    @Override
+    public List<Questionnaire> getAllAssociatedQuestionnaires(String id) {
+        // TODO Auto-generated method stub
+        Questionnaire q = questionnaireDao.findQuestionnaireById(id);
+        if (q == null) {
+            System.out.println(2345);
+            return null;
+        }
+        JSONArray associatedIdsJ = (JSONArray) q.questionnaireJSON.get("associatedQuestionnaires");
+        if (associatedIdsJ == null) {
+            System.out.println(123);
+            return null;
+        }
+        System.out.println(234);
+        System.out.println(associatedIdsJ);
+        List<Association> as = JSONArray.toList(associatedIdsJ, Association.class);
+        List<String> ids = new ArrayList<String>();
+        for (int i = 0; i < as.size(); i++) {
+            ids.add(as.get(i).questionnaireId);
+        }
+        return questionnaireDao.findQuestionnaireByIds(ids);
+    }
+
+    @Override
+    public Questionnaire getOneAssociatedQuestionnaire(String id) {
+        // TODO Auto-generated method stub
+        Questionnaire q = questionnaireDao.findQuestionnaireById(id);
+        if (q == null) {
+            System.out.println(2345);
+            return null;
+        }
+        JSONArray associatedIdsJ = (JSONArray) q.questionnaireJSON.get("associatedQuestionnaires");
+        if (associatedIdsJ == null) {
+            System.out.println(123);
+            return null;
+        }
+        System.out.println(234);
+        System.out.println(associatedIdsJ);
+        List<Association> qs = JSONArray.toList(associatedIdsJ, Association.class);
+        //System.out.println(Math.random());
+        int tmp = (int) (Math.random() * qs.size());
+        System.out.println(tmp);
+        return (questionnaireDao.findQuestionnaireById(qs.get(tmp).questionnaireId)).cleanDb();
+    }
+
+    @Override
+    public Questionnaire.Association getOneAssociatedQuestionnaireInfo(String id) {
+        // TODO Auto-generated method stub
+        Questionnaire q = questionnaireDao.findQuestionnaireById(id);
+        if (q == null) {
+            System.out.println(2345);
+            return null;
+        }
+        JSONArray associatedIdsJ = (JSONArray) q.questionnaireJSON.get("associatedQuestionnaires");
+        if (associatedIdsJ == null) {
+            System.out.println(123);
+            return null;
+        }
+        System.out.println(234);
+        System.out.println(associatedIdsJ);
+        List<Association> qs = JSONArray.toList(associatedIdsJ, Association.class);
+        //System.out.println(Math.random());
+        int tmp = (int) (Math.random() * qs.size());
+        System.out.println(tmp);
+        return qs.get(tmp);
+    }
+
+    public int checkQuestionnaireInTime(Questionnaire questionnaire) throws ParseException {
+        String startDateStr = (String) questionnaire.questionnaireJSON.get("startDate");
+        if (startDateStr == null) {
+            return 1;
+        }
+        Date startDate = TimeUtils.getLocalTime(startDateStr);
+        if (startDate == null) {
+            return 1;
+        }
+        Date endDate = TimeUtils.getLocalTime((String) questionnaire.questionnaireJSON.get("endDate"));
+        Date now = new Date();
+        if (endDate.getTime() >= now.getTime() && startDate.getTime() <= now.getTime()) {
+            return 1;
+        }
+        return 0;
+    }
+
+
 }

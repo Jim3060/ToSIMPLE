@@ -1,5 +1,6 @@
 package action;
 
+import ToolUtils.MailUtils;
 import ToolUtils.RSAUtils;
 import model.User;
 import net.sf.json.JSONObject;
@@ -253,6 +254,34 @@ public class UserAction extends BaseAction {
         response.getWriter().print(flag);
         return null;
     }
+    
+    @RequestMapping(value = "sendCheckToken", method = RequestMethod.GET)
+    public String sendCheckToken( HttpServletResponse response, String email) throws MessagingException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        System.out.println(email);
+        User user = userService.getUserByEmail(email);
+        if (user==null){response.getWriter().print(0);}
+        MailUtils.sendCheckToken(user);
+        response.getWriter().print(1);
+        return null;
+    }
+    
+    @RequestMapping(value = "forgotPassword", method = RequestMethod.GET)
+    public String forgotPassword(HttpSession session, String passwordNewSECURE, HttpServletResponse response, String checkToken, String email) throws MessagingException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        User user=userService.getUserByEmail(email);
+        int flag = userService.checkTokenValid(user, checkToken);
+        if (flag==1){
+        	RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
+        	user.setPassword(RSAUtils.decryptBase64(passwordNewSECURE, privateKey));
+        	user.updateToken();
+        	userService.updateUser(user);
+        }
+        response.getWriter().print(flag);
+        return null;
+    }
+    
+    
 
     @RequestMapping(value = "user/role", method = RequestMethod.POST)
     public void changeRole(Long userId, Integer role, HttpServletResponse response) throws IOException {

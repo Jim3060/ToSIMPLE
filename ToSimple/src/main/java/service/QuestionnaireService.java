@@ -4,7 +4,9 @@ import ToolUtils.CountUtils;
 import model.Questionnaire;
 import model.QuestionnaireResult;
 import model.QuestionnaireStatistics;
+import model.User;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface QuestionnaireService {
@@ -31,6 +33,16 @@ public interface QuestionnaireService {
     public List<Questionnaire> fetchAll(Integer page, Integer pageSize, CountUtils countUtils);
 
     public Questionnaire findQuestionnaireById(String id);
+    
+    public Integer associateQuestionnaires(String id1, String id2, String message, User user);
+    
+    public Questionnaire.Association getOneAssociatedQuestionnaireInfo(String id) ;
+    
+    public Integer breakAssociation(String id1, String id2, User user);
+    
+    public List<Questionnaire> getAllAssociatedQuestionnaires(String questionnaireId);
+    
+    public Questionnaire getOneAssociatedQuestionnaire(String questionnaireId);
 
     public Integer addQuestionnaireResult(QuestionnaireResult questionnaireResult);
 
@@ -83,5 +95,7 @@ public interface QuestionnaireService {
     public String getQuestionByKW(String kw);
 
     public String getQuestionByKW(String kwq, String kw);
+    
+    public int checkQuestionnaireInTime(Questionnaire questionnaire) throws ParseException;
 
 }
