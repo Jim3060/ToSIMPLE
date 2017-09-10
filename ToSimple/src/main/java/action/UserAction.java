@@ -227,7 +227,9 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         System.out.println(email);
         User user = userService.getUserByEmail(email);
+        if (user==null){response.getWriter().print(0);}
         MailUtils.sendCheckToken(user);
+        response.getWriter().print(1);
         return null;
     }
     

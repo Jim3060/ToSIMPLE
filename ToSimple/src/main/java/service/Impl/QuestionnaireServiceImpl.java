@@ -2,8 +2,11 @@ package service.Impl;
 
 
 import ToolUtils.CountUtils;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import ToolUtils.CountUtils;
 import ToolUtils.SojumpParser;
 import ToolUtils.SpiderUtils;
+import ToolUtils.TimeUtils;
 import ToolUtils.Spider.Algorithm;
 import ToolUtils.SpiderUtils.SojumpBrief;
 
@@ -326,6 +330,19 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 		int tmp=(int)(Math.random()*qs.size());
 		System.out.println(tmp);
 		return qs.get(tmp);
+	}
+	
+	public int checkQuestionnaireInTime(Questionnaire questionnaire) throws ParseException{
+		String startDateStr=(String) questionnaire.questionnaireJSON.get("startDate");
+		if (startDateStr==null){return 1;}
+		Date startDate=TimeUtils.getLocalTime(startDateStr);
+		if (startDate==null){return 1;}
+		Date endDate=TimeUtils.getLocalTime((String) questionnaire.questionnaireJSON.get("endDate"));
+		Date now=new Date();
+		if (endDate.getTime()>=now.getTime()&&startDate.getTime()<=now.getTime()){
+			return 1;
+		}
+		return 0;
 	}
 	
 
