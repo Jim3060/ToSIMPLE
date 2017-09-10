@@ -53,6 +53,7 @@ export default {
 
         associateID:"",
         associateMessage:""
+
     };},
     methods:{
         getInputSize() {
@@ -143,6 +144,10 @@ export default {
                     let answered = JSON.parse(localStorage.answered || "[]");
                     answered.push(this.$route.params.id);
                     localStorage.answered = JSON.stringify(answered);
+                    if (this.saver) {
+                        clearInterval(this.saver);
+                    }
+                    localStorage.removeItem(`answer${this.$route.params.id}`);
                     return true;
                 }
                 return false;
@@ -224,6 +229,37 @@ export default {
                     this.$router.push({name:"q", id: this.associateID});
                 }, 5000);
             }
+        },
+        saveAnswer(){
+            console.log("called"); //debug
+            if (this.$route.name == "q") {
+                const id = `answer${this.$route.params.id}`;
+                if (Object.keys(this.answer).length > 0) {
+                    localStorage[id] = JSON.stringify(this.answer);
+                }
+            }
+        },
+        recover(){
+            return new Promise((resolve) => {
+                if (this.$route.name == "q") {
+                    const id = `answer${this.$route.params.id}`;
+                    if (localStorage[id] != undefined) {
+                        this.$confirm("检测到未提交的答卷,是否恢复?", "警告", {
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            type: "danger"
+                        }).then(() => {
+                            Vue.set(this, "answer", JSON.parse(localStorage[id]));
+                            resolve("done");
+                        }).catch(() => {
+                            resolve("done");
+                        });
+                    }
+                    else {
+                        resolve("done");
+                    }
+                }
+            });
         }
     },
     watch:{
@@ -248,16 +284,19 @@ export default {
             });
         }
         else if(this.$route.name == "q"){
-            this.loadQuestionnaire(this.$route.params.id);
-            this.loadAssociate(this.$route.params.id);
+            this.recover().then(() => {
+                this.saver = setInterval(() => {this.saveAnswer();}, 1000);
+                this.loadQuestionnaire(this.$route.params.id);
+                this.loadAssociate(this.$route.params.id);
+            });
         }
         this.beginTime = new Date();
     }
 };
 </script>
 
-<style>
+<style scoped>
     .questionnaire-title{font-size:32px; margin-bottom: 10px; text-align:center;}
     .questionnaire-briefing{font-size:16px; margin-bottom: 30px; text-align:center;}
-    .questionnaire{margin:20px;}
+    .questionnaire{margin: 20px;}
 </style>

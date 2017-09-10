@@ -1,6 +1,9 @@
 <template>
     <div class="headline">
-    <span class="text"></span>
+        <div style="height:10%"></div>
+        <span class="text"></span>
+        <div style="height:30px;"></div>
+        <el-button @click="$router.push({path:'/q'})">随便看看</el-button>
         <div id="Wfooter">
             <p>contact US&emsp;&emsp;&emsp;
                 Tel:&ensp;222222&emsp;&emsp;&emsp;
@@ -45,4 +48,10 @@
     .footer{width:100px;
     height:50px;background:black;margin-top:-50px;}
     .headline{font-size:40px; margin-left: 15px;}
+    .headline{
+        font-size:48px;
+        margin-left: 15px; 
+        text-align:center;
+    }
+
 </style>

@@ -1,13 +1,17 @@
 {
-    "interval": 0, 
-    "times": 100,
+    "interval": 10, 
+    "times": "10000",
     "timeout": 10000,
     "sendOptions":{
         "hostname": "106.14.171.169",
         "port": 8080,
-        "path": "/ToSimple/fetchRSA",
-        "method": "GET"
+        "path": "/ToSimple/questionnaireResult",
+        "method": "POST",
+        "headers":{
+            "Content-Length":256,
+            "Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"
+        }
     },
-    "sendBody":"",
+    "sendBody":"answerPaper={'answers':[{'choice':[0],'blank':''}],'questionnaireId':'5966d4207f68be2e3f1d2848','beginTime':'2017-09-10T08:03:54.063Z','endTime':'2017-09-10T08:03:56.409Z'}",
     "expectResponse":"" 
 }
