@@ -365,7 +365,8 @@
                     <port>${port}</port>
                     <path>/${project.artifactId}</path>
                     <uriEncoding>${project.build.sourceEncoding}</uriEncoding>
-                    <server>tomcat7</server>
+                    <server>tosimple</server>
+                    <url>http://106.14.171.169:8080/manager/text</url>
                 </configuration>
             </plugin>
         </plugins>

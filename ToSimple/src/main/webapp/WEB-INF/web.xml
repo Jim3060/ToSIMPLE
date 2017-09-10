@@ -68,12 +68,26 @@
 
     <servlet-mapping>
         <servlet-name>default</servlet-name>
+        <url-pattern>*.woff</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.tff</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
         <url-pattern>*.html</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.eot</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
         <welcome-file>/out/index.html</welcome-file>
-
     </welcome-file-list>
 
 </web-app>

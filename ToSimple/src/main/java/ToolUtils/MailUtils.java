@@ -15,7 +15,7 @@ public class MailUtils {
     //--------------参数---------------------
     public static final String FROM = "TOSIMPLE_SJTU@163.com";//发件人的email
     public static final String PWD = "2simple";//发件人密码--邮箱密码
-    public static final String URL = "http://localhost:8080/ToSimple";//项目主页
+    public static final String URL = "http://106.14.171.169:8080/ToSimple";//项目主页
     public static final int LIMITHOUR = 2; //激活邮件过期时间2小时
     public static final int LIMITTIME = 1000 * 60 * 60 * 2;
     public static final String TITLE = "ToSimple账户激活邮件";
