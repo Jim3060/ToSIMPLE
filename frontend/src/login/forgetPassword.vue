@@ -39,8 +39,12 @@ export default {
                 this.$message.error("请输入邮箱");
                 return;
             }
+            if (this.email.indexOf("@") == -1 || this.email.indexOf(".") <= this.email.indexOf("@")) {
+                this.$message.error("请输入合法的邮箱地址");
+                return;
+            }
             
-            $.get(`sendCheckToken?email=${this.email}`, data => {
+            $.get("sendCheckToken", {email: this.email}, data => {
                 if (data == 1) {
                     this.$message.success("验证码已发送至邮箱");
                     this.countDown = 60;   

@@ -3,88 +3,99 @@
         <el-row>
             <el-col :span="4">&nbsp</el-col>
             <el-col :span="16">
-        <div class="buttons">
-            <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0 && $route.name=='n'">发布问卷</el-button>
-            <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
-            <el-tooltip v-if="$route.name=='n'&&questionnaire.status==1" effect="light">
-                <div slot="content">
-                    <input onfocus="this.select()" style="width:150px" :value="'http://localhost:8080/ToSimple/#/q/'+$route.params.id">
-                    <qrcode style="margin-left:11px; margin-top:5px" :size="128" :value="'http://localhost:8080/ToSimple/#/q/'+$route.params.id"></qrcode>
+                <div class="buttons">
+                    <el-button type="primary" @click="publish(1)" v-show="questionnaire.status == 0 && $route.name=='n'">发布问卷</el-button>
+                    <el-button type="danger" @click="deleteQuestionnaire()" v-show="$route.name=='n'">删除问卷</el-button>
+                    <el-tooltip v-if="$route.name=='n'&&questionnaire.status==1" effect="light">
+                        <div slot="content">
+                            <input onfocus="this.select()" style="width:150px" :value="'http://106.14.171.169:8080/ToSimple/#/q/'+$route.params.id">
+                            <qrcode style="margin-left:11px; margin-top:5px" :size="128" :value="'http://106.14.171.169:8080/ToSimple/#/q/'+$route.params.id"></qrcode>
+                        </div>
+                        <el-button>分享</el-button>
+                    </el-tooltip>
+                    <el-dropdown v-if="$route.name=='n'&&questionnaire.status==1" menu-align="start">
+                        <el-button>
+                            更多
+                            <i class="el-icon-caret-bottom el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>
+                                <a :href="'#/q/'+$route.params.id">前往回答</a>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <el-button type="text" @click="showAssociate=true">设置关联</el-button>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <a :href="'#/s/'+$route.params.id">查看统计</a>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <a :href="'questionnaireResult/download/'+$route.params.id">下载回答</a>
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </div>
-                <el-button>分享</el-button>
-            </el-tooltip>
-            <el-dropdown v-if="$route.name=='n'&&questionnaire.status==1" menu-align="start">
-                <el-button>
-                    更多
-                    <i class="el-icon-caret-bottom el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>
-                        <a :href="'#/q/'+$route.params.id">前往回答</a>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                        <a :href="'#/s/'+$route.params.id">查看统计</a>
-                    </el-dropdown-item>
-                    <el-dropdown-item>
-                        <a :href="'questionnaireResult/download/'+$route.params.id">下载回答</a>
-                    </el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-        </div>
-        <div class="head" v-show="questionnaire.status==0">
-            <el-input class="edit-title" placeholder="请输入问卷标题" :disabled="!editMode" v-model="title">
-                <el-button v-if="$route.path=='/n'" @click="forkMode=!forkMode" slot="append" style="font-size:14px">{{!forkMode?"导入问卷":"取消"}}</el-button>
-            </el-input>
-            <div></div>
-            <div v-if="forkMode" style="margin-left:15px; margin-bottom:10px">
-                <el-input placeholder="请输入ID" v-model="forkId">
-                    <el-select style="width:120px" v-model="forkFrom" slot="prepend" placeholder="请选择来源">
-                        <el-option label="To Simple" value="1"></el-option>
-                        <el-option label="问卷星" value="2"></el-option>
-                    </el-select>
-                    <el-button @click="fork()" slot="append">导入</el-button>
-                </el-input>
-            </div>
-            <div></div>
-            <div>
-                <el-input type="textarea" placeholder="请输入问卷简介" class="edit-briefing" :disabled="!editMode" v-model="briefing"></el-input>
-            </div>
-        </div>
+                <div class="head" v-show="questionnaire.status==0">
+                    <el-row>
+                        <el-col :span="16">
+                            <el-input class="edit-title" placeholder="请输入问卷标题" :disabled="!editMode" v-model="title">
+                                <el-button v-if="$route.path=='/n'" @click="forkMode=!forkMode" slot="append" style="font-size:14px">{{!forkMode?"导入问卷":"取消"}}</el-button>
+                            </el-input>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-date-picker v-model="daterange" class="edit-date" type="daterange" placeholder="设置起止日期(留空则长期有效)"></el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <div></div>
+                    <div v-if="forkMode" style="margin-left:15px; margin-bottom:10px">
+                        <el-input placeholder="请输入ID" v-model="forkId">
+                            <el-select style="width:120px" v-model="forkFrom" slot="prepend" placeholder="请选择来源">
+                                <el-option label="To Simple" value="1"></el-option>
+                                <el-option label="问卷星" value="2"></el-option>
+                            </el-select>
+                            <el-button @click="fork()" slot="append">导入</el-button>
+                        </el-input>
+                    </div>
+                    <div></div>
+                    <div>
+                        <el-input type="textarea" placeholder="请输入问卷简介" class="edit-briefing" :disabled="!editMode" v-model="briefing"></el-input>
+                    </div>
+                    <div>
+                    </div>
+                </div>
             </el-col>
             <el-col :span="4"></el-col>
         </el-row>
         <questionnaire :questionnaire="questionnaire" :edit="questionnaire.status==0&&editMode" @delete="del($event)" @edit="edit($event)"></questionnaire>
-        
-         <el-row>
+
+        <el-row>
             <el-col :span="4">&nbsp</el-col>
             <el-col :span="16">
-        <div v-show="questionnaire.status==0" class="buttons">
-            <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
-            <el-button type="success" @click="submit()">提交问卷</el-button>
-            <el-dropdown v-if="$route.name=='n'||$route.path=='/n'" menu-align="start">
-                <el-button>
-                    更多
-                    <i class="el-icon-caret-bottom el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>
-                        <a @click="showChart()">流程图预览</a>
-                    </el-dropdown-item>
-                    <el-tooltip :disabled="$route.name=='n'" content="需要先提交问卷才能关联其他问卷" placement="right">
-                        <el-dropdown-item>
-                                <el-button type="text" :disabled="$route.path=='/n'" @click="showAssociate=true">关联问卷</el-button>
-                        </el-dropdown-item>
-                    </el-tooltip>
-                    <el-dropdown-item v-if="editMode">
-                        <a @click="save()">暂存问卷</a>
-                    </el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown> 
-        </div>
-        </el-col>
+                <div v-show="questionnaire.status==0" class="buttons">
+                    <el-button v-show="editMode" type="primary" @click="showModal=true">添加问题</el-button>
+                    <el-button type="success" @click="submit()">提交问卷</el-button>
+                    <el-dropdown v-if="$route.name=='n'||$route.path=='/n'" menu-align="start">
+                        <el-button>
+                            更多
+                            <i class="el-icon-caret-bottom el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>
+                                <a @click="showChart()">流程图预览</a>
+                            </el-dropdown-item>
+                            <el-tooltip :disabled="$route.name=='n'" content="需要先提交问卷才能关联其他问卷" placement="right">
+                                <el-dropdown-item>
+                                    <el-button type="text" :disabled="$route.path=='/n'" @click="showAssociate=true">关联问卷</el-button>
+                                </el-dropdown-item>
+                            </el-tooltip>
+                            <el-dropdown-item v-if="editMode">
+                                <a @click="save()">暂存问卷</a>
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
+            </el-col>
             <el-col :span="4"></el-col>
         </el-row>
-
 
         <modal :show="showModal" effect="zoom" :backdrop="false">
             <div slot="modal-header" class="modal-header">
@@ -130,7 +141,8 @@ export default {
             forkMode: false,
             forkFrom: "",
             forkId: "",
-            showAssociate: false
+            showAssociate: false,
+            daterange: [null, null]
         };
     },
     components: { modal, questionnaire, create, qrcode, chart, associate },
@@ -221,11 +233,23 @@ export default {
         },
         submit() {
             var self = this;
+            if (this.title == "") {
+                this.$message.error("标题不能为空");
+                return;
+            }
+
+            if (this.questionnaire.questions.length == 0) {
+                this.$message.error("请设置问题");
+                return;
+            }
+
             this.questionnaire["paperTitle"] = this.title;
             this.questionnaire["briefing"] = this.briefing;
             this.questionnaire["createDate"] = new Date();
             this.questionnaire["status"] = 0;
             this.questionnaire["answerNumber"] = 0;
+            this.questionnaire["startDate"] = this.daterange[0];
+            this.questionnaire["endDate"] = this.daterange[1];
 
 
             $.post("questionnaire", { questionnaire: JSON.stringify(this.questionnaire) }, data => {
@@ -339,12 +363,20 @@ export default {
 .edit-title,
 .edit-switch {
     font-size: 20px;
-    margin: 15px
+    margin: 10px 15px;
+}
+
+.edit-date {
+    margin-left: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
 }
 
 .edit-briefing {
     font-size: 14px;
     margin-left: 15px;
+    padding-right: 20px;
 }
 
 .buttons>* {
@@ -354,5 +386,4 @@ export default {
 .buttons {
     margin: 15px;
 }
-
 </style>

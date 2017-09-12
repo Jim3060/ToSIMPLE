@@ -2,7 +2,7 @@
     <div class="associate-content">
         <el-input v-model="associateID">
             <div slot="prepend">被关联问卷ID</div>
-            <div slot="append" v-show="oldID!=''" @click="clear()">清除当前关联</div>
+            <div slot="append" v-if="oldID!=''" @click="clear()">清除当前关联</div>
         </el-input>
         <div>{{associateTitle}}</div>
         <el-input type="textarea" placeholder="请填写关联简介" v-model="associateMessage"></el-input>
