@@ -263,5 +263,8 @@ export default {
     height: 178px;
     display: block;
   }
-  input.el-upload__input{display:none!important;}
+  .el-upload>input{
+      display: none!important;
+  }
 </style>
+

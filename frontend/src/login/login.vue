@@ -16,12 +16,15 @@
                     <span class="glyphicon glyphicon-user"></span>
                     <el-dropdown menu-align="start">
                         <span class="el-dropdown-link">
-                            {{user["username"]}}
+                            {{user["userName"]}}
                             <i class="el-icon-caret-bottom el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
                                 <a href="#/m/q">我的问卷</a>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                                <a :href="`#/user/${user.id}`">个人信息</a>
                             </el-dropdown-item>
                             <el-dropdown-item>
                                 <el-button @click="showPasswordModal=true" type="text">修改密码</el-button>

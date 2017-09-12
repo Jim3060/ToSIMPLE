@@ -51,66 +51,69 @@ http.createServer(function (request, response) {
     });
 
     //console.log(request.headers.cookie);
+    request.on("end", () => {
 
-    var fpath = path.join(root, url.parse(request.url).pathname);
-    fs.stat(fpath, function (err, stat) {
-        if (fpath == root + "/") {
-            response.writeHead(200, { "Content-type": "text/html; charset=utf-8" });
-            fs.createReadStream("index.html").pipe(response);
-        }
-        else if (err || !stat.isFile()) {
-            
-            const options = {
-                hostname: address,
-                port: port,
-                path: url.parse(request.url).path,
-                method: request.method,
-                headers: {
-                    "Content-Type": request.headers["Content-Type"] || request.headers["content-type"] || "" , 
-                    "Content-Length": Buffer.byteLength(post),
-                    "Cookie": request.headers["Cookie"] || request.headers["cookie"] || "",
-                    "Connection": "keep-alive"
-                }
-            };
-
-            console.log(new Date().toLocaleTimeString(), request.method, `http://${address}:${port}${url.parse(request.url).path}`);
-
-            const req = http.request(options, (res) => {
-                //res.setEncoding('utf8');
-                response.writeHead(res.statusCode, res.headers);
-                res.on("data", (chunk) => {
-                    response.write(chunk);
-                });
-                res.on("end", () => {
-                    response.end("");
-                });
-            });
-
-            req.on("error", (e) => {
-                console.error(`ERROR: ${e.message}`);
-            });
-
-            // 写入数据到请求主体
-            req.write(post);
-            req.end();
-        }
-        else {
-            var extname = path.extname(fpath);
-            extname = extname ? extname.slice(1) : "unknown";
-            var resContentType = mime[extname] || "text/plain";
-
-            response.writeHead(200, { "Content-type": resContentType });
-            if (extname == "woff" || extname == "woff2") {
-                fs.readFile(fpath, "binary", function (err, data) {
-                    var rsp = data;
-                    response.end(rsp, "binary");
-                });
-            } else {
-                fs.readFile(fpath, "utf-8", function (err, data) {
-                    var rsp = data;
-                    response.end(rsp);
-                });
+        var fpath = path.join(root, url.parse(request.url).pathname);
+        fs.stat(fpath, function (err, stat) {
+            if (fpath == root + "/") {
+                response.writeHead(200, { "Content-type": "text/html; charset=utf-8" });
+                fs.createReadStream("index.html").pipe(response);
             }
-        }
+            else if (err || !stat.isFile()) {
+                
+                const options = {
+                    hostname: address,
+                    port: port,
+                    path: url.parse(request.url).path,
+                    method: request.method,
+                    headers: {
+                        "Content-Type": request.headers["Content-Type"] || request.headers["content-type"] || "" , 
+                        "Content-Length": Buffer.byteLength(post),
+                        "Cookie": request.headers["Cookie"] || request.headers["cookie"] || "",
+                        "Connection": "keep-alive"
+                    }
+                };
+    
+                console.log(new Date().toLocaleTimeString(), request.method, `http://${address}:${port}${url.parse(request.url).path}`);
+    
+                const req = http.request(options, (res) => {
+                    //res.setEncoding('utf8');
+                    response.writeHead(res.statusCode, res.headers);
+                    res.on("data", (chunk) => {
+                        response.write(chunk);
+                    });
+                    res.on("end", () => {
+                        response.end("");
+                    });
+                });
+    
+                req.on("error", (e) => {
+                    console.error(`ERROR: ${e.message}`);
+                });
+    
+                // 写入数据到请求主体
+                req.write(post);
+                req.end();
+            }
+            else {
+                var extname = path.extname(fpath);
+                extname = extname ? extname.slice(1) : "unknown";
+                var resContentType = mime[extname] || "text/plain";
+    
+                response.writeHead(200, { "Content-type": resContentType });
+                if (extname == "woff" || extname == "woff2") {
+                    fs.readFile(fpath, "binary", function (err, data) {
+                        var rsp = data;
+                        response.end(rsp, "binary");
+                    });
+                } else {
+                    fs.readFile(fpath, "utf-8", function (err, data) {
+                        var rsp = data;
+                        response.end(rsp);
+                    });
+                }
+            }
+        });
     });
+
 }).listen(8080, () => { console.log("listen on 8080"); });

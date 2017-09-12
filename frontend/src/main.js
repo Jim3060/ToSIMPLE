@@ -20,6 +20,7 @@ import qView from "./question/questionnairesView.vue";
 import myQuestionnaire from "./manage/myquestionnaires.vue";
 import backup from "./manage/backupManage.vue";
 import flowChart from "./question/flowChart/flowChart.vue";
+import userInfo from "./userInfo.vue";
 
 const routes = [
     {path:"/index",component: index},
@@ -35,7 +36,8 @@ const routes = [
     {path:"/m/q", component: myQuestionnaire},
     {path:"/r/:id", name: "r", component: questionnaire},
     {path:"/backup", component: backup},
-    {path:"/flow", component: flowChart}
+    {path:"/flow", component: flowChart},
+    {path:"/user/:id", name:"user", component: userInfo}
 ];
 
 const router = new VueRouter({
