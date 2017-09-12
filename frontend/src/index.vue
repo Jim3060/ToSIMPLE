@@ -37,4 +37,10 @@
     .footer{width:100px;
     height:50px;background:black;margin-top:-50px;}
     .headline{font-size:40px; margin-left: 15px;}
+    .headline{
+        font-size:48px;
+        margin-left: 15px; 
+        text-align:center;
+    }
+
 </style>

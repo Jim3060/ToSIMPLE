@@ -22,8 +22,8 @@
                     <a :href="'#/s/'+questionnaire.questionnaireId">查看统计</a>
                     <el-tooltip effect="light">
                         <div slot="content">
-                            <input onfocus="this.select()" style="width:150px" :value="'http://localhost:8080/ToSimple/#/q/'+questionnaire.questionnaireId">
-                            <qrcode style="margin-left:11px; margin-top:5px" :size="128" :value="'http://localhost:8080/ToSimple/#/q/'+questionnaire.questionnaireId"></qrcode>
+                            <input onfocus="this.select()" style="width:150px" :value="'http://106.14.171.169:8080/ToSimple/#/q/'+questionnaire.questionnaireId">
+                            <qrcode style="margin-left:11px; margin-top:5px" :size="128" :value="'http://106.14.171.169:8080/ToSimple/#/q/'+questionnaire.questionnaireId"></qrcode>
                         </div>
                         <a>分享</a>
                     </el-tooltip>
