@@ -101,7 +101,7 @@ http.createServer(function (request, response) {
                 var resContentType = mime[extname] || "text/plain";
     
                 response.writeHead(200, { "Content-type": resContentType });
-                if (extname == "woff" || extname == "woff2") {
+                if (extname == "woff" || extname == "woff2" || extname == "jpg") {
                     fs.readFile(fpath, "binary", function (err, data) {
                         var rsp = data;
                         response.end(rsp, "binary");
