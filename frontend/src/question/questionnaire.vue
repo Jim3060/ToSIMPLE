@@ -15,9 +15,13 @@
                         <blank v-if="question.type==2" :index="index" :answer="answer[index]" :title="question.questionTitle" :forced="question.forced" @update="update(index, $event)"></blank>
                     </div>
                 </div>
-                <div v-if="$route.path!='/n'&&$route.name!='n'&&associateID!=''">{{associateMessage}}</div>
+                <el-card class="box-card" v-if="$route.path!='/n'&&$route.name!='n'&&associateID!=''">
+                    <div>{{associateMessage}}</div>
+                    <div style="height:20px;"></div>
+                    <el-checkbox v-model="goNext">帮助回答下一份问卷</el-checkbox>
+                </el-card>
+                <div style="height:20px;"></div>
                 <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
-                <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'&&associateID!=''" @click="submitAndJump()">提交并回答下一份问卷</el-button>
                 <!-- modify -->
                 <el-button type="primary" v-if="!   edit" @click="dialogVisible=true">举报</el-button>
                 <el-dialog title="请输入举报原因" :visible.sync="dialogVisible" size="tiny" :before-close="closeDialog">
@@ -52,6 +56,7 @@ export default {
             answer: {},
             hidden: [],
             dirty: false,
+            goNext: true,
 
             beginTime: "",
             dialogVisible: false,
@@ -119,7 +124,7 @@ export default {
                 let answered = JSON.parse(localStorage.answered);
                 if (answered.indexOf(this.$route.params.id) != -1) {
                     this.$message.warning("请勿重复回答该问题！");
-                    return false;
+                    return ;
                 }
             }
             var postBody = { answers: [] };
@@ -134,11 +139,11 @@ export default {
                 if (typeof temp === "undefined") {
                     //postBody.answers.push({choice:[], blank:""});
                     this.$message.warning("请记得回答第" + (i + 1) + "题");
-                    return false;
+                    return ;
                 } else {
                     if ((temp.choice == undefined || temp.choice.length == 0) && temp.blank == "") {
                         this.$message.warning("请记得回答第" + (i + 1) + "题");
-                        return false;
+                        return ;
                     }
                     postBody.answers.push(temp);
                 }
@@ -148,7 +153,6 @@ export default {
             postBody.endTime = new Date();
             $.post("questionnaireResult", { answerPaper: JSON.stringify(postBody) }, (data) => {
                 if (data == "1" || data == 1) {
-                    this.$message.success("提交成功");
                     let answered = JSON.parse(localStorage.answered || "[]");
                     answered.push(this.$route.params.id);
                     localStorage.answered = JSON.stringify(answered);
@@ -157,10 +161,17 @@ export default {
                         this.saver = undefined;
                     }
                     localStorage.removeItem(`answer${this.$route.params.id}`);
-                    return true;
+                    if (this.goNext) {
+                        this.$message.success("提交成功,即将跳转到下一份问卷……");
+                        setTimeout(() => {
+                            this.$router.push({ name: "q", params:{id: this.associateID }});
+                        }, 3000);
+                    }
+                    else {
+                        this.$message.success("提交成功");
+                    }
                 }
-                return false;
-            }).fail(() => {
+            }, "json").fail(() => {
                 this.$message.error("网络异常");
                 return false;
             });
@@ -231,16 +242,7 @@ export default {
                 }
             }, "json");
         },
-        submitAndJump() {
-            if (this.submit() == true) {
-                this.$message.success("即将跳转……");
-                setTimeout(() => {
-                    this.$router.push({ name: "q", id: this.associateID });
-                }, 5000);
-            }
-        },
         saveAnswer() {
-            console.log("called"); //debug
             if (this.$route.name == "q") {
                 const id = `answer${this.$route.params.id}`;
                 if (Object.keys(this.answer).length > 0) {
@@ -281,6 +283,11 @@ export default {
             }
         },
 
+        "$route"(to) {
+            if (to.name == "q") 
+                this.loadQuestionnaire(this.$route.params.id);
+        },
+
         reportInfo: "getInputSize"
     },
     created() {
@@ -294,10 +301,6 @@ export default {
         }
         else if (this.$route.name == "q") {
             this.recover().then(() => {
-                /*const count = setInterval( () => {}, 100000);
-                for(let i = 0; i <= count; ++i) {
-                    clearInterval(i);
-                }*/
                 this.saver = setInterval(() => { this.saveAnswer(); }, 1000);
                 this.loadQuestionnaire(this.$route.params.id);
                 this.loadAssociate(this.$route.params.id);
