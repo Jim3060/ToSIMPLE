@@ -4,6 +4,9 @@
             <el-col :span="4">&nbsp</el-col>
             <el-col :span="16">
                 <div v-if="!edit" class="questionnaire-title">{{questionnaire.paperTitle}}</div>
+                <div v-if="!edit" class="questionnaire-id">{{questionnaire.questionnaireId}}</div>
+                <div v-if="!edit" class="questionnaire-date">起止时间:{{questionnaire.startDate?`${new Date(questionnaire.startDate).toLocaleDateString()}~${new Date(questionnaire.endDate).toLocaleDateString()}`:"长期"}}</div>
+                <div style="height:10px"></div>
                 <div v-if="!edit&&questionnaire!=undefined&&questionnaire.briefing!=undefined" class="questionnaire-briefing">{{questionnaire.briefing}}</div>
                 <div></div>
                 <div style="margin:0% 0% 0% 0%">
@@ -325,12 +328,23 @@ export default {
 }
 
 .questionnaire-briefing {
-    font-size: 16px;
+    font-size: 18px;
     margin-bottom: 30px;
     text-align: center;
 }
 
 .questionnaire {
     margin: 20px;
+}
+
+.questionnaire-id {
+    font-size: 10px;
+    color: grey;
+    text-align: center;
+}
+
+.questionnaire-date {
+    font-size: 16px;
+    text-align: center;
 }
 </style>
