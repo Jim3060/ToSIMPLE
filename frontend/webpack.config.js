@@ -54,12 +54,12 @@ module.exports = {
     },
     devtool: false,
     plugins:[
-        new webpack.DefinePlugin({
+        /*new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: "\"production\""
             }
         }),
-        new UglifyEsPlugin()
+        new UglifyEsPlugin()*/
     ]
 };
 /*

@@ -1,12 +1,6 @@
 <template>
     <div class="headline">
-    <span class="text"></span>
-        <div id="Wfooter">
-            <p>contact US&emsp;&emsp;&emsp;
-                Tel:&ensp;222222&emsp;&emsp;&emsp;
-                Email:&ensp;@sjtu.edu.cn</p>
-            <p>©2017 To simple Design & Development.</p>
-        </div>
+        <span class="text"></span>
     </div>
 </template>
 
@@ -31,10 +25,10 @@
     .headline{font-size:40px; text-align: center;}
     
     #Wfooter {
-        background: gray;
+        background: #cac2c2;
         overflow: hidden;
         width: 100%;
-        position: absolute;
+        position: fixed;
         left: 0px;
         bottom: 0;
         font-size: 15;
