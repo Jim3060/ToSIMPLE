@@ -1,15 +1,6 @@
 <template>
     <div class="headline">
-        <div style="height:10%"></div>
         <span class="text"></span>
-        <div class="divider" style="height:30px;"></div>
-        <el-button @click="$router.push({path:'/q'})">随便看看</el-button>
-        <div id="Wfooter">
-            <p>contact US&emsp;&emsp;&emsp;
-                Tel:&ensp;222222&emsp;&emsp;&emsp;
-                Email:&ensp;@sjtu.edu.cn</p>
-            <p>©2017 To simple Design & Development.</p>
-        </div>
     </div>
 </template>
 
@@ -30,20 +21,18 @@
     };
 </script>
 
-<style scoped>
+<style>
     .headline{font-size:40px; text-align: center;}
     
     #Wfooter {
-        background: gray;
-        margin: 0 auto;
+        background: #cac2c2;
         overflow: hidden;
         width: 100%;
-        position: bottom;
-        min-width: 980px;
-        position: relative;
-        top: 200px;
+        position: fixed;
+        left: 0px;
+        bottom: 0;
         font-size: 15;
-        margin-top: 10px;
+        font-family:cursive;
     }
     .footer{width:100px;
     height:50px;background:black;margin-top:-50px;}
