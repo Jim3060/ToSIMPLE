@@ -221,6 +221,12 @@ public class test {
        
     }
 
+//    @Test
+//    public void testTime() throws InterruptedException {
+//        BackUpUtil backUpUtil = new BackUpUtil();
+//        backUpUtil.executeEightAtNightPerDay("22","33");
+//    }
+
     class INT {
         private Integer i;
 

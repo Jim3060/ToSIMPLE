@@ -1,8 +1,8 @@
 package model;
 
-import java.util.Date;
-
 import ToolUtils.MD5Utils;
+
+import java.util.Date;
 
 public class User {
     private Long id;
@@ -19,12 +19,22 @@ public class User {
     private String phone;
     private String qq;
     private String weixin;
+    private String portrait;
 
-    public void updateUser(String address, String phone, String qq, String weixin) {
+    public String getPortrait() {
+        return portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
+
+    public void updateUser(String address, String phone, String qq, String weixin, String portrait) {
         this.address = address;
         this.phone = phone;
         this.qq = qq;
         this.weixin = weixin;
+        this.portrait = portrait;
     }
 
     public String getAddress() {

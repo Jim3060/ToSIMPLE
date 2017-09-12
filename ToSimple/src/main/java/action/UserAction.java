@@ -119,7 +119,8 @@ public class UserAction extends BaseAction {
 
     @RequestMapping(value = "user/{userId}", method = RequestMethod.POST)
     public String update(HttpSession session, @PathVariable("userId") Long userId,
-                         String address, String qq, String weixin, String phone, HttpServletResponse response) throws IOException {
+                         String address, String qq, String weixin, String phone, String portrait, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
         User user = (User) session.getAttribute("user");
         JSONObject result = new JSONObject();
         if (user == null || userId == null) {
@@ -127,7 +128,7 @@ public class UserAction extends BaseAction {
             response.getWriter().print(result);
         } else if (user.getRole() == 1 || user.getId() == userId) {
             User user1 = userService.getUserById(userId);
-            user1.updateUser(address, phone, qq, weixin);
+            user1.updateUser(address, phone, qq, weixin, portrait);
             userService.updateUser(user1);
             result.put("valid", 1);
             response.getWriter().print(result);
@@ -260,7 +261,10 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         System.out.println(email);
         User user = userService.getUserByEmail(email);
-        if (user==null){response.getWriter().print(0);}
+        if (user == null) {
+            response.getWriter().print(0);
+            return null;
+        }
         MailUtils.sendCheckToken(user);
         response.getWriter().print(1);
         return null;
@@ -270,6 +274,10 @@ public class UserAction extends BaseAction {
     public String forgotPassword(HttpSession session, String passwordNewSECURE, HttpServletResponse response, String checkToken, String email) throws MessagingException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         User user=userService.getUserByEmail(email);
+        if (user == null) {
+            response.getWriter().print(0);
+            return null;
+        }
         int flag = userService.checkTokenValid(user, checkToken);
         if (flag==1){
         	RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");

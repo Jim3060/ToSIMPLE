@@ -22,6 +22,7 @@
         <property name="qq" column="qq" type="java.lang.String" length="255"/>
         <property name="phone" column="phone" type="java.lang.String" length="255"/>
         <property name="weixin" column="weixin" type="java.lang.String" length="255"/>
+        <property name="portrait" column="portrait" type="java.lang.String" length="255"/>
         <property name="valid" column="valid" type="int"/>
     </class>
 </hibernate-mapping>

@@ -14,13 +14,15 @@ import java.util.Properties;
 public class MailUtils {
     //--------------参数---------------------
     public static final String FROM = "TOSIMPLE_SJTU@163.com";//发件人的email
+    //email password : tosimple
     public static final String PWD = "2simple";//发件人密码--邮箱密码
-    public static final String URL = "http://106.14.171.169:8080/ToSimple";//项目主页
+    public static final String URL = "http://localhost:8080/ToSimple";//项目主页
     public static final int LIMITHOUR = 2; //激活邮件过期时间2小时
     public static final int LIMITTIME = 1000 * 60 * 60 * 2;
     public static String TITLE = "ToSimple账户激活邮件";
     public static final String HOST = "smtp.163.com";
     public static final String SMTP = "smtp";
+    public static final String PORT = "465";
 
     //---------------自定义函数-----------------
     public static User activateMail(User u) throws MessagingException {
@@ -32,6 +34,7 @@ public class MailUtils {
         Long activateTime = curTime + LIMITTIME;
         //激活码--用于激活邮箱账号
         String token = curTime+to ;
+        TITLE = "ToSimple账户激活邮件";
         u.setToken(MD5Utils.getEncoded(token));
         u.setCreateTime(new Date(activateTime));
         token = u.getToken();
@@ -43,12 +46,14 @@ public class MailUtils {
         MailUtils.sendMail(to, TITLE, content);
         return u;
     }
-    
+
     public static User sendCheckToken(User u) throws MessagingException{
-    	//get userful information
+        //get userful information
         String to = u.getEmail();  //email
         Long curTime = System.currentTimeMillis();  //time
         String token= u.fetchCheckToken();
+        System.out.println(token);
+        System.out.println(to);
         TITLE= "密码找回";
         //发送的邮箱内容
         String content = "<p>您好 O(∩_∩)O~~<br><br>欢迎使用ToSimple!<br><br>这是您请求的验证码，若不是您的操作，请勿点击！<br><br>验证码为："
@@ -65,6 +70,12 @@ public class MailUtils {
         Properties props = new Properties(); //可以加载一个配置文件
         // 使用smtp：简单邮件传输协议
         props.put("mail.smtp.host", HOST);//存储发送邮件服务器的信息
+
+        props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.setProperty("mail.smtp.socketFactory.fallback", "false");
+        props.setProperty("mail.smtp.port", "465");
+        props.setProperty("mail.smtp.socketFactory.port", "465");
+
         props.put("mail.smtp.auth", "true");//同时通过验证
         Session session = Session.getInstance(props);//根据属性新建一个邮件会话
         //session.setDebug(true); //有他会打印一些调试信息。
@@ -85,5 +96,4 @@ public class MailUtils {
         transport.close();
     }
 }
-
 

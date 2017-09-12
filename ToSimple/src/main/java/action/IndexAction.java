@@ -1,5 +1,6 @@
 package action;
 
+import ToolUtils.BackUpUtil;
 import model.User;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 /**
  * Created by tbxsx on 17-7-11.
@@ -33,6 +35,33 @@ public class IndexAction {
     @Autowired
     private MongoDbFactory mongoDbFactory;
 
+    static Future back = null;
+
+    @RequestMapping(value = "back", method = RequestMethod.GET)
+    public void back(HttpServletResponse response, @RequestParam(value = "file", defaultValue = "") String file,
+                     HttpSession session, String hour, String min) {
+        BackUpUtil backUpUtil = new BackUpUtil();
+        if (IndexAction.back != null) {
+            back.cancel(true);
+        }
+        IndexAction.back = backUpUtil.executeEightAtNightPerDay(hour, min, new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    backupMongodb(response, file, session);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    backupMysql(session, response, file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
     @RequestMapping(value = "backupMongodb", method = RequestMethod.GET)
     public void backupMongodb(HttpServletResponse response, @RequestParam(value = "file", defaultValue = "") String file, HttpSession session) throws IOException {
         User user = (User) session.getAttribute("user");
@@ -47,7 +76,10 @@ public class IndexAction {
         prop.load(in);
         String fileDir = file;
         if (fileDir.equals("")) {
-            fileDir = prop.getProperty("spring.data.mongodb.backUpDir") + (new Date()).toString();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            java.util.Date date = new java.util.Date();
+            String str = sdf.format(date);
+            fileDir = prop.getProperty("spring.data.mongodb.backUpDir") + str;
         } else {
             fileDir = prop.getProperty("spring.data.mongodb.backUpDir") + fileDir;
         }
@@ -102,7 +134,10 @@ public class IndexAction {
         prop.load(in);
         String fileDir = file;
         if (fileDir.equals("")) {
-            fileDir = prop.getProperty("data.mysql.backUpDir") + (new Date()).toString();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            java.util.Date date = new java.util.Date();
+            String str = sdf.format(date);
+            fileDir = prop.getProperty("data.mysql.backUpDir") + str;
         } else {
             fileDir = prop.getProperty("data.mysql.backUpDir") + fileDir;
         }
@@ -139,6 +174,7 @@ public class IndexAction {
             response.getWriter().print(jsonObject);
             return;
         }
+        jsonObject.put("fileDir", fileDir);
         jsonObject.put("valid", 1);
         response.getWriter().print(jsonObject);
     }
@@ -176,6 +212,7 @@ public class IndexAction {
             return;
         }
         jsonObject.put("valid", 1);
+        jsonObject.put("fileDir", fileDir);
         response.getWriter().print(jsonObject);
     }
 

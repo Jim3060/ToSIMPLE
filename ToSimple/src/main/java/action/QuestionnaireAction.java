@@ -98,8 +98,6 @@ public class QuestionnaireAction extends BaseAction {
             response.getWriter().print(result);
             return null;
         }
-
-
         //check user equals author
         Questionnaire questionnaireTest = new Questionnaire(questionnaire);
 
@@ -128,30 +126,30 @@ public class QuestionnaireAction extends BaseAction {
     //{id1}:主人的问卷id {id2}:被挂在后面的问卷id {message}:连接语
     @RequestMapping(value = "associateQuestionnaires", method =  RequestMethod.GET)
     public void associateQuestionnaires(HttpSession session, HttpServletResponse response,String questionnaireId1,String questionnaireId2, String message) throws IOException{
-    	response.setContentType("application/json;charset=UTF-8");
-    	int i=questionnaireService.associateQuestionnaires(questionnaireId1, questionnaireId2,message,(User)session.getAttribute("user"));
-    	response.getWriter().print(i);
+        response.setContentType("application/json;charset=UTF-8");
+        int i = questionnaireService.associateQuestionnaires(questionnaireId1, questionnaireId2, message, (User) session.getAttribute("user"));
+        response.getWriter().print(i);
     }
 
     //breakAssociation?questionnaireId1={id1}&questionnaireId2={id2}
     //{id1}:主人的问卷id {id2}:被挂在后面的问卷id
     @RequestMapping(value = "breakAssociation", method =  RequestMethod.GET)
     public void breakAssociation(HttpSession session, HttpServletResponse response,String questionnaireId1,String questionnaireId2) throws IOException{
-    	response.setContentType("application/json;charset=UTF-8");
-    	int i=questionnaireService.breakAssociation(questionnaireId1, questionnaireId2,(User)session.getAttribute("user"));
-    	response.getWriter().print(i);
+        response.setContentType("application/json;charset=UTF-8");
+        int i = questionnaireService.breakAssociation(questionnaireId1, questionnaireId2, (User) session.getAttribute("user"));
+        response.getWriter().print(i);
     }
 
     @RequestMapping(value = "getAllAssociation", method =  RequestMethod.GET)
     public void getAllAssociation(HttpSession session, HttpServletResponse response,String questionnaireId) throws IOException{
-    	response.setContentType("application/json;charset=UTF-8");
-    	List<Questionnaire> list=questionnaireService.getAllAssociatedQuestionnaires(questionnaireId);
-    	if (list==null){
-    		JSONObject jsonObject = new JSONObject();
+        response.setContentType("application/json;charset=UTF-8");
+        List<Questionnaire> list = questionnaireService.getAllAssociatedQuestionnaires(questionnaireId);
+        if (list == null) {
+            JSONObject jsonObject = new JSONObject();
             jsonObject.put("valid", 0);
             response.getWriter().print(jsonObject);
             return ;
-    	}
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("valid", 1);
@@ -161,14 +159,14 @@ public class QuestionnaireAction extends BaseAction {
 
     @RequestMapping(value = "getOneAssociation", method =  RequestMethod.GET)
     public void getOneAssociation(HttpSession session, HttpServletResponse response,String questionnaireId) throws IOException{
-    	response.setContentType("application/json;charset=UTF-8");
-    	Questionnaire q=questionnaireService.getOneAssociatedQuestionnaire(questionnaireId);
-    	if (q==null){
-    		JSONObject jsonObject = new JSONObject();
+        response.setContentType("application/json;charset=UTF-8");
+        Questionnaire q = questionnaireService.getOneAssociatedQuestionnaire(questionnaireId);
+        if (q == null) {
+            JSONObject jsonObject = new JSONObject();
             jsonObject.put("valid", 0);
             response.getWriter().print(jsonObject);
             return ;
-    	}
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("valid", 1);
@@ -178,14 +176,14 @@ public class QuestionnaireAction extends BaseAction {
 
     @RequestMapping(value = "getOneAssociationInfo", method =  RequestMethod.GET)
     public void getOneAssociationInfo(HttpSession session, HttpServletResponse response,String questionnaireId) throws IOException{
-    	response.setContentType("application/json;charset=UTF-8");
-    	Questionnaire.Association a=questionnaireService.getOneAssociatedQuestionnaireInfo(questionnaireId);
-    	if (a==null){
-    		JSONObject jsonObject = new JSONObject();
+        response.setContentType("application/json;charset=UTF-8");
+        Questionnaire.Association a = questionnaireService.getOneAssociatedQuestionnaireInfo(questionnaireId);
+        if (a == null) {
+            JSONObject jsonObject = new JSONObject();
             jsonObject.put("valid", 0);
             response.getWriter().print(jsonObject);
             return ;
-    	}
+        }
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("valid", 1);
@@ -193,80 +191,82 @@ public class QuestionnaireAction extends BaseAction {
         response.getWriter().print(jsonObject);
     }
 
+
     @RequestMapping(value = "questionnaireSojump/{questionnaireId}", method =  RequestMethod.POST)
     public String forkSojumpQuestionnaire( HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
-    	response.setContentType("application/json;charset=UTF-8");
-    	int flag=questionnaireService.saveSojumpQuestionnaire(questionnaireId);
-    	JSONObject result = new JSONObject();
-    	result.put("valid", flag);
+        response.setContentType("application/json;charset=UTF-8");
+        int flag = questionnaireService.saveSojumpQuestionnaire(questionnaireId);
+        JSONObject result = new JSONObject();
+        result.put("valid", flag);
         response.getWriter().print(result);
 //    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
 //    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
-		return null;
+        return null;
     }
-    
+
     @RequestMapping(value = "questionnaireSojump/{questionnaireId}", method =  RequestMethod.GET)
     public String getSojumpQuestionnaire( HttpSession session,HttpServletResponse response, @PathVariable("questionnaireId") String questionnaireId) throws Exception {
-    	response.setContentType("application/json;charset=UTF-8");
-    	Questionnaire q=questionnaireService.getSojumpQuestionnaire(questionnaireId);
-    	if (q==null){
-    		JSONObject result = new JSONObject();
-    		result.put("valid", 0);
-    		response.getWriter().print(result);
-    		return null;
-    	}
-    	JSONObject result = new JSONObject();
-    	result.put("valid", 1);
-    	result.put("questionnaire", (q.questionnaireJSON));
+        response.setContentType("application/json;charset=UTF-8");
+        Questionnaire q = questionnaireService.getSojumpQuestionnaire(questionnaireId);
+        if (q == null) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.getWriter().print(result);
+            return null;
+        }
+        JSONObject result = new JSONObject();
+        result.put("valid", 1);
+        result.put("questionnaire", (q.questionnaireJSON));
         response.getWriter().print(result);
 //    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
 //    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
-		return null;
+        return null;
     }
 
     @RequestMapping(value = "questionnaireSojumpKW/{keyword}", method =  RequestMethod.GET)
     public String getSojumpQuestionnaireByKeyword( HttpSession session,HttpServletResponse response, @PathVariable("keyword") String keyword) throws Exception {
-    	response.setContentType("application/json;charset=UTF-8");
-    	Questionnaire q=questionnaireService.getQuestionnaireByKW(keyword);
-    	if (q==null){
-    		JSONObject result = new JSONObject();
-    		result.put("valid", 0);
-    		response.getWriter().print(result);
-    		return null;
-    	}
-    	JSONObject result = new JSONObject();
-    	result.put("valid", 1);
-    	result.put("questionnaire", (q.questionnaireJSON));
+        response.setContentType("application/json;charset=UTF-8");
+        Questionnaire q = questionnaireService.getQuestionnaireByKW(keyword);
+        if (q == null) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.getWriter().print(result);
+            return null;
+        }
+        JSONObject result = new JSONObject();
+        result.put("valid", 1);
+        result.put("questionnaire", (q.questionnaireJSON));
         response.getWriter().print(result);
 //    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
 //    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
-		return null;
+        return null;
     }
-    
+
     @RequestMapping(value = "questionSojumpKW/{keyword}", method =  RequestMethod.GET)
     public String getSojumpQuestionByKeyword( HttpSession session,HttpServletResponse response, @PathVariable("keyword") String keyword) throws Exception {
-    	response.setContentType("application/json;charset=UTF-8");
-    	String q;
-    	String [] dataStr = keyword.split("-"); 
-    	System.out.println(dataStr[0]);
-    	if (dataStr[0].equals(keyword)){q=questionnaireService.getQuestionByKW(keyword,keyword);}
-    	else{
-    		q=questionnaireService.getQuestionByKW(dataStr[0],dataStr[1]);
-    		
-    	}
-    	if (q==null){
-    		JSONObject result = new JSONObject();
-    		result.put("valid", 0);
-    		response.getWriter().print(result);
-    		return null;
-    	}
-    	JSONObject result = new JSONObject();
-    	result.put("valid", 1);
-    	result.put("question", (q));
+        response.setContentType("application/json;charset=UTF-8");
+        String q;
+        String[] dataStr = keyword.split("-");
+        System.out.println(dataStr[0]);
+        if (dataStr[0].equals(keyword)) {
+            q = questionnaireService.getQuestionByKW(keyword, keyword);
+        } else {
+            q = questionnaireService.getQuestionByKW(dataStr[0], dataStr[1]);
+
+        }
+        if (q == null) {
+            JSONObject result = new JSONObject();
+            result.put("valid", 0);
+            response.getWriter().print(result);
+            return null;
+        }
+        JSONObject result = new JSONObject();
+        result.put("valid", 1);
+        result.put("question", (q));
         response.getWriter().print(result);
 //    	SojumpParser parser=new SojumpParser("https://sojump.com/jq/"+"467815"+".aspx");
 //    	questionnaireService.addOrUpdateQuestionnaire(QuestionnaireSpider.toQuestionnaire(parser.parseSojump()));
-		return null;
+        return null;
     }
 
 
@@ -297,7 +297,7 @@ public class QuestionnaireAction extends BaseAction {
         JSONObject result = new JSONObject();
         result.put("valid", valid);
         if (valid=="1"){
-        	result.put("questionnaire", questionnairestr);
+            result.put("questionnaire", questionnairestr);
         }
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
@@ -375,7 +375,7 @@ public class QuestionnaireAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         //check user equals author
         Questionnaire questionnaireTest = questionnaireService.findQuestionnaireById(questionnaireId);
-       // System.out.println("authorId:"+questionnaireTest.questionnaireJSON.get("authorId"));
+        // System.out.println("authorId:"+questionnaireTest.questionnaireJSON.get("authorId"));
         User user=(User) session.getAttribute("user");
         if (session.getAttribute("user")==null||questionnaireTest.questionnaireJSON.has("authorId") && user.getRole()!=1 && !(String.valueOf(questionnaireTest.questionnaireJSON.get("authorId")).equals(String.valueOf(((User) session.getAttribute("user")).getId())))) {
             JSONObject result = new JSONObject();
@@ -486,6 +486,10 @@ public class QuestionnaireAction extends BaseAction {
         Questionnaire questionnaireS = questionnaireService.findQuestionnaireById(questionnaireId);
         if (questionnaireS == null) {
             valid = "0";
+        } else if (((int) questionnaireS.questionnaireJSON.get("status")) != 0) {
+            if (status == 0) {
+                valid = "0";
+            }
         } else {
             questionnaireS.setStatus(status);
             questionnaireService.addOrUpdateQuestionnaire(questionnaireS);
@@ -504,10 +508,11 @@ public class QuestionnaireAction extends BaseAction {
      * @param request
      * @return
      * @throws IOException
+     * @throws ParseException
      */
 
     @RequestMapping(value = "questionnaireResult", method = RequestMethod.POST)
-    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public String addQuestionnaireResult(String answerPaper, HttpServletResponse response, HttpServletRequest request) throws IOException, ParseException {
         response.setContentType("application/json;charset=UTF-8");
         if (answerPaper == null) {//data not fetched, fail
             response.getWriter().print('0');
@@ -517,7 +522,11 @@ public class QuestionnaireAction extends BaseAction {
         QuestionnaireResult questionnaireResult=new QuestionnaireResult(answerPaper, request);
         Questionnaire questionnaireTmp=questionnaireService.findQuestionnaireById((String)(questionnaireResult.questionnaireResultJSON.get("questionnaireId")));
         if (questionnaireService.checkQuestionnaireInTime(questionnaireTmp)==0){
-        	response.getWriter().print('2');
+            response.getWriter().print('2');
+            return null;
+        }
+        if (((int) questionnaireTmp.questionnaireJSON.get("status")) != 1) {
+            response.getWriter().print('0');
             return null;
         }
         questionnaireService.addQuestionnaireResult(questionnaireResult);
@@ -531,19 +540,19 @@ public class QuestionnaireAction extends BaseAction {
      *
      * @param questionnaireResultId
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     @RequestMapping(value = "questionnaireResult/{questionnaireResultId}", method = RequestMethod.GET)
     public String show(@PathVariable("questionnaireResultId") String questionnaireResultId,HttpServletResponse response) throws IOException {
-    	response.setContentType("application/json;charset=UTF-8");
-    	QuestionnaireResult questionnaireResult=questionnaireService.getQuestionnaireResultByid(questionnaireResultId);
-    	if (questionnaireResult==null){
-    		JSONObject result = new JSONObject();
+        response.setContentType("application/json;charset=UTF-8");
+        QuestionnaireResult questionnaireResult = questionnaireService.getQuestionnaireResultByid(questionnaireResultId);
+        if (questionnaireResult == null) {
+            JSONObject result = new JSONObject();
             result.put("valid", 0);
             response.getWriter().print(result);
             return  null;
-    	}
-    	JSONObject result = new JSONObject();
+        }
+        JSONObject result = new JSONObject();
         result.put("valid", 1);
         result.put("questionnaireResult", questionnaireResult.questionnaireResultJSON.toString());
         response.setCharacterEncoding("utf-8");
@@ -574,7 +583,7 @@ public class QuestionnaireAction extends BaseAction {
         out.close();
         return null;
     }
-    
+
     @RequestMapping(value = "questionnaireStatistics/chart/{questionnaireId}", method = RequestMethod.GET)
     public String ChartDown(@PathVariable("questionnaireId") String questionnaireId, HttpServletResponse response) throws IOException, ParseException {
         //Questionnaire questionnaire=questionnaireService.findQuestionnaireById(questionnaireId);

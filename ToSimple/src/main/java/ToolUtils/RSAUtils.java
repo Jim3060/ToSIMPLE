@@ -57,7 +57,7 @@ public class RSAUtils {
     private static byte[] decrypt(byte[] string, RSAPrivateKey pbk) {
         try {
             Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding", "BC");
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
             cipher.init(Cipher.DECRYPT_MODE, pbk);
             byte[] plainText = cipher.doFinal(string);
             return plainText;

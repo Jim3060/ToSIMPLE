@@ -5,15 +5,20 @@ import ToolUtils.CountUtils;
 import ToolUtils.SojumpParser;
 import ToolUtils.Spider.Algorithm;
 import ToolUtils.SpiderUtils;
+import ToolUtils.TimeUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dao.QuestionnaireDao;
 import dao.QuestionnaireResultDao;
 import model.*;
+import model.Questionnaire.Association;
+import net.sf.json.JSONArray;
 import service.QuestionnaireService;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 
@@ -47,7 +52,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
     @Override
     public Integer deleteQuestionnaire(String id) {
+        System.out.println(questionnaireResultDao.deleteByQuestionnaireId(id));
         return questionnaireDao.delete(id);
+
 
     }
 
@@ -238,16 +245,16 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     public Integer associateQuestionnaires(String id1, String id2, String message, User user) {//main id, slave id, message
         //identify the questionnaires
         Questionnaire q1 = questionnaireDao.findQuestionnaireById(id1);
-        if (q1 == null || (int) q1.questionnaireJSON.get("status") != 1) {
+        if (q1 == null || (int) q1.questionnaireJSON.get("status") == 2) {
             return 0;
         }
         //check the user
-//		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
-//			return -1;
-//		}
+        if (user.getId() != q1.questionnaireJSON.get("authorId")) {
+            return -1;
+        }
         //identify the second questionnaire
         Questionnaire q2 = questionnaireDao.findQuestionnaireById(id2);
-        if (q2 == null || (int) q1.questionnaireJSON.get("status") != 1) {
+        if (q2 == null || (int) q1.questionnaireJSON.get("status") == 2) {
             return 0;
         }
         //set associate
@@ -268,9 +275,9 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
             return 0;
         }
         //check the user
-//		if (user.getId()!=q1.questionnaireJSON.get("authorId")){
-//			return -1;
-//		}
+        if (user.getId() != q1.questionnaireJSON.get("authorId")) {
+            return -1;
+        }
         //identify the second questionnaire
         Questionnaire q2 = questionnaireDao.findQuestionnaireById(id2);
         if (q2 == null) {
@@ -353,10 +360,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     }
 
     public int checkQuestionnaireInTime(Questionnaire questionnaire) throws ParseException {
-        String startDateStr = (String) questionnaire.questionnaireJSON.get("startDate");
-        if (startDateStr == null) {
+        if (questionnaire.questionnaireJSON.get("startDate") == null) {
             return 1;
         }
+        String startDateStr = (String) questionnaire.questionnaireJSON.get("startDate");
+
         Date startDate = TimeUtils.getLocalTime(startDateStr);
         if (startDate == null) {
             return 1;
@@ -368,6 +376,5 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
         }
         return 0;
     }
-
 
 }
