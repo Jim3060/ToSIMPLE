@@ -26,6 +26,9 @@
                                 <el-button type="text" @click="showAssociate=true">设置关联</el-button>
                             </el-dropdown-item>
                             <el-dropdown-item>
+                                <a @click="showChart()">流程图预览</a>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
                                 <a :href="'#/s/'+$route.params.id">查看统计</a>
                             </el-dropdown-item>
                             <el-dropdown-item>

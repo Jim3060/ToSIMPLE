@@ -136,7 +136,7 @@ export default {
                 if (this.hidden[i])
                     continue;
                 if (this.questionnaire.questions[i].forced == false) {
-                    postBody.answers.push(temp);
+                    postBody.answers.push(temp || {"choices":[],"blank":""});
                     continue;
                 }
                 if (typeof temp === "undefined") {
@@ -164,7 +164,7 @@ export default {
                         this.saver = undefined;
                     }
                     localStorage.removeItem(`answer${this.$route.params.id}`);
-                    if (this.goNext) {
+                    if (this.goNext && this.associateID != "") {
                         this.$message.success("提交成功,即将跳转到下一份问卷……");
                         setTimeout(() => {
                             this.$router.push({ name: "q", params:{id: this.associateID }});
@@ -242,6 +242,12 @@ export default {
                 if (data.valid == 1) {
                     this.associateID = data.questionnaireAssociation["questionnaireId"];
                     this.associateMessage = data.questionnaireAssociation["message"];
+                    this.goNext = true;
+                }
+                else {
+                    this.associateID = "";
+                    this.associateMessage = "";
+                    this.goNext = false;
                 }
             }, "json");
         },
@@ -287,8 +293,10 @@ export default {
         },
 
         "$route"(to) {
-            if (to.name == "q") 
+            if (to.name == "q") {
                 this.loadQuestionnaire(this.$route.params.id);
+                this.loadAssociate(this.$route.params.id);
+            }
         },
 
         reportInfo: "getInputSize"
