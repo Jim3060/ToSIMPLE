@@ -107,9 +107,8 @@
                     type: "danger"
                 }).then(() => {
                     $.ajax({
-                        type:"DELETE",
-                        url:"user",
-                        data:{"userId" : ID},
+                        type:"GET",
+                        url:"deleteUser/" + ID,
                         dataType:"json",
                         success : data=>{
                             if(data["success"] == "1" || data["success"] == 1) {
