@@ -117,7 +117,7 @@ export default {
                     else if (data.valid == 2 || data.valid == "2")
                         this.$message.error("您没有该权限");
                     else
-                        this.$message.error("网络阐述异常");
+                        this.$message.error("网络传输异常");
                 }
             });
         },
