@@ -2,8 +2,6 @@
     <div>
         <p v-show="notFound">  很抱歉，没有找到名称为"{{this.$route.params.name}}"的问卷</p>
         <div>
-            <h3 v-if="$route.name=='search'" style="text-align:center">共为您搜索到{{count}}份问卷</h3>
-            <h3 v-else style="text-align:center">共为您找到{{randomNum}}份随机的问卷</h3>
             <ul class="list-group">
                 <li v-for="(questionnaire, index) in questionnaires" :key="questionnaire" class="list-group-item" 
                 style="width:80%; margin-left:10%; margin-top:5px; margin-bottom:5px; background:#DDDBDB">
