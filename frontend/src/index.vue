@@ -1,5 +1,5 @@
 <template>
-    <div class="headline">
+    <div class="headline" style="background: url('background.jpg')">
         <div style="height:30%;"></div>
         <span class="text"></span>
         <div style="text-align:center">
@@ -39,11 +39,11 @@ export default {
     color: #FFF;
     margin-top:-20px;
     height: 100%;
-    background: url(/background.jpg) no-repeat center;
+    /*background: url("background.jpg") no-repeat center;*/
     background-size: 100% 100%;
 }
 
-#Wfooter {
+/*#Wfooter {
     background: #cac2c2;
     overflow: hidden;
     width: 100%;
@@ -59,6 +59,6 @@ export default {
     height: 50px;
     background: black;
     margin-top: -50px;
-}
+}*/
 
 </style>
