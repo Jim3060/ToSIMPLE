@@ -113,7 +113,7 @@
                         success : data=>{
                             if(data["success"] == "1" || data["success"] == 1) {
                                 var self = this;
-                                Vue.set(self.users[index], "role", 1);
+                                self.users.splice(index, 1);
                                 this.$message.success("删除用户成功！");
                             }
                             else
