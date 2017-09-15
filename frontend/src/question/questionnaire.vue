@@ -26,7 +26,7 @@
                 <div style="height:20px;"></div>
                 <el-button type="primary" v-if="$route.path!='/n'&&$route.name!='n'" @click="submit()">提交</el-button>
                 <!-- modify -->
-                <el-button type="primary" v-if="!   edit" @click="dialogVisible=true">举报</el-button>
+                <el-button type="primary" v-if="!edit" @click="dialogVisible=true">举报</el-button>
                 <el-dialog title="请输入举报原因" :visible.sync="dialogVisible" size="tiny" :before-close="closeDialog">
                     <el-input type="textarea" :rows="7" placeholder="不多于255个字" v-model="reportInfo" :maxlength="255"></el-input>
                     <p>已输入{{reportNum}}/255个字</p>
@@ -92,7 +92,7 @@ export default {
             $.ajax({
                 type: "POST",
                 url: "report",
-                data: { "content": self.reportInfo, "questionnaireId": 1 },
+                data: { "content": self.reportInfo, "questionnaireId": this.questionnaire.questionnaireId },
                 dataType: "json",
                 success: data => {
                     console.log(data);
