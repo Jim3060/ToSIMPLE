@@ -249,7 +249,10 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
             return 0;
         }
         //check the user
-        if (user.getId() != q1.questionnaireJSON.get("authorId")) {
+        if ((int) (user.getId().intValue()) != (int) q1.questionnaireJSON.get("authorId")) {
+            //System.out.println("testttttttttttttttttttttttttt");
+            // System.out.println(user.getId());
+            //  System.out.println(q1.questionnaireJSON.get("authorId"));
             return -1;
         }
         //identify the second questionnaire
@@ -360,7 +363,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     }
 
     public int checkQuestionnaireInTime(Questionnaire questionnaire) throws ParseException {
-        if (questionnaire.questionnaireJSON.get("startDate") == null) {
+        if (questionnaire.questionnaireJSON.get("startDate") == null || questionnaire.questionnaireJSON.get("startDate").equals("null")) {
             return 1;
         }
         String startDateStr = (String) questionnaire.questionnaireJSON.get("startDate");

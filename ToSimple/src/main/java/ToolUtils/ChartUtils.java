@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Random;
 
 public class ChartUtils {
 
@@ -23,14 +24,27 @@ public class ChartUtils {
         JFreeChart chart = ChartFactory.createBarChart3D(title, xName,
                 yName, dataset, PlotOrientation.VERTICAL, true, true, false);
 
-        String filename = DateFormatUtils.format(new Date(), "yyyyMMddHHmmss") + ".png";
+        String filename = DateFormatUtils.format(new Date(), "yyyyMMddHHmmss") + ranstr() + ".png";
         File file = new File(filename);
+        if (chart == null) {
+            return null;
+        }
         ChartUtilities.saveChartAsPNG(file, chart, 600, 500);
-        ChartUtilities.saveChartAsJPEG(new File("/Users/JimLiu/Downloads/test.png"), chart, 400, 300);
+        //ChartUtilities.saveChartAsJPEG(new File("/Users/JimLiu/Downloads/test.png"), chart, 400, 300);
 
         return file;
 
 
+    }
+
+    public static String ranstr() {
+        int max = 1000;
+        int min = 1;
+        Random random = new Random();
+
+        int s = random.nextInt(max) % (max - min + 1) + min;
+        System.out.println(s);
+        return String.valueOf(s);
     }
 
     public static File CreatePieChart(PieDataset dataset, String title) throws IOException {
@@ -48,6 +62,7 @@ public class ChartUtils {
     }
 
     private static void setChartTheme() {
+
         // 创建主题样式       
         StandardChartTheme standardChartTheme = new StandardChartTheme("CN");
         // 设置标题字体       

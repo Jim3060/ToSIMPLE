@@ -37,7 +37,7 @@ public class IndexAction {
 
     static Future back = null;
 
-    @RequestMapping(value = "back", method = RequestMethod.GET)
+    @RequestMapping(value = "back", method = RequestMethod.POST)
     public void back(HttpServletResponse response, @RequestParam(value = "file", defaultValue = "") String file,
                      HttpSession session, String hour, String min) {
         BackUpUtil backUpUtil = new BackUpUtil();
@@ -99,6 +99,7 @@ public class IndexAction {
 
                 String str = new String(buffer);
                 System.out.println(str);
+
             } else {
                 // abnormally terminated, there was some problem
                 //a way to read the error during the execution of the command
@@ -109,13 +110,17 @@ public class IndexAction {
                 String str = new String(buffer);
                 System.out.println(str);
 
+                jsonObject.put("error", str);
+
             }
         } catch (Exception e) {
             jsonObject.put("valid", 0);
             response.getWriter().print(jsonObject);
             return;
         }
+        jsonObject.put("fileDir", fileDir);
         jsonObject.put("valid", 1);
+        jsonObject.put("command", command);
         response.getWriter().print(jsonObject);
     }
 
@@ -166,6 +171,8 @@ public class IndexAction {
 
                 String str = new String(buffer);
                 System.out.println(str);
+
+                jsonObject.put("error", str);
 
             }
 

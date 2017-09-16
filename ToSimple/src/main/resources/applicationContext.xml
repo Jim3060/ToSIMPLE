@@ -46,7 +46,6 @@
 
     <bean id="userDao" class="dao.Impl.UserDaoImpl">
         <property name="sessionFactory" ref="sessionFactory"/>
-       
     </bean>
 
     <bean id="questionnaireDao" class="dao.Impl.QuestionnaireDaoImpl">

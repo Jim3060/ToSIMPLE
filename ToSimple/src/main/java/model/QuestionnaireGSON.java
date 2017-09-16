@@ -21,6 +21,7 @@ public class QuestionnaireGSON {
         public String questionTitle;
         public int type;
         public List<Choice> choices;
+        public boolean mix;
     }
 
     public static class Choice {

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import service.Impl.UserServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,9 @@ public class test {
 
     @Autowired
     QuestionnaireDaoImpl questionnaireDao;
+
+    @Autowired
+    UserServiceImpl userService;
 
     @Autowired
     ReportDao reportDao;
@@ -217,8 +221,9 @@ public class test {
 
     @Test
     public void testSec() {
-       
-       
+
+        userService.deleteUser(5l);
+
     }
 
 //    @Test

@@ -76,8 +76,13 @@ public class EXELUtils {
 
                 HSSFCell cell = rowa.createCell((short) j + beginPadding);
                 if (questionnaireGSON.questions.get(j).type == 2) {
-                    cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
-                    System.out.println(questionnaireResultGSON.answers.get(j).blank);
+                    String tmpBlank = questionnaireResultGSON.answers.get(j).blank;
+                    if (tmpBlank == null) {
+                        cell.setCellValue("null");
+                    } else {
+                        cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
+                    }
+                    //System.out.println(questionnaireResultGSON.answers.get(j).blank);
                 } else if (questionnaireGSON.questions.get(j).type == 1) {
                     String tmp = "";
                     for (int k = 0; k < questionnaireResultGSON.answers.get(j).choice.size(); k++) {
@@ -86,7 +91,11 @@ public class EXELUtils {
                     cell.setCellValue(tmp);
                 } else {
                     for (int k = 0; k < questionnaireResultGSON.answers.get(j).choice.size(); k++) {
-                        cell.setCellValue(questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text);
+                        if (questionnaireResultGSON.answers.get(j).choice.get(k) >= questionnaireGSON.questions.get(j).choices.size()) {
+                            cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
+                        } else {
+                            cell.setCellValue(questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text);
+                        }
                     }
                 }
                 cell.setCellStyle(style);
@@ -116,6 +125,7 @@ public class EXELUtils {
         for (int i = 0; i < questions.size(); i++) {
             if (questions.get(i).type == 2) {
                 continue;
+
             }
             int cNum = 0;
             row = sheet.createRow(rowNum);
@@ -132,6 +142,7 @@ public class EXELUtils {
                 cell.setCellValue(choices.get(j).title);
                 cell.setCellStyle(style);
             }
+
             //load number
             cNum = 0;
             row = sheet.createRow(rowNum);
@@ -152,7 +163,10 @@ public class EXELUtils {
             rowNum++;
             //read the image
 //            BufferedImage bufferImg ;        
-//			ByteArrayOutputStream byteArrayOut;     
+//			ByteArrayOutputStream byteArrayOut;
+            if (choices.size() != 0) {
+
+
             File filec = ChartUtils.CreateBarChart(questions.get(i).getBarDataSet(), questions.get(i).title, "Choices", "Number");
             HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0, (short) 1, rowNum, (short) (7), rowNum + picHeight);
             anchor.setAnchorType(2);
@@ -176,7 +190,7 @@ public class EXELUtils {
 //			patriarch.createPicture(anchor2, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
 //			
             rowNum += picHeight;
-
+            }
             //leave an empty line
             rowNum++;
 

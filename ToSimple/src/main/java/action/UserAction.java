@@ -55,6 +55,8 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         User user = userService.getUserById(userId);
         JSONObject result = new JSONObject();
+        user.setPassword("");
+        user.setToken("");
         result.put("user", user);
         response.getWriter().print(result);
         return null;
@@ -89,7 +91,7 @@ public class UserAction extends BaseAction {
         return;
     }
 
-    @RequestMapping(value = "user/{userId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "deleteUser/{userId}", method = RequestMethod.GET)
     public String delete(@PathVariable("userId") Long userId, HttpSession session, HttpServletRequest request) throws IOException {
         User user = (User) session.getAttribute("user");
         JSONObject result = new JSONObject();
@@ -121,6 +123,7 @@ public class UserAction extends BaseAction {
     public String update(HttpSession session, @PathVariable("userId") Long userId,
                          String address, String qq, String weixin, String phone, String portrait, HttpServletResponse response) throws IOException {
         response.setContentType("application/json;charset=UTF-8");
+
         User user = (User) session.getAttribute("user");
         JSONObject result = new JSONObject();
         if (user == null || userId == null) {
@@ -131,6 +134,7 @@ public class UserAction extends BaseAction {
             user1.updateUser(address, phone, qq, weixin, portrait);
             userService.updateUser(user1);
             result.put("valid", 1);
+
             response.getWriter().print(result);
         } else {
             result.put("valid", 0);

@@ -45,6 +45,11 @@ public class QuestionnaireStatistics {
                     ctmp.title = qtmp.choices.get(j).text;
                     tmp.choices.add(ctmp);
                 }
+                if (qtmp.mix == true) {
+                    Choice ctmp = new Choice();
+                    ctmp.title = "other";
+                    tmp.choices.add(ctmp);
+                }
             }
             questions.add(tmp);
         }
@@ -60,15 +65,31 @@ public class QuestionnaireStatistics {
             QuestionnaireResultGSON.Answer atmp;
             for (int j = 0; j < questionnaireResultGSON.answers.size(); j++) {
                 atmp = questionnaireResultGSON.answers.get(j);
-                if (atmp.blank != null && !atmp.blank.equals("")) {
+                if (questions.get(j).type == 2) {
+                    if (atmp.blank != null && !atmp.blank.equals("")) {
+                        questions.get(j).blanks.add(new Blank(atmp.blank, questionnaireResultGSON.questionnaireResultId));
+                    }
 
-                    questions.get(j).blanks.add(new Blank(atmp.blank, questionnaireResultGSON.questionnaireResultId));
                 } else {
-                    for (int k = 0; k < atmp.choice.size(); k++) {
-                        if (atmp.choice.get(k) != null) {
-                            questions.get(j).choices.get(atmp.choice.get(k)).number++;
+                    if (atmp.choice != null) {
+                        for (int k = 0; k < atmp.choice.size(); k++) {
+                            if (atmp.choice.get(k) != null) {
+                                try {
+                                    questions.get(j).choices.get(atmp.choice.get(k)).number++;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+//                            else {
+//                                questions.get(j).choices.get(atmp.choice.get(k)).number++;
+//                            }
+
+                        }
+                        if (atmp.blank != null) {
+                            questions.get(j).choices.get(questions.get(j).choices.size() - 1).number++;
                         }
                     }
+
                 }
             }
         }
@@ -115,10 +136,17 @@ public class QuestionnaireStatistics {
         public DefaultCategoryDataset getBarDataSet() {
             DefaultCategoryDataset dataset = new DefaultCategoryDataset();
             List<QuestionnaireStatistics.Choice> choices = this.choices;
+            if (choices.size() == 0) {
+                dataset.addValue(0, "other", "other");
+            }
+
             for (int i = 0; i < choices.size(); i++) {
                 QuestionnaireStatistics.Choice choice = choices.get(i);
                 dataset.addValue(choice.number, choice.title, choice.title);
             }
+            System.out.println("TTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+            System.out.println(dataset);
+            System.out.println(choices.size());
             return dataset;
         }
 
