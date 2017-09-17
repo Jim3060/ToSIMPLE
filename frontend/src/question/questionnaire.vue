@@ -84,7 +84,7 @@ export default {
             $.ajax({
                 type: "POST",
                 url: "report",
-                data: { "content": self.reportInfo, "questionnaireId": this.questionnaire.questionnaireId },
+                data: { "content": self.reportInfo, "questionnaireId": this.$route.params.id },
                 dataType: "json",
                 success: data => {
                     console.log(data);
