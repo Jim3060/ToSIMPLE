@@ -1,17 +1,63 @@
 <html style="height: 100%">
     <head>
-        <title>test</title>
+        <title>To Simple 问卷网</title>
         <script src="./jquery-3.1.1.min.js"></script>    
         <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
+        <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"></link>
         <!--<link href="/bootstrap/bootstrap-vue.css" rel="stylesheet" type="text/css"></link>-->
         <meta charset="UTF-8"/>         
     </head>
     <body>
-        <div id="app">
+        <div id="app" style="position: relative;height: auto;min-height: 100%;">
             <navbar></navbar>
             <message></message>
             <router-view></router-view>
-        </div>    
-        <script src="./bundle.js"></script>
+        </div>
+        <div id="Wfooter">
+            <div id="bottom">
+                <div class="col-md-8">
+                    <p>contact US&emsp;
+                        Tel:&thinsp;222222&emsp;
+                        Email:&thinsp;Tosimple@163.com</p>
+                </div>
+                <div class="col-md-4" style="text-align:right">
+                    <p>问&emsp;卷&emsp;调&emsp;查&emsp;•&emsp;考&emsp;试&emsp;•&emsp;投&emsp;票</p>
+                </div>
+            </div>
+            <br>
+            <div style="text-align:center">
+                <hr style="height:0px;border:none;border-top:1px solid #000000; width:80%"/>
+            </div>
+
+            <div>
+                <img src="http://www.shejiye.com/uploadfile/icon/2017/0203/shejiyeicon5jockzqeutc.png" height="50" width="50"></img>
+                <p>©2017 To simple Design & Development.</p>
+            </div>
+        </div>
+        <script src="./bundle.js"></script>    
     </body>
+    <style>
+        #Wfooter {
+            text-align: center;
+            background: #eae2e2;
+            overflow: hidden;
+            width: 100%;
+            /*position: relative;
+            left: 0px;
+            bottom: 0;*/
+            padding-top: 20px;
+        }
+
+        #bottom {
+            width: 80%;
+            font-size: 15;
+            font-family:cursive;
+        }
+
+        .wrapper {
+            /*position: relative;*/
+            height: auto;
+            min-height: 100%;
+        }
+    </style>
 </html>

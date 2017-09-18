@@ -136,13 +136,10 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public String login(HttpSession session, String passwordSECURE, String userName, HttpServletResponse response) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
-        System.out.print(userName);
-        System.out.print("HEREEE");
-        System.out.print(passwordSECURE);
+
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
         String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
-        System.out.print("HEREEE2");
-        System.out.println(passwordInput);
+
         Integer loginSuccess = 1;
         User user = userService.loginByEmail(userName, passwordInput);
         if (user == null) {
@@ -168,15 +165,12 @@ public class UserAction extends BaseAction {
     @RequestMapping(value = "updatePassword", method = RequestMethod.POST)
     public String updatePassword(HttpSession session, String passwordSECURE, String passwordNewSECURE, HttpServletResponse response) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
-        System.out.println(passwordSECURE);
-        System.out.println(passwordNewSECURE);
         RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");
         String passwordInput = RSAUtils.decryptBase64(passwordSECURE, privateKey);
         User user=(User) session.getAttribute("user");
         user=userService.getUserById(user.getId());
         System.out.println(passwordInput);
         if (user==null){response.getWriter().print(0);return null;}
-        
         if (!user.getPassword().equals(passwordInput)){
         	response.getWriter().print(-1);return null;
         }
@@ -227,7 +221,7 @@ public class UserAction extends BaseAction {
         response.setContentType("application/json;charset=UTF-8");
         System.out.println(email);
         User user = userService.getUserByEmail(email);
-        if (user==null){response.getWriter().print(0);}
+        if (user==null){response.getWriter().print(0);return null;}
         MailUtils.sendCheckToken(user);
         response.getWriter().print(1);
         return null;
@@ -237,6 +231,7 @@ public class UserAction extends BaseAction {
     public String forgotPassword(HttpSession session, String passwordNewSECURE, HttpServletResponse response, String checkToken, String email) throws MessagingException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         User user=userService.getUserByEmail(email);
+        if (user==null){response.getWriter().print(0);return null;}
         int flag = userService.checkTokenValid(user, checkToken);
         if (flag==1){
         	RSAPrivateKey privateKey = (RSAPrivateKey) session.getAttribute("privateKey");

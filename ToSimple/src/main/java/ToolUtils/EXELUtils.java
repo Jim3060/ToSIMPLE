@@ -62,9 +62,6 @@ public class EXELUtils {
         cellb = row.createCell((short) 2);
         cellb.setCellValue("Timing");
         cellb.setCellStyle(style);
-//        HSSFCell cellb = row.createCell((short) 0);  
-//        cellb.setCellValue("Timing");  
-//        cellb.setCellStyle(style);  
         for (int i = 0; i < questionnaireGSON.questions.size(); i++) {
             HSSFCell cell = row.createCell((short) i + beginPadding);
             cell.setCellValue(questionnaireGSON.questions.get(i).questionTitle);
@@ -93,23 +90,31 @@ public class EXELUtils {
 
 
             for (int j = 0; j < questionnaireResultGSON.answers.size(); j++) {
-                System.out.println("hi");
-
                 HSSFCell cell = rowa.createCell((short) j + beginPadding);
                 if (questionnaireGSON.questions.get(j).type == 2) {
-                    cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
-                    System.out.println(questionnaireResultGSON.answers.get(j).blank);
-                } else if (questionnaireGSON.questions.get(j).type == 1) {
+                    String tmpBlank = questionnaireResultGSON.answers.get(j).blank;
+                    if (tmpBlank == null) {
+                        cell.setCellValue("__NULL__");
+                    } else {
+                        cell.setCellValue(questionnaireResultGSON.answers.get(j).blank);
+                    }
+                    //System.out.println(questionnaireResultGSON.answers.get(j).blank);
+                } else {//if (questionnaireGSON.questions.get(j).type == 1) {
                     String tmp = "";
                     for (int k = 0; k < questionnaireResultGSON.answers.get(j).choice.size(); k++) {
+                    	
                         tmp += questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text + ", ";
                     }
-                    cell.setCellValue(tmp);
-                } else {
-                    for (int k = 0; k < questionnaireResultGSON.answers.get(j).choice.size(); k++) {
-                        cell.setCellValue(questionnaireGSON.questions.get(j).choices.get(questionnaireResultGSON.answers.get(j).choice.get(k)).text);
+                //    System.out.println(questionnaireResultGSON.answers.get(j).blank);
+                    if (questionnaireResultGSON.answers.get(j).blank!=null&&!questionnaireResultGSON.answers.get(j).blank.equals("")) {
+                    	//System.out.println(questionnaireResultGSON.answers.get(j).blank+"again");
+                        tmp+=questionnaireResultGSON.answers.get(j).blank+ ", ";
                     }
-                }
+                    
+                    tmp=tmp.trim().substring(0, tmp.length()-2);
+                    cell.setCellValue(tmp);
+                } 
+//                
                 cell.setCellStyle(style);
             }
         }
@@ -165,9 +170,7 @@ public class EXELUtils {
     		
     		//insert chart
     		rowNum++;
-    		//read the image
-//            BufferedImage bufferImg ;        
-//			ByteArrayOutputStream byteArrayOut;     
+    		//read the image   
 			File filec=ChartUtils.CreateBarChart(questions.get(i).getBarDataSet(), questions.get(i).title, "Choices", "Number");
 			HSSFClientAnchor anchor = new HSSFClientAnchor(0, 0, 0, 0,(short) 1, rowNum, (short) (7), rowNum+picHeight); 
 			anchor.setAnchorType(2);     
@@ -178,24 +181,11 @@ public class EXELUtils {
 			anchor2.setAnchorType(2); 
 			createPic(wb,patriarch,anchor2,filep);
 			
-//			bufferImg = null;        
-//			byteArrayOut = new ByteArrayOutputStream();     
-//			bufferImg = ImageIO.read(filec);     
-//			ImageIO.write(bufferImg, "png", byteArrayOut);  
-//			patriarch.createPicture(anchor, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
-//			
-//			bufferImg = null;        
-//			byteArrayOut = new ByteArrayOutputStream(); 
-//			bufferImg = ImageIO.read(filep);     
-//			ImageIO.write(bufferImg, "png", byteArrayOut);  
-//			patriarch.createPicture(anchor2, wb.addPicture(byteArrayOut.toByteArray(), HSSFWorkbook.PICTURE_TYPE_PNG)); 
-//			
+
 			rowNum+=picHeight;
 			
 			//leave an empty line
     		rowNum++;
-    		
-    		
         }
       
         

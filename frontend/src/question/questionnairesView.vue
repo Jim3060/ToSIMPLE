@@ -3,8 +3,9 @@
         <p v-show="notFound">  很抱歉，没有找到名称为"{{this.$route.params.name}}"的问卷</p>
         <div>
             <ul class="list-group">
-                <li v-for="questionnaire in questionnaires" :key="questionnaire" class="list-group-item">
-                    <simple :title="questionnaire.paperTitle" :id="questionnaire.questionnaireId"></simple>
+                <li v-for="(questionnaire, index) in questionnaires" :key="questionnaire" class="list-group-item" 
+                style="width:80%; margin-left:10%; margin-top:5px; margin-bottom:5px; background:#DDDBDB">
+                    <simple :title="questionnaire.paperTitle" :id="questionnaire.questionnaireId" :index="index+1"></simple>
                 </li>
             </ul>
         </div>
@@ -26,6 +27,7 @@
             notFound: false,
             currentPage: 1,
             count: 1,
+            randomNum: 0,
         };},
         watch:{
             "$route"(to){
@@ -56,6 +58,7 @@
                 }, "json").fail(()=>{
                     this.$message.error("网络异常");
                 });
+                self.randomNum = self.questionnaires.length;
             },
             handleCurrentChange(page){
                 this.currentPage = page;

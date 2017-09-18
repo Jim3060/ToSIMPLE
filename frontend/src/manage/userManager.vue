@@ -23,6 +23,7 @@
                         <el-button v-if="data_item.role==2" type="text" @click="unban(data_item.id, index)">解封用户</el-button>
                         <el-button v-if="data_item.role==0" type="text" @click="ban(data_item.id, index)">封禁用户</el-button>
                         <el-button v-if="data_item.role==0" type="text" @click="set_manager(data_item.id, index)">设管理员</el-button>
+                        <el-button type="text" @click="delete_user(data_item.id, index)">删除用户</el-button>
                     </th>
                 </tr>
             </tbody>
@@ -98,6 +99,30 @@
                     });
                 });
             },
+
+            delete_user(ID, index) {
+                this.$confirm("此操作会改变用户的状态, 您确定继续吗?", "警告", {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "danger"
+                }).then(() => {
+                    $.ajax({
+                        type:"GET",
+                        url:"deleteUser/" + ID,
+                        dataType:"json",
+                        success : data=>{
+                            if(data["success"] == "1" || data["success"] == 1) {
+                                var self = this;
+                                self.users.splice(index, 1);
+                                this.$message.success("删除用户成功！");
+                            }
+                            else
+                                this.$message.warning("网络传输异常！");
+                        }
+                    });
+                });
+            },
+
             set_manager(ID, index){
                 this.$confirm("此操作会改变用户的状态, 您确定继续吗?", "警告", {
                     confirmButtonText: "确定",
@@ -142,12 +167,11 @@
                     self.pageLength = self.userNum / self.pageSize + 1;
                 }
             });
-            
         }
     };
 </script>
 
-<style>
+<style scoped>
     table{width:80% !important; margin-left:10%;}
     th, td, td>input{text-align: center; width:150px !important;}
 </style>

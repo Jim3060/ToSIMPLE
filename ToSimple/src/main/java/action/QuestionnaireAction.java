@@ -497,7 +497,11 @@ public class QuestionnaireAction extends BaseAction {
         Questionnaire questionnaireS = questionnaireService.findQuestionnaireById(questionnaireId);
         if (questionnaireS == null) {
             valid = "0";
-        } else {
+        }
+        else if (((int)questionnaireS.questionnaireJSON.get("status"))!=0){
+        	if (status==0){valid="0";}
+        }
+        else {
             questionnaireS.setStatus(status);
             questionnaireService.addOrUpdateQuestionnaire(questionnaireS);
         }
@@ -531,6 +535,10 @@ public class QuestionnaireAction extends BaseAction {
         if (questionnaireService.checkQuestionnaireInTime(questionnaireTmp)==0){
         	response.getWriter().print('2');
             return null;
+        }
+        if (((int)questionnaireTmp.questionnaireJSON.get("status"))!=1){
+        	response.getWriter().print('0');
+        	return null;
         }
         questionnaireService.addQuestionnaireResult(questionnaireResult);
         response.getWriter().print('1');//success

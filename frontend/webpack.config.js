@@ -5,8 +5,9 @@ const UglifyEsPlugin = require("uglify-es-webpack-plugin");
 module.exports = {
     entry: __dirname + "/src/main.js",
     output: {
-        path: __dirname + "/out",
-        filename: "bundle.js"
+        path: __dirname + "/out/ToSimple",
+        filename: "bundle.js",
+        publicPath: "/ToSimple/"
     },
     module: {
         rules: [

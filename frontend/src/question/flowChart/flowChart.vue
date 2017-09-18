@@ -1,6 +1,6 @@
 <template>
-    <div style="width:300px; height:500px">
-        <svg></svg> 
+    <div style="width:100%; height:100%">
+        <svg id="my-svg"></svg> 
     </div>
 </template>
 
@@ -34,5 +34,11 @@ export default {
     .edgePath path {
         stroke: #333;
         stroke-width: 1.5px;
+    }
+
+    svg {
+        height: 200%;
+        width: 100%;
+        overflow:visible;
     }
 </style>

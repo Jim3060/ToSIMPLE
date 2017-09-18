@@ -52,18 +52,6 @@
                             </el-dropdown>
                         </a>
                     </li>
-                    <!--
-                            <li :class="{active:($route.path=='/userManager')}">
-                                <a href="#/userManager">管理用户</a>
-                            </li>
-                            <li :class="{active:($route.path=='/questionnaireManager')}">
-                                <a href="#/questionnaireManager">管理问卷</a>
-                            </li>
-                            <li :class="{active:($route.path=='/backup')}">
-                                <a href="#/backup">备份</a>
-                            </li>
-                            -->
-    
                     <login class="navbar-right" @login="role=$event" @logout="role=-1"></login>
                     <form class="navbar-form navbar-right" role="search">
                         <div class="form-group">
@@ -78,7 +66,7 @@
 </template>
 
 <script>
-import login from "./login.vue";
+import login from "./login/login.vue";
 
 export default {
     name: "navbar",
